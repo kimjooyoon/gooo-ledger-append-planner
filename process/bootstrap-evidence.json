@@ -51,5 +51,19 @@
     "external_utility": "UNKNOWN/NOT_MADE",
     "matched_manual_tool_before_after": "NOT_OBSERVED",
     "measured_time_improvement": "NOT_CLAIMED"
+  },
+  "release_attempts": [
+    {
+      "tag": "v0.1.0",
+      "run_id": 33453950126,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33453950126",
+      "job_id": 99689783281,
+      "job_name": "release",
+      "head_sha": "eff936eea33fa617bfca0d2d8f086a9811ff8e29",
+      "conclusion": "failure",
+      "failed_step": "Refuse a non-annotated or mutable tag target",
+      "preserved": true,
+      "release_created": false
+    }
   }
 }
