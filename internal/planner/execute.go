@@ -71,14 +71,16 @@ func Execute(transactionPath string, options Options) (Result, error) {
 		return Result{}, err
 	}
 	manifestPath := options.TransactionManifestPath
-	if manifestPath == "" {
-		manifestPath = meta.TransactionManifestPath
-	}
 	manifest := TransactionManifest{}
-	if manifestPath != "" {
-		manifest, err = LoadTransactionManifest(manifestPath)
-		if err != nil {
-			return Result{}, fmt.Errorf("load transaction manifest: %w", err)
+	if transaction.Schema == "gooo/ledger-append-transaction/v2" {
+		if manifestPath == "" {
+			manifestPath = meta.TransactionManifestPath
+		}
+		if manifestPath != "" {
+			manifest, err = LoadTransactionManifest(resolveAuthorityPath(options.MetaCodePath, manifestPath))
+			if err != nil {
+				return Result{}, fmt.Errorf("load transaction manifest: %w", err)
+			}
 		}
 	}
 	lock, err := loadASTFile(options.BaselineLockPath)
@@ -147,6 +149,14 @@ func Execute(transactionPath string, options Options) (Result, error) {
 		return Result{}, err
 	}
 	return Result{Plan: state.Plan, Receipt: state.Receipt, Rollback: state.Rollback, Dossier: state.Dossier, OutputDirectory: options.OutputDirectory}, nil
+}
+
+func resolveAuthorityPath(metaCodePath, declaredPath string) string {
+	if filepath.IsAbs(declaredPath) {
+		return declaredPath
+	}
+	metaRoot := filepath.Dir(filepath.Dir(metaCodePath))
+	return filepath.Join(metaRoot, declaredPath)
 }
 
 func loadTransaction(path string) (Transaction, map[string]any, error) {
