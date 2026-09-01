@@ -220,6 +220,7 @@ func TestProjectionManifestV3CorpusAndRollback(t *testing.T) {
 }
 
 func TestProjectionManifestV3AuthorityFindings(t *testing.T) {
+	input := filepath.Join(testRoot, "testdata/ledger-v0.33")
 	tests := []struct {
 		name       string
 		mutate     func(string) string
