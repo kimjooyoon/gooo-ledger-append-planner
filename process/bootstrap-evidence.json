@@ -89,6 +89,19 @@
       "failure_response": "HTTP_403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION",
       "preserved": true,
       "release_created": false
+    },
+    {
+      "tag": "v0.1.0",
+      "run_id": 33454772226,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33454772226",
+      "job_id": 99692301411,
+      "job_name": "release",
+      "head_sha": "d76901c94c0d673a39a29875785abfb8f1a651a4",
+      "conclusion": "failure",
+      "failed_step": "Package exact source and checksums",
+      "failure_response": "GO_BUILD_RELATIVE_PATH_MISSING_DOT_SLASH",
+      "preserved": true,
+      "release_created": false
     }
   ],
   "control_plane_attempts": [
