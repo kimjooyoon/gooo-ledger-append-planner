@@ -1,0 +1,43 @@
+{
+  "schema": "gooo/ledger-append-planner/bootstrap-evidence/v1",
+  "append_only": true,
+  "repository": "kimjooyoon/gooo-ledger-append-planner",
+  "bootstrap": {
+    "commit_count": 1,
+    "contains_ci": true,
+    "contains_gooo_authority": true,
+    "post_bootstrap_direct_main": 0,
+    "implementation_transition": "ONE_OPEN_PR_AT_A_TIME",
+    "verification_authority": "GITHUB_ACTIONS"
+  },
+  "development_observations": [
+    {
+      "observation_id": "local-development-turn-2026-09-01",
+      "append_only": true,
+      "development_process": "REFUTED",
+      "local_validation_executions": 3,
+      "local_go_test_executions": 9,
+      "local_go_build_executions": 0,
+      "local_go_run_compile_executions": 3,
+      "local_go_vet_executions": 1,
+      "local_conformance_executions": 2,
+      "product_conformance_authority": "NONE_GITHUB_ACTIONS_PENDING",
+      "reason": "local execution occurred during implementation; preserve counts and do not use local results as release authority"
+    },
+    {
+      "observation_id": "upstream-ledger-v0.31.0-history",
+      "append_only": true,
+      "development_process": "REFUTED",
+      "local_validation_executions": 1,
+      "process_state": "REFUTED",
+      "wrong_insertion_point_attempts": "multiple uncommitted attempts preserved as motivation",
+      "product_conformance_authority": "NONE"
+    }
+  ],
+  "non_claims": {
+    "whole_language_improvement": "UNKNOWN",
+    "external_utility": "UNKNOWN/NOT_MADE",
+    "matched_manual_tool_before_after": "NOT_OBSERVED",
+    "measured_time_improvement": "NOT_CLAIMED"
+  }
+}

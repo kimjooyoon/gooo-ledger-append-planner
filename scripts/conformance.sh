@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root=$(cd "$(dirname "$0")/.." && pwd)
+cd "$root"
+
+go test ./internal/... ./cmd/...
+
+fixture="$root/testdata/ledger-v0.31"
+transaction="$root/examples/transactions/valid-append.json"
+output=$(mktemp -d "${TMPDIR:-/tmp}/gooo-ledger-append-conformance.XXXXXX")
+trap 'rm -rf "$output" "${output}-summary.json"' EXIT
+
+go run ./cmd/gooo-ledger-append-planner \
+  -repository "$fixture" \
+  -transaction "$transaction" \
+  -metacode "$root/.gooo/append-planner.gooo" \
+  -baseline-lock "$root/contracts/upstream-lock-v0.31.0.json" \
+  -output-dir "$output" >"$output-summary.json"
+
+jq -e '.decision == "CLOSED" and .portfolio_decision == "REFUTED"' "$output-summary.json" >/dev/null
+jq -e '.metrics.exact_files_changed == 7 and .metrics.repository_writes == 0 and .input_repository_mutated == false' "$output/patch-plan.json" >/dev/null
+jq -e '.state == "CLOSED" and .mismatches == []' "$output/replay-receipt.json" >/dev/null
+test ! -e "$fixture/evidence/report-v1.json"
+test ! -e "$fixture/evidence/history-v1.json"
+
+echo "conformance: CLOSED structural append in caller-owned temporary copy"

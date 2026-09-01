@@ -1,0 +1,2612 @@
+{
+  "schema": "gooo/self-improvement-portfolio/release-locks/v1",
+  "purpose": "Exact immutable release and asset inputs for the portfolio evidence cells; mutable predecessors and failed release triggers are retained as append-only counterexamples.",
+  "failed_release_triggers": [
+    {
+      "counterexample_id": "improvement_proposer_v0.1.0_failed_release_trigger",
+      "capability": "IMPROVEMENT_PROPOSER_RELEASE",
+      "repository": "kimjooyoon/gooo-improvement-proposer",
+      "tag": "v0.1.0",
+      "tag_ref": "refs/tags/v0.1.0",
+      "tag_object_sha": "9acc18c4f021a42fbd41f2c67f22bb1df1152187",
+      "target_commit_sha": "2007b49fdf60765b1868636da75b980f0c16db28",
+      "release_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/releases/tag/v0.1.0",
+      "release_api_status": 404,
+      "release_absent": true,
+      "reason": "FAILED_RELEASE_TRIGGER",
+      "append_only": true,
+      "failed_run": {
+        "run_id": 33396465907,
+        "run_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33396465907",
+        "event": "push",
+        "head_branch": "v0.1.0",
+        "head_sha": "2007b49fdf60765b1868636da75b980f0c16db28",
+        "conclusion": "failure",
+        "job_id": 99502048200,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33396465907/job/99502048200"
+      }
+    }
+  ],
+  "releases": {
+    "reflexive_learning_drift_cycle_release": {
+      "repository": "kimjooyoon/gooo-reflexive-loop",
+      "tag": "v0.4.0",
+      "release_id": 379940049,
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/releases/tag/v0.4.0",
+      "target_commit_sha": "134d9043e8808147ed2f7252527e809d3eafad44",
+      "tag_object_sha": "89f6d283791f917c2fe789fa05016a0f33df21d2",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33420406673,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33420406673",
+        "head_sha": "134d9043e8808147ed2f7252527e809d3eafad44",
+        "conclusion": "success",
+        "job_id": 99581097777,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33420406673/job/99581097777",
+        "artifact_ids": [9768699219]
+      },
+      "source_artifact": {
+        "run_id": 33420406673,
+        "artifact_id": 9768699219,
+        "name": "gooo-reflexive-loop-evidence",
+        "size_bytes": 3624947,
+        "sha256": "sha256:11f3fffb4c6ee93307e46b5c1fdb8013fe5829983e069d823d896dc77e84a6c2"
+      },
+      "release_manifest": {
+        "schema": "gooo/reflexive-loop/release-manifest/v1",
+        "version": "v0.4.0",
+        "repository": "kimjooyoon/gooo-reflexive-loop",
+        "release": {"tag":"v0.4.0","target_commit_sha":"134d9043e8808147ed2f7252527e809d3eafad44","annotated":true,"immutable_required":true},
+        "implementation": {"pull_request":7,"correction_pull_request":8,"merged_main_commit":"134d9043e8808147ed2f7252527e809d3eafad44"},
+        "workflow": {"run_id":33420406673,"job_id":99581097777,"url":"https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33420406673","branch":"main","go_version":"go1.27.0","conformance":"passed"},
+        "evidence_artifact": {"name":"gooo-reflexive-loop-evidence","id":9768699219,"size_bytes":3624947,"digest":"sha256:11f3fffb4c6ee93307e46b5c1fdb8013fe5829983e069d823d896dc77e84a6c2"},
+        "assets": {
+          "source": {"name":"gooo-reflexive-loop-v0.4.0-source.tar.gz","size_bytes":96363,"digest":"sha256:fc8f5e551bb335d0a9133623c2fdc4549f634a93645b41b8fbb7c0acc98ab957"},
+          "evidence": {"name":"gooo-reflexive-loop-v0.4.0-evidence.tar.gz","size_bytes":2468418,"digest":"sha256:1bac0c50f4508922b5351df3a541f4daa115c60867ca106d11d4593e7c58b5ce"}
+        },
+        "evidence": {
+          "schema": "gooo/reflexive-loop/learning-drift-gated/conformance/v1",
+          "version": "v0.4.0",
+          "scenario_counts": {"CLOSED":3,"REFUTED":5,"UNKNOWN":4},
+          "denominator": {"cells":12,"fixed":true},
+          "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+          "normal_report_digest": "sha256:c1c8686b4e9c96acfe665ead2fd176b2314642f93de428039b0b4a32a59bd6fd",
+          "normal": {
+            "decision": "CLOSED",
+            "repository_unchanged": true,
+            "external_utility_state": "UNKNOWN",
+            "metrics": {
+              "cycles":2,"candidate_count":5,"known_refuted_recurrences_before":1,"known_refuted_recurrences_after":0,
+              "attempts_observed":2,"avoided_refuted_candidates":1,"refuted_candidates":1,"unknown_candidates":2,
+              "replay_comparisons":16,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":0,
+              "tests_total":4,"tests_executed":2,"tests_reused":1,"tests_skipped":1,"tests_not_observed":0,
+              "build_wall_ms":520,"build_peak_rss_kib":91448,"test_wall_ms":0,"test_peak_rss_kib":7116,
+              "conformance_wall_ms":4291,"conformance_peak_rss_kib":14300,
+              "go_files":0,"go_physical_lines":0,"gooo_files":8,"gooo_physical_lines":136,
+              "directories":18,"files":56,"output_artifact_files":375,"output_artifact_bytes":1327231,
+              "patch_paths":1,"patch_hunks":1,"patch_bytes":1119,
+              "repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0
+            }
+          },
+          "authority": {"repository_writes":0,"pull_request_authorized":false,"push_authorized":false,"commit_authorized":false,"merge_authorized":false,"apply_authorized":false,"local_test_executions":0,"cross_project_required_gates":0},
+          "utility_inference": false
+        }
+      },
+      "protocol_observation": {
+        "schema": "gooo/reflexive-loop/learning-drift-gated/conformance/v1",
+        "version": "v0.4.0",
+        "denominator": {"cells":12,"fixed":true},
+        "cases": {"CLOSED":3,"UNKNOWN":4,"REFUTED":5},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "normal": {
+          "decision": "CLOSED",
+          "normal_report_digest": "sha256:c1c8686b4e9c96acfe665ead2fd176b2314642f93de428039b0b4a32a59bd6fd",
+          "repository_unchanged": true,
+          "external_utility_state": "UNKNOWN",
+          "metrics": {
+            "cycles":2,"candidates":5,"recurrence_before":1,"recurrence_after":0,"attempts":2,"avoided_refuted":1,"refuted":1,"unknown":2,
+            "replay": {"comparisons":16,"mismatches":0},"rollback": {"comparisons":1,"mismatches":0},
+            "tests": {"total":4,"executed":2,"reused":1,"skipped":1,"not_observed":0},
+            "build": {"wall_ms":520,"peak_rss_kib":91448},"test": {"wall_ms":0,"peak_rss_kib":7116},"conformance": {"wall_ms":4291,"peak_rss_kib":14300},
+            "inventory": {"go_files":0,"go_lines":0,"gooo_files":8,"gooo_lines":136,"directories":18,"files":56,"root_readme_excluded":true},
+            "output_artifacts": {"files":375,"bytes":1327231},"patch": {"paths":1,"hunks":1,"bytes":1119}
+          }
+        },
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0,"apply":0,"commit":0,"push":0,"pull_request":0,"merge":0},
+        "utility_inference": false
+      },
+      "assets": [
+        {"id":538319772,"name":"gooo-reflexive-loop-v0.4.0-evidence.tar.gz","size_bytes":2468418,"sha256":"sha256:1bac0c50f4508922b5351df3a541f4daa115c60867ca106d11d4593e7c58b5ce","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.4.0/gooo-reflexive-loop-v0.4.0-evidence.tar.gz"},
+        {"id":538319775,"name":"gooo-reflexive-loop-v0.4.0-manifest.json","size_bytes":6537,"sha256":"sha256:b3de9c74872b8b8ec4fac51393a4ee54256c1f97ab9f8f47effdc68971013977","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.4.0/gooo-reflexive-loop-v0.4.0-manifest.json"},
+        {"id":538319768,"name":"gooo-reflexive-loop-v0.4.0-source.tar.gz","size_bytes":96363,"sha256":"sha256:fc8f5e551bb335d0a9133623c2fdc4549f634a93645b41b8fbb7c0acc98ab957","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.4.0/gooo-reflexive-loop-v0.4.0-source.tar.gz"},
+        {"id":538319776,"name":"SHA256SUMS","size_bytes":323,"sha256":"sha256:e55c31a6c66eb82cfcf2d8b39182e07fd39f35f45a7bddfd17407025bda59dc0","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.4.0/SHA256SUMS"}
+      ]
+    },
+    "semantic_authority_census_release": {
+      "repository": "kimjooyoon/gooo-semantic-authority-census",
+      "tag": "v0.1.0",
+      "release_id": 379947813,
+      "release_url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/releases/tag/v0.1.0",
+      "target_commit_sha": "0451a1f5813e51a2d09145d7516170c7802f9fd5",
+      "tag_object_sha": "c81ff9b843dce716c57fe2ab542bde52e922ab2b",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33421788389,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/actions/runs/33421788389",
+        "head_sha": "0451a1f5813e51a2d09145d7516170c7802f9fd5",
+        "conclusion": "success",
+        "job_id": 99585671364,
+        "job_name": "census",
+        "job_url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/actions/runs/33421788389/job/99585671364",
+        "artifact_ids": [9769198151]
+      },
+      "source_artifact": {
+        "run_id": 33421788389,
+        "artifact_id": 9769198151,
+        "name": "semantic-authority-census",
+        "size_bytes": 2612519,
+        "sha256": "sha256:a77d6e089b61fcb6546385af9e91f47011cfe2d070cadec26f3ad66f35e79d35"
+      },
+      "release_run": {
+        "run_id": 33421919840,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/actions/runs/33421919840",
+        "head_sha": "0451a1f5813e51a2d09145d7516170c7802f9fd5",
+        "conclusion": "success",
+        "job_id": 99586108117,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/actions/runs/33421919840/job/99586108117",
+        "artifact_ids": [9769259042]
+      },
+      "release_artifact": {
+        "run_id": 33421919840,
+        "artifact_id": 9769259042,
+        "name": "semantic-authority-release",
+        "size_bytes": 2577787,
+        "sha256": "sha256:347c8f66d0f69f13244be95ea62116beabadf597e49480138e0b16bb6b0c3472"
+      },
+      "pull_request": {
+        "number": 1,
+        "url": "https://github.com/kimjooyoon/gooo-semantic-authority-census/pull/1",
+        "state": "closed",
+        "merged": true,
+        "head_sha": "438d4e4f05e7c4b7b1f69e04f8ebf98b3a00ec37",
+        "base_sha": "d1d2ce53cfabbdca6a0837f074b6fc0f6d95602f",
+        "merge_commit_sha": "0451a1f5813e51a2d09145d7516170c7802f9fd5",
+        "merged_at": "2026-08-31T17:50:55Z"
+      },
+      "release_manifest": {
+        "schema": "gooo/semantic-authority-release/v1",
+        "tag": "v0.1.0",
+        "tag_object": "c81ff9b843dce716c57fe2ab542bde52e922ab2b",
+        "target": "0451a1f5813e51a2d09145d7516170c7802f9fd5",
+        "run_id": "33421919840",
+        "assets": {
+          "source": "sha256:3bd78b1b7cb5330dc901003b2d23abee9b95abfe23d1ad0d754d1bdb63471866",
+          "evidence": "sha256:e68c93214ef99e65ffd818bf384668c34e8332aa7b4481d6cc70b747afaaf0e3"
+        }
+      },
+      "protocol_observation": {
+        "schema": "gooo/semantic-authority-conformance/v1",
+        "score": "NOT_COMBINED",
+        "denominator": {
+          "cells": 12,
+          "proof": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+          "indicator": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4}
+        },
+        "cases": {"CLOSED":3,"UNKNOWN":3,"REFUTED":3},
+        "exact_pair": {
+          "obligations": 3,
+          "generated_bound": {"before":2,"after":3,"delta":1},
+          "handwritten_go": {"before":1,"after":0,"delta":-1}
+        },
+        "execution": {
+          "compile_wall_ms": 5184,
+          "build_wall_ms": 751,
+          "test_wall_ms": 2209,
+          "conformance_wall_ms": 8306,
+          "peak_rss_kib": 270708,
+          "tests_total": 4,
+          "tests_executed": 4,
+          "tests_reused": 0,
+          "tests_skipped": 0,
+          "tests_not_observed": 0,
+          "replay_comparisons": 9,
+          "replay_mismatches": 0
+        },
+        "inventory": {
+          "go_files": 6,
+          "go_physical_lines": 817,
+          "gooo_files": 4,
+          "gooo_physical_lines": 28,
+          "regular_files_excluding_root_readme": 29,
+          "descendant_dirs": 12,
+          "output_artifact_files": 58
+        },
+        "authority": {
+          "repository_write_authority": 0,
+          "net_repository_changes": 0,
+          "local_test_executions": 0,
+          "infrastructure_mutations": 0,
+          "provider_install_attempts": 0,
+          "network_mutation_attempts": 0
+        },
+        "bootstrap": {
+          "compiler": "HANDWRITTEN_GO",
+          "evaluator": "HANDWRITTEN_GO",
+          "core_semantic_authority_closed": false
+        }
+      },
+      "assets": [
+        {"id":538335233,"name":"evidence-v0.1.0.tar.gz","size_bytes":2563982,"sha256":"sha256:e68c93214ef99e65ffd818bf384668c34e8332aa7b4481d6cc70b747afaaf0e3","download_url":"https://github.com/kimjooyoon/gooo-semantic-authority-census/releases/download/v0.1.0/evidence-v0.1.0.tar.gz"},
+        {"id":538335235,"name":"manifest-v0.1.0.json","size_bytes":413,"sha256":"sha256:9c403c7b607c91f1cddced37611875544f047899610be293c96b6475b269b260","download_url":"https://github.com/kimjooyoon/gooo-semantic-authority-census/releases/download/v0.1.0/manifest-v0.1.0.json"},
+        {"id":538335234,"name":"SHA256SUMS","size_bytes":263,"sha256":"sha256:9ae4216b45722c43f62720a3e3d13048905e3291d7ee595d3fe6ab0f78f11411","download_url":"https://github.com/kimjooyoon/gooo-semantic-authority-census/releases/download/v0.1.0/SHA256SUMS"},
+        {"id":538335236,"name":"source-v0.1.0.tar.gz","size_bytes":14360,"sha256":"sha256:3bd78b1b7cb5330dc901003b2d23abee9b95abfe23d1ad0d754d1bdb63471866","download_url":"https://github.com/kimjooyoon/gooo-semantic-authority-census/releases/download/v0.1.0/source-v0.1.0.tar.gz"}
+      ]
+    },
+    "semantic_drift_guard_release": {
+      "repository": "kimjooyoon/gooo-semantic-drift-guard",
+      "tag": "v0.1.1",
+      "release_id": 379915376,
+      "release_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/releases/tag/v0.1.1",
+      "target_commit_sha": "15b6c1dcce26feb5f64d562140708f7cb27390aa",
+      "tag_object_sha": "1e1cf4882347ccd69c14c4aa96e63c096709d512",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33416441475,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/actions/runs/33416441475",
+        "head_sha": "4ceaf5066bd9dc864c748b9faac440214860d8b6",
+        "conclusion": "success",
+        "job_id": 99568101328,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/actions/runs/33416441475/job/99568101328",
+        "artifact_ids": [9767194212]
+      },
+      "source_artifact": {
+        "run_id": 33416441475,
+        "artifact_id": 9767194212,
+        "name": "gooo-semantic-drift-guard-conformance",
+        "size_bytes": 44290,
+        "sha256": "sha256:f6bd1319019ec14d836b4e4bcc31533bc2614768b85bdb1c73deea3e37c89171"
+      },
+      "release_run": {
+        "run_id": 33416657453,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/actions/runs/33416657453",
+        "head_sha": "15b6c1dcce26feb5f64d562140708f7cb27390aa",
+        "conclusion": "success",
+        "job_id": 99568816492,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/actions/runs/33416657453/job/99568816492"
+      },
+      "pull_request": {
+        "number": 2,
+        "url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/pull/2",
+        "state": "closed",
+        "merged": true,
+        "head_ref": "fix/immutable-release-tag-object",
+        "head_sha": "4ceaf5066bd9dc864c748b9faac440214860d8b6",
+        "base_ref": "main",
+        "base_sha": "32c52a412f3e07451d8c4e0aa0428bc5b33bd214",
+        "merge_commit_sha": "15b6c1dcce26feb5f64d562140708f7cb27390aa",
+        "merged_at": "2026-08-31T16:53:24Z"
+      },
+      "release_workflow": {
+        "path": ".github/workflows/release.yml",
+        "immutable_releases_enabled": true,
+        "tag_pattern": "v*.*.*",
+        "annotated_tag_required": true,
+        "release_exists_guard": true,
+        "post_publish_immutable_check": true,
+        "release_metadata_file": "release-metadata.txt"
+      },
+      "ruleset": {
+        "id": 21943064,
+        "name": "Immutable v release tags",
+        "target": "tag",
+        "enforcement": "active",
+        "conditions": {"ref_name":{"include":["refs/tags/v*"]}},
+        "rules": [{"type":"deletion"},{"type":"non_fast_forward"}]
+      },
+      "protocol_observation": {
+        "schema": "gooo/semantic-drift-guard/report/v1",
+        "fixed_denominator": 12,
+        "case_total": 10,
+        "case_totals": {"normal":1,"unknown":4,"refuted":5,"CLOSED":1,"UNKNOWN":4,"REFUTED":5},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "canonical_graph_binding": {
+          "source_to_ir_to_generated": true,
+          "description": "source→IR→generated Go canonical graph binding"
+        },
+        "normal_metrics": {
+          "releases_compared": 2,
+          "source_files": 2,
+          "ir_nodes": 24,
+          "generated_files": 2,
+          "semantic_relations_before": 12,
+          "semantic_relations_after": 12,
+          "equivalent_changes": 1,
+          "semantic_drift_changes": 0,
+          "unknown_bindings": 0,
+          "replay_comparisons": 1,
+          "replay_mismatches": 0,
+          "peak_rss_kib": 12246,
+          "wall_ms": 1,
+          "build_ms": 4654,
+          "test_ms": 1993,
+          "tests": {"total":12,"executed":12,"reused":0,"skipped":0,"not_observed":0}
+        },
+        "inventory": {
+          "go_physical_lines": 1772,
+          "go_files": 13,
+          "gooo_physical_lines": 85,
+          "gooo_files": 6,
+          "descendant_dirs": 24,
+          "descendant_files": 45,
+          "root_readme_excluded": true
+        },
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0}
+      },
+      "process_observations": {
+        "append_only": true,
+        "score_included": false,
+        "legacy_v0_1_0": {
+          "release_id": 379905110,
+          "release_url": "https://github.com/kimjooyoon/gooo-semantic-drift-guard/releases/tag/v0.1.0",
+          "immutable": false,
+          "tag_object_sha": "1af22b91e82ba97203bd7270ae64b2e487a1a4e5",
+          "target_commit_sha": "32c52a412f3e07451d8c4e0aa0428bc5b33bd214",
+          "reason": "LEGACY_TAG_OBJECT_LITERAL_DEFECT",
+          "faulty_release_metadata": "release_tag=v0.1.0\ntarget_commit=32c52a412f3e07451d8c4e0aa0428bc5b33bd214\ntag_object=v0.1.0^{tag}",
+          "faulty_asset": {"id":538253208,"name":"evidence-v0.1.0.tar.gz","size_bytes":6642,"sha256":"sha256:c62afed0b028da17b67f2398fd38b54bd7279c36f18eac1c825f6ca9a09ad612"},
+          "faulty_checksum_asset": {"id":538253206,"name":"evidence-v0.1.0.tar.gz.sha256","size_bytes":113,"sha256":"sha256:94d970c65a129b9580c3655904454854b3ebc8616451ff57c088d479519b3895"},
+          "correction_asset": {"id":538262313,"name":"evidence-v0.1.0-annotated.tar.gz","size_bytes":10546,"sha256":"sha256:598c5d20eaa1b9c39471043087ebc9640bd8e4ba4c951eea803aeb9933f61d59"},
+          "correction_checksum_asset": {"id":538262314,"name":"evidence-v0.1.0-annotated.tar.gz.sha256","size_bytes":163,"sha256":"sha256:d4e5376d0a4182d9a7ab39fe938a3637b6c1a8c9d7f29b25c49875a68d254744"},
+        "correction_release_metadata": "release_tag=v0.1.0\ntarget_commit=32c52a412f3e07451d8c4e0aa0428bc5b33bd214\ntag_object=1af22b91e82ba97203bd7270ae64b2e487a1a4e5"
+        }
+      },
+      "assets": [
+        {"id":538271587,"name":"evidence-v0.1.1.tar.gz","size_bytes":6651,"sha256":"sha256:83ea0adf7b59b08147eb24ef16483682d8f21d204dc93ed337d39900ae9e09ec","download_url":"https://github.com/kimjooyoon/gooo-semantic-drift-guard/releases/download/v0.1.1/evidence-v0.1.1.tar.gz"},
+        {"id":538271586,"name":"evidence-v0.1.1.tar.gz.sha256","size_bytes":113,"sha256":"sha256:61e49e62af005dff6a27f43bf20be43d257095bee1b552ab89a433fbe5db111b","download_url":"https://github.com/kimjooyoon/gooo-semantic-drift-guard/releases/download/v0.1.1/evidence-v0.1.1.tar.gz.sha256"}
+      ]
+    },
+    "experience_memory_release": {
+      "repository": "kimjooyoon/gooo-experience-memory",
+      "tag": "v0.1.0",
+      "release_id": 379896833,
+      "release_url": "https://github.com/kimjooyoon/gooo-experience-memory/releases/tag/v0.1.0",
+      "target_commit_sha": "79fd6edc588ea26279dbe735e5f6e250132f7730",
+      "tag_object_sha": "9b889fc3dd5b663b5ac1ce7cd975fc89030c4a46",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33414536312,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33414536312",
+        "head_sha": "10210e2a1d7bf803ed5be5c187ead9300e88d5e6",
+        "conclusion": "success",
+        "job_id": 99561917616,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33414536312/job/99561917616",
+        "artifact_ids": [9766475762]
+      },
+      "source_artifact": {
+        "run_id": 33414536312,
+        "artifact_id": 9766475762,
+        "name": "gooo-experience-memory-evidence-33414536312",
+        "size_bytes": 15798,
+        "sha256": "sha256:0aaec4dc2f9a3822c8c3f275f178dde929c7abb87b733544b1f36e2d3b9f26fb"
+      },
+      "release_run": {
+        "run_id": 33414620023,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33414620023",
+        "head_sha": "10210e2a1d7bf803ed5be5c187ead9300e88d5e6",
+        "conclusion": "success",
+        "job_id": 99562201563,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33414620023/job/99562201563"
+      },
+      "manifest_file": {
+        "asset_id": 538237752,
+        "name": "release-manifest.json",
+        "size_bytes": 555,
+        "sha256": "sha256:34e97b1cb9fd2ee520cea5b82acd9ee44272abb7392c8a32ce51a144f397ada1",
+        "content": {
+          "schema": "gooo/experience-memory/release-manifest/v1",
+          "tag": "v0.1.0",
+          "commit_sha": "79fd6edc588ea26279dbe735e5f6e250132f7730",
+          "immutable": true,
+          "assets": [
+            {"digest":"sha256:177f7c872d4e704f5eba6dd96c43e28bfcab2a714b032188c511f3e7872e5d6d","kind":"source","name":"gooo-experience-memory-v0.1.0.tar.gz"},
+            {"digest":"sha256:27afa525ccaa5ebdf738fef99615998b51bed85d865ccd6e9367036a46a961f6","kind":"ci-evidence","name":"gooo-experience-memory-evidence-v0.1.0.tar.gz"}
+          ]
+        }
+      },
+      "checksum_file": {
+        "asset_id": 538237754,
+        "name": "SHA256SUMS",
+        "size_bytes": 229,
+        "sha256": "sha256:237c96b9bd3eed13676f0a8a4f0de37c71d75646b6a51a762ba5ca9aa1afb6ca",
+        "bindings": {
+          "gooo-experience-memory-v0.1.0.tar.gz": "sha256:177f7c872d4e704f5eba6dd96c43e28bfcab2a714b032188c511f3e7872e5d6d",
+          "gooo-experience-memory-evidence-v0.1.0.tar.gz": "sha256:27afa525ccaa5ebdf738fef99615998b51bed85d865ccd6e9367036a46a961f6"
+        }
+      },
+      "evidence_manifest": {
+        "schema": "gooo/experience-memory/evidence-manifest/v1",
+        "subject_sha": "10210e2a1d7bf803ed5be5c187ead9300e88d5e6",
+        "bytes": 1565,
+        "sha256": "sha256:f9105286cdd402372dfe4a65abde56c74d36b6246f5f3b60ce535cb2a35ec0be",
+        "files": [
+          {"name":"evaluation.json","bytes":27778,"sha256":"sha256:2a31e5eb0eca14843199c90d697c533650c67f820d22e65e473e78b3f7be2665"},
+          {"name":"fixed-fixture.json","bytes":2839,"sha256":"sha256:8659407f1174dcf404eb5153537a33e911deac90ad68c37ca84d1080c15e216a"},
+          {"name":"generated/semantic.gooo.go","bytes":4423,"sha256":"sha256:40931a576f147265cb9309f6dadca05c08205a1f1d4d4f648c3188787acff4ae"},
+          {"name":"human-report.md","bytes":5427,"sha256":"sha256:6fda9ebb0a56a595dc9503d197a7525c9bb6b522b97dc6bf57d64412f6ebd6a0"},
+          {"name":"memory.ndjson","bytes":1182,"sha256":"sha256:db80eb416a11a2faa7ceb10eb2aed5634da50608db5f32574e48142371e28c79"},
+          {"name":"outcome-receipt.json","bytes":654,"sha256":"sha256:b013ea186daeb0517d208630dc523ede4180f986cf8265258400f46963b49e33"},
+          {"name":"runtime.json","bytes":567,"sha256":"sha256:e93d7e26873be5969b52c0f6edc0a85f8654b166a654a55871e6a6fa788309e2"},
+          {"name":"semantic-ir.json","bytes":5079,"sha256":"sha256:11c6aaee3853a67fb446fff669bb3384f6221936da6c55224cb2328921f260e1"},
+          {"name":"summary.json","bytes":27778,"sha256":"sha256:2a31e5eb0eca14843199c90d697c533650c67f820d22e65e473e78b3f7be2665"}
+        ]
+      },
+      "protocol_observation": {
+        "schema": "gooo/experience-memory/report/v1",
+        "decision": "EXPERIENCE_MEMORY_CONFORMANCE_CLOSED",
+        "state": "CLOSED",
+        "fixed_denominator": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"normal":4,"unknown":4,"refuted":4,"CLOSED":4,"UNKNOWN":4,"REFUTED":4},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "metrics": {
+          "attempts_observed": 2,
+          "memory_records": 1,
+          "candidate_count": 5,
+          "known_refuted_recurrences_before": 1,
+          "known_refuted_recurrences_after": 0,
+          "avoided_refuted_candidates": 1,
+          "new_unknown_candidates": 2,
+          "replay_comparisons": 2,
+          "replay_mismatches": 0,
+          "peak_rss_kib": 7256,
+          "wall_ms": 1,
+          "go_physical_lines": 1578,
+          "go_files": 9,
+          "gooo_physical_lines": 16,
+          "gooo_files": 1,
+          "descendant_dirs": 13,
+          "tests": {"total":2,"executed":2,"reused":0,"skipped":0,"not_observed":0}
+        },
+        "inventory": {"go_physical_lines":1578,"go_files":9,"gooo_physical_lines":16,"gooo_files":1,"descendant_dirs":13,"regular_files_root_readme_excluded":34},
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0},
+        "append_only": true,
+        "external_inputs_read_only": true,
+        "root_readme_excluded": true
+      },
+      "process_observations": {
+        "append_only": true,
+        "score_included": false,
+        "failed_release_workflow": {
+          "run_id": 33413752929,
+          "run_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33413752929",
+          "event": "push",
+          "head_sha": "79fd6edc588ea26279dbe735e5f6e250132f7730",
+          "conclusion": "failure",
+          "job_id": 99559373690,
+          "job_name": "release",
+          "job_url": "https://github.com/kimjooyoon/gooo-experience-memory/actions/runs/33413752929/job/99559373690",
+          "failed_step": "Confirm tag is annotated and build source asset",
+          "failed_exit_code": 1,
+          "publish_step": "Publish release without overwrite",
+          "publish_step_conclusion": "skipped"
+        },
+        "operational_pull_requests": [
+          {
+            "number": 2,
+            "title": "fix: make immutable release verification idempotent",
+            "state": "closed",
+            "merged": true,
+            "head_ref": "fix/release-workflow",
+            "head_sha": "91d046ebcf12ac6baf6a43dfb9f88c404f0be711",
+            "base_ref": "main",
+            "base_sha": "79fd6edc588ea26279dbe735e5f6e250132f7730",
+            "merge_commit_sha": "6bf9ca277478bab5e47393e4b0fbcbe07d847296",
+            "merged_at": "2026-08-31T16:26:51Z",
+            "url": "https://github.com/kimjooyoon/gooo-experience-memory/pull/2"
+          },
+          {
+            "number": 3,
+            "title": "fix: dispatch release verification for explicit tag",
+            "state": "closed",
+            "merged": true,
+            "head_ref": "fix/release-dispatch",
+            "head_sha": "79921641afc2742634a473bf77f0656da50cb9fb",
+            "base_ref": "main",
+            "base_sha": "6bf9ca277478bab5e47393e4b0fbcbe07d847296",
+            "merge_commit_sha": "10210e2a1d7bf803ed5be5c187ead9300e88d5e6",
+            "merged_at": "2026-08-31T16:31:01Z",
+            "url": "https://github.com/kimjooyoon/gooo-experience-memory/pull/3"
+          }
+        ]
+      },
+      "assets": [
+        {"id":538237751,"name":"gooo-experience-memory-evidence-v0.1.0.tar.gz","size_bytes":11528,"sha256":"sha256:27afa525ccaa5ebdf738fef99615998b51bed85d865ccd6e9367036a46a961f6","download_url":"https://github.com/kimjooyoon/gooo-experience-memory/releases/download/v0.1.0/gooo-experience-memory-evidence-v0.1.0.tar.gz"},
+        {"id":538237753,"name":"gooo-experience-memory-v0.1.0.tar.gz","size_bytes":25993,"sha256":"sha256:177f7c872d4e704f5eba6dd96c43e28bfcab2a714b032188c511f3e7872e5d6d","download_url":"https://github.com/kimjooyoon/gooo-experience-memory/releases/download/v0.1.0/gooo-experience-memory-v0.1.0.tar.gz"},
+        {"id":538237752,"name":"release-manifest.json","size_bytes":555,"sha256":"sha256:34e97b1cb9fd2ee520cea5b82acd9ee44272abb7392c8a32ce51a144f397ada1","download_url":"https://github.com/kimjooyoon/gooo-experience-memory/releases/download/v0.1.0/release-manifest.json"},
+        {"id":538237754,"name":"SHA256SUMS","size_bytes":229,"sha256":"sha256:237c96b9bd3eed13676f0a8a4f0de37c71d75646b6a51a762ba5ca9aa1afb6ca","download_url":"https://github.com/kimjooyoon/gooo-experience-memory/releases/download/v0.1.0/SHA256SUMS"}
+      ]
+    },
+    "meta_budget": {
+      "repository": "kimjooyoon/gooo-meta-budget",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-meta-budget/releases/tag/v0.1.0",
+      "target_commit_sha": "e71f024d2fdb69866e6c8f4e0e170b64ed6f7ee5",
+      "immutable": true,
+      "manifest": {"name":"gooo-meta-budget-v0.1.0-manifest.json","size_bytes":1502,"sha256":"sha256:7ea5ab709f1daf8d130bd7d7813d5a436a613b8774b537dad9865eafb4e6ed15","download_url":"https://github.com/kimjooyoon/gooo-meta-budget/releases/download/v0.1.0/gooo-meta-budget-v0.1.0-manifest.json"},
+      "evidence": {"name":"gooo-meta-budget-evidence-v0.1.0.tar.gz","size_bytes":2772405,"sha256":"sha256:fa4b9e992048ddbd4c84a9c7d8e17a6b283655f0da0b324488470944f318eee6","download_url":"https://github.com/kimjooyoon/gooo-meta-budget/releases/download/v0.1.0/gooo-meta-budget-evidence-v0.1.0.tar.gz"},
+      "assets": [
+        {"name":"gooo-meta-budget-v0.1.0-manifest.json","size_bytes":1502,"sha256":"sha256:7ea5ab709f1daf8d130bd7d7813d5a436a613b8774b537dad9865eafb4e6ed15","download_url":"https://github.com/kimjooyoon/gooo-meta-budget/releases/download/v0.1.0/gooo-meta-budget-v0.1.0-manifest.json"},
+        {"name":"gooo-meta-budget-evidence-v0.1.0.tar.gz","size_bytes":2772405,"sha256":"sha256:fa4b9e992048ddbd4c84a9c7d8e17a6b283655f0da0b324488470944f318eee6","download_url":"https://github.com/kimjooyoon/gooo-meta-budget/releases/download/v0.1.0/gooo-meta-budget-evidence-v0.1.0.tar.gz"}
+      ]
+    },
+    "resolution_lattice": {
+      "repository": "kimjooyoon/gooo-resolution-lattice",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/releases/tag/v0.1.0",
+      "target_commit_sha": "7182d0ff5a054fe93ef17cf96386a440b4080323",
+      "immutable": true,
+      "manifest": {"name":"consumer-manifest.json","size_bytes":2196,"sha256":"sha256:1ae585501de77ff281c1a510d72174f220fee019c4f1811ed295a89627ef7b69","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.1.0/consumer-manifest.json"},
+      "evidence": {"name":"gooo-resolution-lattice-v0.1.0-evidence.zip","size_bytes":16944,"sha256":"sha256:1c66149af448cd23af8a76f0fc67e23cd4a0ae015f7e10565fe45b425221e571","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.1.0/gooo-resolution-lattice-v0.1.0-evidence.zip"},
+      "assets": [
+        {"name":"consumer-manifest.json","size_bytes":2196,"sha256":"sha256:1ae585501de77ff281c1a510d72174f220fee019c4f1811ed295a89627ef7b69","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.1.0/consumer-manifest.json"},
+        {"name":"gooo-resolution-lattice-v0.1.0-evidence.zip","size_bytes":16944,"sha256":"sha256:1c66149af448cd23af8a76f0fc67e23cd4a0ae015f7e10565fe45b425221e571","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.1.0/gooo-resolution-lattice-v0.1.0-evidence.zip"}
+      ]
+    },
+    "causal_ci": {
+      "repository": "kimjooyoon/gooo-causal-ci",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-causal-ci/releases/tag/v0.1.0",
+      "target_commit_sha": "c7156aa98fb16f4cbd61592a85851a0c9480f96d",
+      "immutable": true,
+      "manifest": {"name":"consumer-manifest-v0.1.0.json","size_bytes":3535,"sha256":"sha256:0bcbec393e13272965d41756888afcb608b03884ca4544e0e617a57b9e194818","download_url":"https://github.com/kimjooyoon/gooo-causal-ci/releases/download/v0.1.0/consumer-manifest-v0.1.0.json"},
+      "evidence": {"name":"gooo-causal-ci-evidence-v0.1.0.tar.gz","size_bytes":4910,"sha256":"sha256:edb4148322da926b181468a98b4fd717499ba6f04763d934ebed3d59eebce29b","download_url":"https://github.com/kimjooyoon/gooo-causal-ci/releases/download/v0.1.0/gooo-causal-ci-evidence-v0.1.0.tar.gz"},
+      "assets": [
+        {"name":"consumer-manifest-v0.1.0.json","size_bytes":3535,"sha256":"sha256:0bcbec393e13272965d41756888afcb608b03884ca4544e0e617a57b9e194818","download_url":"https://github.com/kimjooyoon/gooo-causal-ci/releases/download/v0.1.0/consumer-manifest-v0.1.0.json"},
+        {"name":"gooo-causal-ci-evidence-v0.1.0.tar.gz","size_bytes":4910,"sha256":"sha256:edb4148322da926b181468a98b4fd717499ba6f04763d934ebed3d59eebce29b","download_url":"https://github.com/kimjooyoon/gooo-causal-ci/releases/download/v0.1.0/gooo-causal-ci-evidence-v0.1.0.tar.gz"}
+      ]
+    },
+    "denominator_protocol": {
+      "repository": "kimjooyoon/gooo-denominator-protocol",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-denominator-protocol/releases/tag/v0.1.0",
+      "target_commit_sha": "388fcee03b0d77a6b7a16116d1df91381dbe3dcc",
+      "immutable": true,
+      "manifest": {"name":"gooo-denominator-protocol-v0.1.0-consumer-manifest.json","size_bytes":1655,"sha256":"sha256:7bd4c814ddac9c964867931c206c98f0702488833d6791d26bac229535882bda","download_url":"https://github.com/kimjooyoon/gooo-denominator-protocol/releases/download/v0.1.0/gooo-denominator-protocol-v0.1.0-consumer-manifest.json"},
+      "evidence": {"name":"gooo-denominator-protocol-v0.1.0-evidence.tar.gz","size_bytes":10825,"sha256":"sha256:0933dfeec57a785ec29271bca51cd129cbdd50bc202ed5a5b40d65753e85bcbd","download_url":"https://github.com/kimjooyoon/gooo-denominator-protocol/releases/download/v0.1.0/gooo-denominator-protocol-v0.1.0-evidence.tar.gz"},
+      "assets": [
+        {"name":"gooo-denominator-protocol-v0.1.0-consumer-manifest.json","size_bytes":1655,"sha256":"sha256:7bd4c814ddac9c964867931c206c98f0702488833d6791d26bac229535882bda","download_url":"https://github.com/kimjooyoon/gooo-denominator-protocol/releases/download/v0.1.0/gooo-denominator-protocol-v0.1.0-consumer-manifest.json"},
+        {"name":"gooo-denominator-protocol-v0.1.0-evidence.tar.gz","size_bytes":10825,"sha256":"sha256:0933dfeec57a785ec29271bca51cd129cbdd50bc202ed5a5b40d65753e85bcbd","download_url":"https://github.com/kimjooyoon/gooo-denominator-protocol/releases/download/v0.1.0/gooo-denominator-protocol-v0.1.0-evidence.tar.gz"}
+      ]
+    },
+    "reflexive_loop": {
+      "repository": "kimjooyoon/gooo-reflexive-loop",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/releases/tag/v0.1.0",
+      "target_commit_sha": "e1ed9e9b0a92f9b8af639546e14414b3346ed0e1",
+      "immutable": true,
+      "manifest": {"name":"consumer-manifest-v1.json","size_bytes":1917,"sha256":"sha256:df82d9503a04ec4ca077e0cb3f56c061c911e234f0c23f616da1289f7b0400c2","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.1.0/consumer-manifest-v1.json"},
+      "evidence": {"name":"gooo-reflexive-loop-evidence.zip","size_bytes":423918,"sha256":"sha256:89ff0bbf5d1fc946b0f07d6eaf9c77e09636b41e3ed9f1699c0036ce336106a1","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.1.0/gooo-reflexive-loop-evidence.zip"},
+      "assets": [
+        {"name":"consumer-manifest-v1.json","size_bytes":1917,"sha256":"sha256:df82d9503a04ec4ca077e0cb3f56c061c911e234f0c23f616da1289f7b0400c2","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.1.0/consumer-manifest-v1.json"},
+        {"name":"gooo-reflexive-loop-evidence.zip","size_bytes":423918,"sha256":"sha256:89ff0bbf5d1fc946b0f07d6eaf9c77e09636b41e3ed9f1699c0036ce336106a1","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.1.0/gooo-reflexive-loop-evidence.zip"}
+      ]
+    },
+    "reflexive_loop_v0_2": {
+      "repository": "kimjooyoon/gooo-reflexive-loop",
+      "tag": "v0.2.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/releases/tag/v0.2.0",
+      "target_commit_sha": "30dc9ee2da107fa5e4a3bbcb38ba75913af58848",
+      "immutable": true,
+      "manifest": {"name":"gooo-reflexive-loop-v0.2.0-manifest.json","size_bytes":1724,"sha256":"sha256:dae78e81096736d29049ec6e2d233824c603a6833d4b0a42c4ac2bbfcaf70c0c","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.2.0/gooo-reflexive-loop-v0.2.0-manifest.json"},
+      "evidence": {"name":"gooo-reflexive-loop-v0.2.0-evidence.zip","size_bytes":535681,"sha256":"sha256:6d0a0f06a909d59880155fc546be60a14881e9098d8b5a8e6a64b3e22060b467","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.2.0/gooo-reflexive-loop-v0.2.0-evidence.zip"},
+      "assets": [
+        {"name":"gooo-reflexive-loop-v0.2.0-evidence.zip","size_bytes":535681,"sha256":"sha256:6d0a0f06a909d59880155fc546be60a14881e9098d8b5a8e6a64b3e22060b467","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.2.0/gooo-reflexive-loop-v0.2.0-evidence.zip"},
+        {"name":"gooo-reflexive-loop-v0.2.0-manifest.json","size_bytes":1724,"sha256":"sha256:dae78e81096736d29049ec6e2d233824c603a6833d4b0a42c4ac2bbfcaf70c0c","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.2.0/gooo-reflexive-loop-v0.2.0-manifest.json"},
+        {"name":"SHA256SUMS","size_bytes":213,"sha256":"sha256:fed0e4645cccc50fd8033166259d5dda23c4b30716a43f175f55c8f54697fc06","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.2.0/SHA256SUMS"}
+      ]
+    },
+    "reflexive_loop_v0_3": {
+      "repository": "kimjooyoon/gooo-reflexive-loop",
+      "tag": "v0.3.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/releases/tag/v0.3.0",
+      "target_commit_sha": "75d655f04a0833b8cf40afa76f4a9703a3ba04fa",
+      "immutable": true,
+      "source_artifact": {"run_id":33347751465,"artifact_id":9742568117,"name":"gooo-reflexive-loop-evidence","size_bytes":913988,"sha256":"sha256:b91641199575f1d04a42d7c2c0e705248817d5c00c34108aa579f31a88bc58db","download_url":"https://api.github.com/repos/kimjooyoon/gooo-reflexive-loop/actions/artifacts/9742568117"},
+      "release_manifest_lock": {"path":"contracts/causal-denominator-release-locks-v1.json","sha256":"sha256:cd66aac4214eb2413dd4ca70fa62e56e5047c0f758aeed5ddc37c94cb031180b"},
+      "manifest": {"name":"gooo-reflexive-loop-v0.3.0-manifest.json","size_bytes":19878,"sha256":"sha256:0a7f10e6e192b673c611c45e7a3846efaca4ae7cb4243de35efd2011627eb812","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.0/gooo-reflexive-loop-v0.3.0-manifest.json"},
+      "evidence": {"name":"gooo-reflexive-loop-v0.3.0-evidence.zip","size_bytes":913988,"sha256":"sha256:b91641199575f1d04a42d7c2c0e705248817d5c00c34108aa579f31a88bc58db","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.0/gooo-reflexive-loop-v0.3.0-evidence.zip"},
+      "assets": [
+        {"name":"gooo-reflexive-loop-v0.3.0-evidence.zip","size_bytes":913988,"sha256":"sha256:b91641199575f1d04a42d7c2c0e705248817d5c00c34108aa579f31a88bc58db","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.0/gooo-reflexive-loop-v0.3.0-evidence.zip"},
+        {"name":"gooo-reflexive-loop-v0.3.0-manifest.json","size_bytes":19878,"sha256":"sha256:0a7f10e6e192b673c611c45e7a3846efaca4ae7cb4243de35efd2011627eb812","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.0/gooo-reflexive-loop-v0.3.0-manifest.json"},
+        {"name":"SHA256SUMS","size_bytes":213,"sha256":"sha256:33057331f4ba04455ee43f3782e697c9ff19355c272514589a3f90a7aefa0169","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.0/SHA256SUMS"}
+      ]
+    },
+    "semantic_merge_advisor": {
+      "repository": "kimjooyoon/gooo-semantic-merge-advisor",
+      "tag": "v0.1.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/tag/v0.1.0",
+      "target_commit_sha": "b0aeab76a533d25cd7f0fa90cbadd29d508b4607",
+      "immutable": true,
+      "manifest": {"name":"evidence-manifest.json","size_bytes":13449,"sha256":"sha256:0e238a7bdb6579422a87a0cac37cfb1b136d935a3f8f2b32fba3eb0660e09c5c","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/evidence-manifest.json"},
+      "evidence": {"name":"evidence-bundle-v0.1.0.zip","size_bytes":19539,"sha256":"sha256:08ea56d1bd9ee971057b0c96317e244f282f1337d15c933a520738c32faeb5d7","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/evidence-bundle-v0.1.0.zip"},
+      "assets": [
+        {"name":"checksums.sha256","size_bytes":1389,"sha256":"sha256:a6df26628dd6b9ff2db311bfe48857a99998155b7cdcdcf67ff6d5a6b07596f8","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/checksums.sha256"},
+        {"name":"evidence-bundle-v0.1.0.zip","size_bytes":19539,"sha256":"sha256:08ea56d1bd9ee971057b0c96317e244f282f1337d15c933a520738c32faeb5d7","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/evidence-bundle-v0.1.0.zip"},
+        {"name":"evidence-manifest.json","size_bytes":13449,"sha256":"sha256:0e238a7bdb6579422a87a0cac37cfb1b136d935a3f8f2b32fba3eb0660e09c5c","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/evidence-manifest.json"},
+        {"name":"release-assets.json","size_bytes":859,"sha256":"sha256:4467bac13bf1ca151485fce2320a8001a6382668fcf15abe3edabc6ee9aab405","download_url":"https://github.com/kimjooyoon/gooo-semantic-merge-advisor/releases/download/v0.1.0/release-assets.json"}
+      ]
+    },
+    "design_contract_bridge": {
+      "repository": "kimjooyoon/gooo-design-contract-bridge",
+      "tag": "v0.2.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-design-contract-bridge/releases/tag/v0.2.0",
+      "target_commit_sha": "f0002c4379be75530bfb61808fab52d017191e4b",
+      "immutable": true,
+      "assets": [
+        {"name":"actions.json","size_bytes":18279,"sha256":"sha256:629903b1695a3b7337038c893c5f1b11c1c97316c1bded4c054ee0f066a9f3df","download_url":"https://github.com/kimjooyoon/gooo-design-contract-bridge/releases/download/v0.2.0/actions.json"},
+        {"name":"dossier.md","size_bytes":3042,"sha256":"sha256:62e2faae0f16555651f1d47331ac401fe48afded1f21e9fbccf1ee3ab30be602","download_url":"https://github.com/kimjooyoon/gooo-design-contract-bridge/releases/download/v0.2.0/dossier.md"}
+      ]
+    },
+    "opentofu_bridge": {
+      "repository": "kimjooyoon/gooo-opentofu-bridge",
+      "tag": "v0.2.0",
+      "release_url": "https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/tag/v0.2.0",
+      "target_commit_sha": "5444c1f9967ee42af05bf06094473e2950f6a366",
+      "immutable": true,
+      "source_artifact": {"run_id":33345178464,"artifact_id":9741768051,"name":"gooo-opentofu-bridge-evidence-5444c1f9967ee42af05bf06094473e2950f6a366","size_bytes":108328,"sha256":"sha256:851b60544d782f6d6a894664ab30ef2f5a85c7ca0734784b1995a97123620b76","download_url":"https://api.github.com/repos/kimjooyoon/gooo-opentofu-bridge/actions/artifacts/9741768051"},
+      "manifest": {"name":"release-manifest.json","size_bytes":1776,"sha256":"sha256:915acca56d1f8c82a6722681feb349aab0b9fc76948d682e07e7aead64e0cc24","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/release-manifest.json"},
+      "evidence": {"name":"gooo-opentofu-bridge-evidence-5444c1f9967ee42af05bf06094473e2950f6a366.zip","size_bytes":11507,"sha256":"sha256:2ed14afd1490c5dfbf74f9897828dfc39e94426241cc8410a38105329b30c447","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/gooo-opentofu-bridge-evidence-5444c1f9967ee42af05bf06094473e2950f6a366.zip"},
+      "assets": [
+        {"name":"bridge-observation.json","size_bytes":59221,"sha256":"sha256:1298c6d8d946402bf9bd5151c576f44f0b1774c508c03f46d3e1dfa89e02d711","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/bridge-observation.json"},
+        {"name":"dossier.md","size_bytes":2683,"sha256":"sha256:7396b6ca364ff25b52b192759bded8b3a7f0c7ef93743e20209ae66d9c20c75e","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/dossier.md"},
+        {"name":"gooo-opentofu-bridge-evidence-5444c1f9967ee42af05bf06094473e2950f6a366.zip","size_bytes":11507,"sha256":"sha256:2ed14afd1490c5dfbf74f9897828dfc39e94426241cc8410a38105329b30c447","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/gooo-opentofu-bridge-evidence-5444c1f9967ee42af05bf06094473e2950f6a366.zip"},
+        {"name":"intent.tf.json","size_bytes":299,"sha256":"sha256:51270344c6bc13fceab1e7b9d9e27abf6e65860a3501163053274775328bdb73","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/intent.tf.json"},
+        {"name":"plan-oracle-v1.json","size_bytes":653,"sha256":"sha256:5e3df015b069e18bb3151c7fb5266bf15c01ce76bcd51fd03993409c9f250e24","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/plan-oracle-v1.json"},
+        {"name":"plan-receipt.json","size_bytes":3974,"sha256":"sha256:50f4f37e832bbd71e139205c9321aebee46db207137affa28e33401124d7450a","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/plan-receipt.json"},
+        {"name":"release-manifest.json","size_bytes":1776,"sha256":"sha256:915acca56d1f8c82a6722681feb349aab0b9fc76948d682e07e7aead64e0cc24","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/release-manifest.json"},
+        {"name":"SHA256SUMS","size_bytes":729,"sha256":"sha256:9e59948ebe9daf5c9cfcb17269f53d16fb240af9e66e9a8451eade9eb1f6d20b","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/SHA256SUMS"},
+        {"name":"validation.json","size_bytes":1776,"sha256":"sha256:885c62ce390bfc799f1ebb81277dd7a79a4ea3a421e82adede0fa35c88cfe041","download_url":"https://github.com/kimjooyoon/gooo-opentofu-bridge/releases/download/v0.2.0/validation.json"}
+      ]
+    },
+    "counterfactual_change_release": {
+      "repository": "kimjooyoon/gooo-counterfactual-change",
+      "tag": "v0.1.2",
+      "release_id": 379663025,
+      "release_url": "https://github.com/kimjooyoon/gooo-counterfactual-change/releases/tag/v0.1.2",
+      "target_commit_sha": "e8eb77c88093ff91e62b5c218d00d80df462a59b",
+      "tag_object_sha": "b9ddb3bf434988508fa848ed0e3891a38092d09d",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33381542920,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-counterfactual-change/actions/runs/33381542920",
+        "head_sha": "e8eb77c88093ff91e62b5c218d00d80df462a59b",
+        "conclusion": "success",
+        "job_id": 99454796897,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-counterfactual-change/actions/runs/33381542920/job/99454796897",
+        "artifact_ids": []
+      },
+      "assets": [
+        {"id":537808326,"name":"gooo-counterfactual-change-0.1.2.tar.gz","size_bytes":22665,"sha256":"sha256:66181456e05cca30f26997368acabc1094990a7163cec26eaba521a50637ecdc","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.2/gooo-counterfactual-change-0.1.2.tar.gz"},
+        {"id":537808327,"name":"release-manifest.json","size_bytes":200,"sha256":"sha256:25ae0dc8f5344fe0ed650fb8a486f6fb2c84aaf4678b3388e85611481772f4d4","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.2/release-manifest.json"},
+        {"id":537808330,"name":"SHA256SUMS","size_bytes":106,"sha256":"sha256:d2da8c9f9fdfca275ab280518beedda0bdc6df8e7c7ca6202a6a1448c441b87b","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.2/SHA256SUMS"}
+      ]
+    },
+    "verification_reuse_release": {
+      "repository": "kimjooyoon/gooo-verification-reuse",
+      "tag": "v0.1.2",
+      "release_id": 379662322,
+      "release_url": "https://github.com/kimjooyoon/gooo-verification-reuse/releases/tag/v0.1.2",
+      "target_commit_sha": "5252c202d8f7e3637209037c1b0bf9595b7da661",
+      "tag_object_sha": "3d9bf3374b4ad7e649499ff4a2538b9ff16fab7a",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33381424452,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-verification-reuse/actions/runs/33381424452",
+        "head_sha": "5252c202d8f7e3637209037c1b0bf9595b7da661",
+        "conclusion": "success",
+        "job_id": 99454424981,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-verification-reuse/actions/runs/33381424452/job/99454424981",
+        "artifact_ids": []
+      },
+      "assets": [
+        {"id":537806848,"name":"gooo-verification-reuse-v0.1.2.tar.gz","size_bytes":19943,"sha256":"sha256:2be270c57832fe972f69615cedcb787f9f503a11376699bb827299534e8719f6","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.2/gooo-verification-reuse-v0.1.2.tar.gz"},
+        {"id":537806851,"name":"release-manifest.json","size_bytes":402,"sha256":"sha256:7eaa291482d2651d35f188323fe8b81b57ddbd3fb00e5791cc66dceb15c85364","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.2/release-manifest.json"},
+        {"id":537806849,"name":"SHA256SUMS","size_bytes":111,"sha256":"sha256:a4e16388e8ff29f59cb0a850d0e61e1349235e0bd2286715d0fd5410454a1dca","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.2/SHA256SUMS"}
+      ]
+    },
+    "semantic_drift_release": {
+      "repository": "kimjooyoon/gooo-semantic-drift",
+      "tag": "v0.1.1",
+      "release_id": 379664434,
+      "release_url": "https://github.com/kimjooyoon/gooo-semantic-drift/releases/tag/v0.1.1",
+      "target_commit_sha": "1cfff53e4ef48052fb25bf8c56a113d6835726a4",
+      "tag_object_sha": "537e5bb79ba4fa34fbe224aa2f40a62b06a35780",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33381774958,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-semantic-drift/actions/runs/33381774958",
+        "head_sha": "1cfff53e4ef48052fb25bf8c56a113d6835726a4",
+        "conclusion": "success",
+        "job_id": 99455535633,
+        "job_name": "immutable-release",
+        "job_url": "https://github.com/kimjooyoon/gooo-semantic-drift/actions/runs/33381774958/job/99455535633",
+        "artifact_ids": []
+      },
+      "assets": [
+        {"id":537811623,"name":"gooo-semantic-drift-v0.1.1.tar.gz","size_bytes":29313,"sha256":"sha256:231bc7915a67b77f83ab434693a37d4929dbaf1b7f7dd356484ecc07500b5cf3","download_url":"https://github.com/kimjooyoon/gooo-semantic-drift/releases/download/v0.1.1/gooo-semantic-drift-v0.1.1.tar.gz"}
+      ]
+    },
+    "improvement_frontier_release": {
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "tag": "v0.1.0",
+      "release_id": 379728340,
+      "release_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/releases/tag/v0.1.0",
+      "target_commit_sha": "5749a883b85cc4ede1e53d124f1e3685b23189bd",
+      "tag_object_sha": "72e59658ff08c47c7e7accd8b3af470a87da428d",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33390644439,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390644439",
+        "head_sha": "5749a883b85cc4ede1e53d124f1e3685b23189bd",
+        "conclusion": "success",
+        "job_id": 99483229767,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390644439/job/99483229767",
+        "artifact_ids": [9757307658]
+      },
+      "protocol_receipt": {
+        "asset_name": "ci-runtime-receipt-v0.1.0.json",
+        "schema": "gooo/improvement-frontier/ci-runtime/v1",
+        "ci_run_id": "33390644439",
+        "ci_job_id": "99483229767",
+        "build_wall_ms": 3950,
+        "test_wall_ms": 1770,
+        "peak_rss_kib": 282632,
+        "format_check": {"status":"SUCCESS","exit_code":0},
+        "tests": {"discovered":5,"executed":5,"reused":0,"skipped":0,"not_observed":0},
+        "operations": {"executed":0,"reused":2,"skipped":0,"not_observed":0,"canonical_cases":6},
+        "inventory": {"directories":15,"files":26,"physical_lines":2429,"go_files":8,"go_lines":1648,"gooo_lines":15,"root_readme_excluded":true},
+        "product_authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0},
+        "development_actions": ["checkout","format_check","build","test","vet","compile","conformance","determinism_check","artifact_audit","repository_audit"]
+      },
+      "assets": [
+        {"id":537940229,"name":"ci-runtime-receipt-v0.1.0.json","size_bytes":1024,"sha256":"sha256:562db1b6f224a3b732f9b8bb57f1efdcf33d6653e239ffb021fe3e7d9cf2baf4","download_url":"https://github.com/kimjooyoon/gooo-improvement-frontier/releases/download/v0.1.0/ci-runtime-receipt-v0.1.0.json"},
+        {"id":537940232,"name":"gooo-improvement-frontier-v0.1.0.tar.gz","size_bytes":25799,"sha256":"sha256:66ac3b7d659c470544b8bd24d9c79ee50d2d250b2f6162cb5fb79b05a9000388","download_url":"https://github.com/kimjooyoon/gooo-improvement-frontier/releases/download/v0.1.0/gooo-improvement-frontier-v0.1.0.tar.gz"}
+      ]
+    },
+    "authority_bootstrap_release": {
+      "repository": "kimjooyoon/gooo-authority-bootstrap",
+      "tag": "v0.1.0",
+      "release_id": 379750047,
+      "release_url": "https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/tag/v0.1.0",
+      "target_commit_sha": "e7e6dc0afde6536bb39f94fdfc7ce1e97e4bbefa",
+      "tag_object_sha": "c210a109b513b528a2f690d29bf279e794e260a7",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33393255047,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-authority-bootstrap/actions/runs/33393255047",
+        "head_sha": "e7e6dc0afde6536bb39f94fdfc7ce1e97e4bbefa",
+        "conclusion": "success",
+        "job_id": 99491647091,
+        "job_name": "post-main",
+        "job_url": "https://github.com/kimjooyoon/gooo-authority-bootstrap/actions/runs/33393255047/job/99491647091",
+        "artifact_ids": [9758302892]
+      },
+      "post_main_validation": {
+        "run_id": 33393255004,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-authority-bootstrap/actions/runs/33393255004",
+        "head_sha": "e7e6dc0afde6536bb39f94fdfc7ce1e97e4bbefa",
+        "conclusion": "success",
+        "job_id": 99491646530,
+        "job_name": "required",
+        "job_url": "https://github.com/kimjooyoon/gooo-authority-bootstrap/actions/runs/33393255004/job/99491646530",
+        "artifact_ids": []
+      },
+      "manifest": {"name":"manifest.json","size_bytes":791,"sha256":"sha256:fbff7ae34049d6d271cd7b46b471e4f7fc9b0616d3167301bcd094338c84d30b","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/manifest.json"},
+      "protocol_receipt": {
+        "asset_name": "bootstrap-receipt.json",
+        "receipt_id": "bootstrap:sha256:8b50736fba55e5543a0bd85343e42471a781ae36c624fb83c90754059e938ac7",
+        "decision": "UNKNOWN",
+        "tuple": {"repository":"kimjooyoon/gooo-authority-bootstrap","base":"main-bootstrap-29719a3","head":"candidate-example","pr":1},
+        "branch": "example/bootstrap",
+        "choice": "FOUNDATION",
+        "evaluator_release_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "evaluator_identity": {"id":"example-evaluator","role":"evaluator","artifact_id":"example-evaluator-release","digest":""},
+        "immutable": false,
+        "replay_digest": "sha256:bd06c60d9a21d7313c1029d6a33d2e91c7481c9b80b78f70fa950804c1a2403c",
+        "authority_set": {
+          "policy": {"id":"example-foundation","role":"policy","artifact_id":"example-policy","digest":""},
+          "observation": {"id":"example-observer","role":"observation","artifact_id":"example-protection","digest":""},
+          "execution": {"id":"example-guardian","role":"execution","artifact_id":"example-credential","digest":""},
+          "human_decision": {"id":"example-human","role":"human_decision","artifact_id":"example-decision","digest":""}
+        },
+        "approved_by": {"id":"","role":"","artifact_id":"","digest":""},
+        "issued_at": "2026-08-31T00:04:00Z",
+        "digest": "sha256:5769342e877e09c78a91e22227d18665a6ea1f07a207f317142bc5a205c6a2e8"
+      },
+      "assets": [
+        {"id":537976435,"name":"bootstrap-proposal.json","size_bytes":2013,"sha256":"sha256:0f47a1c5007b9b48959e9565acf37c3c90ec8de5607c1dffc2343151e42984da","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/bootstrap-proposal.json"},
+        {"id":537976439,"name":"bootstrap-receipt.json","size_bytes":1243,"sha256":"sha256:694675761099f4b11b713e6766951ee815c3fad2706d1f3f2dcd88ae8290d8ac","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/bootstrap-receipt.json"},
+        {"id":537976449,"name":"generated-evaluator.go","size_bytes":5474,"sha256":"sha256:6a3de849fef78d9fd45224e4bdbe030d8bf7e03691b61801b8593acef9e1ff4b","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/generated-evaluator.go"},
+        {"id":537976437,"name":"human-dossier.md","size_bytes":1568,"sha256":"sha256:e1e8d286600728ddab88f53bc24850e45a67a9cdeb02d241c10c84d99ccae15f","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/human-dossier.md"},
+        {"id":537976436,"name":"manifest.json","size_bytes":791,"sha256":"sha256:fbff7ae34049d6d271cd7b46b471e4f7fc9b0616d3167301bcd094338c84d30b","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/manifest.json"},
+        {"id":537976438,"name":"semantic-ir.json","size_bytes":4608,"sha256":"sha256:d05050c11ca5c4b35737ee12f233cbf0d9330bcd5b582526b13b36d5dd49cb40","download_url":"https://github.com/kimjooyoon/gooo-authority-bootstrap/releases/download/v0.1.0/semantic-ir.json"}
+      ]
+    },
+    "opentofu_envelope_release": {
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "tag": "v0.1.1",
+      "release_id": 379769579,
+      "release_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.1.1",
+      "target_commit_sha": "6b482d402f4ceff8a8b23205cce8db5154305382",
+      "tag_object_sha": "1d8e07c49b700b7e72ec9c413157d851188c09b6",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33395964320,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33395964320",
+        "head_sha": "6b482d402f4ceff8a8b23205cce8db5154305382",
+        "conclusion": "success",
+        "job_id": 99500428082,
+        "job_name": "envelope",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33395964320/job/99500428082",
+        "artifact_ids": [9759323399]
+      },
+      "pre_merge_validation": {
+        "run_id": 33395904751,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33395904751",
+        "head_sha": "356a100c3c5e9cc4e9ac09181d58ed6408944838",
+        "conclusion": "success",
+        "job_id": 99500238300,
+        "job_name": "envelope",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33395904751/job/99500238300",
+        "artifact_ids": []
+      },
+      "source_artifact": {
+        "run_id": 33395964320,
+        "artifact_id": 9759323399,
+        "name": "gooo-opentofu-envelope-evidence-6b482d402f4ceff8a8b23205cce8db5154305382",
+        "size_bytes": 78041,
+        "sha256": "sha256:74fafb9f3a74485d16382a02413279efd1b12b5f111012bef9f61fa2edfcff0e"
+      },
+      "protocol_observation": {
+        "schema": "gooo/opentofu-envelope/observation/v1",
+        "state": "CLOSED",
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"CLOSED":3,"UNKNOWN":3,"REFUTED":3},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "improvement": "UNKNOWN",
+        "inventory": {"directories":7,"files":8,"physical_lines":1186,"go_files":0,"go_lines":0,"gooo_files":1,"gooo_lines":29,"root_readme_excluded":true},
+        "toolchain": {"go":"1.27.0","opentofu":"1.12.6"},
+        "timing": {"build_wall_ms":60,"test_wall_ms":53,"conformance_wall_ms":190,"peak_rss_kib":79436},
+        "tests": {"discovered":9,"executed":9,"reused":0,"skipped":0,"not_observed":0},
+        "generated_artifacts": {"dossier.md":"sha256:050abdece8bd4e1a4a774c4653510fc928e4c31bb45bd2efefcde6b35a832259","intent.tf.json":"sha256:125d7e976eecce0cc1a5d25d5571182db9d69acc8427807a1d786a36f6ca8886"},
+        "identity": {"source":"sha256:fffcff1afb76789beff6fd05e30680827e49c1132eec82b8069f7b9243fc6158","graph":"sha256:b057638f2bb1d0dc0852ff68c574535ded91b36bf566cc2714929a2a93d87c98","artifact":"sha256:125d7e976eecce0cc1a5d25d5571182db9d69acc8427807a1d786a36f6ca8886","plan_receipt":"sha256:4b01678ff1602376267b366aac2100332dfeb63b19c0d2b689c6ada81256a4c5","validation":"sha256:125d7e976eecce0cc1a5d25d5571182db9d69acc8427807a1d786a36f6ca8886","replay":"sha256:050abdece8bd4e1a4a774c4653510fc928e4c31bb45bd2efefcde6b35a832259"},
+        "authority": {"repository_writes":0,"local_test_executions":0,"local_build_executions":0,"local_formatter_executions":0,"local_vet_executions":0,"cross_project_required_gates":0}
+      },
+      "assets": [
+        {"id":538012631,"name":"gooo-opentofu-envelope-v0.1.0-evidence.zip","size_bytes":17829,"sha256":"sha256:dc8a466ecc4ea2f5c127dcc59985252ba8a01a7ae6eb8fb1caa63f7f595fcd31","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.1/gooo-opentofu-envelope-v0.1.0-evidence.zip"},
+        {"id":538012630,"name":"SHA256SUMS","size_bytes":109,"sha256":"sha256:73eabf693676e918d42dae77f78d901045cd4a014387ea95917b9b9b29a00b55","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "improvement_proposer_release": {
+      "repository": "kimjooyoon/gooo-improvement-proposer",
+      "tag": "v0.1.1",
+      "release_id": 379780599,
+      "release_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/releases/tag/v0.1.1",
+      "target_commit_sha": "6757651d5b6abae7dfb7c7a3ec7a0cab103e3279",
+      "tag_object_sha": "2ed70c6fae93c21b0c4839d4fa2ff0f4da3ebc59",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33397372252,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33397372252",
+        "head_sha": "a967f1d186980b97b921ad852832f7049b43e8f9",
+        "conclusion": "success",
+        "job_id": 99505021461,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33397372252/job/99505021461",
+        "artifact_ids": [9759855868]
+      },
+      "release_run": {
+        "run_id": 33397566380,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33397566380",
+        "head_sha": "a967f1d186980b97b921ad852832f7049b43e8f9",
+        "conclusion": "success",
+        "job_id": 99505669083,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-improvement-proposer/actions/runs/33397566380/job/99505669083",
+        "artifact_ids": []
+      },
+      "source_artifact": {
+        "run_id": 33397372252,
+        "artifact_id": 9759855868,
+        "name": "gooo-improvement-proposer-ci-33397372252",
+        "size_bytes": 2916595,
+        "sha256": "sha256:79c6a8acf82e1e94e1529b7c43e0aef7f922ea7bc77c79ab13758a033cfade20"
+      },
+      "release_manifest": {
+        "schema": "gooo/improvement-proposer/release-manifest/v1",
+        "tag": "v0.1.1",
+        "commit_sha": "6757651d5b6abae7dfb7c7a3ec7a0cab103e3279",
+        "source_asset": "gooo-improvement-proposer-v0.1.1.tar.gz",
+        "source_asset_digest": "sha256:55e1d35d67b6c18aedcd26de7e699dc6096c58fc59ad4f624f1bd439f9b433a5",
+        "evidence_asset": "gooo-improvement-proposer-v0.1.1-evidence.tar.gz",
+        "evidence_asset_digest": "sha256:ceccc9f5a3a44ff3ef27d9a78cc9569192f6b5f119a1cc338dc5cae49b8e9e53",
+        "immutable": true,
+        "manifest_asset": {"name":"release-manifest.json","size_bytes":679,"sha256":"sha256:a55b06f0658afe4b4b7d875ff6ea00689aeabe4ccf236aa1c0f4be415160f3eb"},
+        "authority": {"repository_writes":0,"pull_request_creations":0,"merge_operations":0,"local_test_executions":0,"cross_project_required_gates":0}
+      },
+      "pull_requests": [
+        {"number":1,"title":"feat: derive bounded improvement experiment proposals","url":"https://github.com/kimjooyoon/gooo-improvement-proposer/pull/1","merged":true,"merge_commit_sha":"2007b49fdf60765b1868636da75b980f0c16db28","merged_at":"2026-08-31T13:19:53Z"},
+        {"number":2,"title":"fix: bind release archive to checked out tag commit","url":"https://github.com/kimjooyoon/gooo-improvement-proposer/pull/2","merged":true,"merge_commit_sha":"ec6c014c58517e48ef47366aa31a2029780637e8","merged_at":"2026-08-31T13:23:24Z"},
+        {"number":3,"title":"docs: preserve failed v0.1.0 release trigger","url":"https://github.com/kimjooyoon/gooo-improvement-proposer/pull/3","merged":true,"merge_commit_sha":"6757651d5b6abae7dfb7c7a3ec7a0cab103e3279","merged_at":"2026-08-31T13:26:38Z"},
+        {"number":4,"title":"fix: preserve annotated tag during release checkout","url":"https://github.com/kimjooyoon/gooo-improvement-proposer/pull/4","merged":true,"merge_commit_sha":"a967f1d186980b97b921ad852832f7049b43e8f9","merged_at":"2026-08-31T13:30:44Z"}
+      ],
+      "protocol_observation": {
+        "schema": "gooo/improvement-proposer/ci-report/v1",
+        "decision": "PROPOSER_CONFORMANCE_CLOSED",
+        "fixed_denominator": {"exact":true,"total":12},
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "fixed_artifacts": ["proposal.json","candidate-events.ndjson","semantic-ir.json","generated-evaluator.go","replay-receipt.json","human-dossier.md"],
+        "case_facts": [
+          {"case_id":"normal-zero-candidates","class":"normal","state":"CLOSED","decision":"NO_EXPERIMENT_REQUIRED","candidate_count":0,"evidence_edges":0,"blocked_frontier":0,"candidates":[],"unknowns":[],"refutations":[]},
+          {"case_id":"normal-empty-frontier","class":"normal","state":"CLOSED","decision":"NO_EXPERIMENT_REQUIRED","candidate_count":0,"evidence_edges":0,"blocked_frontier":0,"candidates":[],"unknowns":[],"refutations":[]},
+          {"case_id":"normal-deterministic-replay","class":"normal","state":"CLOSED","decision":"NO_EXPERIMENT_REQUIRED","candidate_count":0,"evidence_edges":0,"blocked_frontier":0,"candidates":[],"unknowns":[],"refutations":[]},
+          {"case_id":"unknown-minimal-blocked-frontier","class":"unknown","state":"UNKNOWN","decision":"PROPOSE_NEXT_EXPERIMENT","candidate_count":1,"evidence_edges":1,"blocked_frontier":1,"candidates":[{"candidate_id":"capability/capability.blocked","causal_source_cells":["cell-03"],"expected_evidence_type":"EXACT_CAPABILITY_CONFORMANCE_RECEIPT","falsifier":"CAPABILITY_RECORD_NOT_CLOSED_WITH_EXACT_EVIDENCE","next_operation":"COLLECT_EXACT_CAPABILITY_EVIDENCE","blocked_by":["capability.prerequisite"]}],"unknowns":[{"stage":"CAPABILITY_RECORD","step":"REQUIRE_EXACT_CAPABILITY_EVIDENCE","reason":"DEPENDENCY_EVIDENCE_NOT_AVAILABLE","unknown_class":"DEPENDENCY_BLOCKED","next_operation":"COLLECT_EXACT_CAPABILITY_EVIDENCE","blocked_by":["capability.prerequisite"]}],"refutations":[]},
+          {"case_id":"unknown-stale-ledger","class":"unknown","state":"UNKNOWN","decision":"PROPOSAL_BLOCKED_BY_UNKNOWN","candidate_count":0,"evidence_edges":0,"blocked_frontier":1,"candidates":[],"unknowns":[{"stage":"LEDGER_BINDING","step":"VERIFY_CURRENT_IMMUTABLE_RELEASE","reason":"STALE_LEDGER_RELEASE","unknown_class":"STALE_INPUT","next_operation":"REFRESH_LEDGER_RELEASE_AND_DIGEST","blocked_by":["ledger-release"]}],"refutations":[]},
+          {"case_id":"unknown-missing-utility","class":"unknown","state":"UNKNOWN","decision":"PROPOSE_NEXT_EXPERIMENT","candidate_count":1,"evidence_edges":1,"blocked_frontier":0,"candidates":[{"candidate_id":"utility/utility-record-missing","causal_source_cells":["cell-05"],"expected_evidence_type":"EXACT_BEFORE_AFTER_UTILITY_RECEIPT","falsifier":"UTILITY_BEFORE_AFTER_PAIR_MISSING_OR_NON_EXACT","next_operation":"COLLECT_EXACT_BEFORE_AFTER_UTILITY_PAIR","blocked_by":null}],"unknowns":[{"stage":"UTILITY_RECORD","step":"REQUIRE_EXACT_BEFORE_AFTER_PAIR","reason":"EXACT_BEFORE_AFTER_UTILITY_MISSING","unknown_class":"DIRECT_MISSING","next_operation":"COLLECT_EXACT_BEFORE_AFTER_UTILITY_PAIR","blocked_by":[]}],"refutations":[]},
+          {"case_id":"refuted-known-contradiction","class":"refuted","state":"REFUTED","decision":"PROPOSAL_BLOCKED_BY_REFUTATION","candidate_count":0,"evidence_edges":0,"blocked_frontier":0,"candidates":null,"unknowns":[{"stage":"CAPABILITY_RECORD","step":"REQUIRE_EXACT_CAPABILITY_EVIDENCE","reason":"CONFLICTING_LEDGER_OBSERVATION","unknown_class":"DIRECT_MISSING","next_operation":"COLLECT_EXACT_CAPABILITY_EVIDENCE","blocked_by":[]}],"refutations":["KNOWN_EVIDENCE_CONTRADICTION:capability.contradiction"]},
+          {"case_id":"refuted-capability-record","class":"refuted","state":"REFUTED","decision":"PROPOSAL_BLOCKED_BY_REFUTATION","candidate_count":1,"evidence_edges":1,"blocked_frontier":0,"candidates":[{"candidate_id":"capability/capability.refuted","causal_source_cells":["cell-03"],"expected_evidence_type":"EXACT_CAPABILITY_CONFORMANCE_RECEIPT","falsifier":"CAPABILITY_RECORD_NOT_CLOSED_WITH_EXACT_EVIDENCE","next_operation":"COLLECT_EXACT_CAPABILITY_EVIDENCE","blocked_by":[]}],"unknowns":[],"refutations":["capability-record-refuted:KNOWN_CAPABILITY_COUNTEREXAMPLE"]},
+          {"case_id":"refuted-utility-record","class":"refuted","state":"REFUTED","decision":"PROPOSAL_BLOCKED_BY_REFUTATION","candidate_count":1,"evidence_edges":1,"blocked_frontier":0,"candidates":[{"candidate_id":"utility/utility-record-refuted","causal_source_cells":["cell-05"],"expected_evidence_type":"EXACT_BEFORE_AFTER_UTILITY_RECEIPT","falsifier":"UTILITY_BEFORE_AFTER_PAIR_MISSING_OR_NON_EXACT","next_operation":"COLLECT_EXACT_BEFORE_AFTER_UTILITY_PAIR","blocked_by":null}],"unknowns":[],"refutations":["utility-record-refuted:UTILITY_EVIDENCE_REFUTED"]}
+        ],
+        "case_totals": {"normal":3,"unknown":3,"refuted":3,"CLOSED":3,"UNKNOWN":3,"REFUTED":3},
+        "candidate_count": 4,
+        "evidence_edges": 4,
+        "blocked_frontier": 2,
+        "output_files": 54,
+        "runtime": {"go":"1.27.0","build_wall_ms":5910,"test_wall_ms":2064,"conformance_wall_ms":13,"build_peak_rss_kib":265844,"test_peak_rss_kib":107936,"conformance_peak_rss_kib":265844},
+        "inventory": {"directories":12,"go_files":10,"go_lines":1568,"gooo_files":1,"gooo_lines":14,"regular_files_root_readme_excluded":30},
+        "tests": {"executed":3,"not_observed":0,"reused":0,"skipped":0},
+        "authority": {"cross_project_required_gates":0,"local_test_executions":0,"merge_operations":0,"pull_request_creations":0,"repository_writes":0},
+        "improvement": null
+      },
+      "assets": [
+        {"id":538032347,"name":"gooo-improvement-proposer-v0.1.1-evidence.tar.gz","size_bytes":11861,"sha256":"sha256:ceccc9f5a3a44ff3ef27d9a78cc9569192f6b5f119a1cc338dc5cae49b8e9e53","download_url":"https://github.com/kimjooyoon/gooo-improvement-proposer/releases/download/v0.1.1/gooo-improvement-proposer-v0.1.1-evidence.tar.gz"},
+        {"id":538032342,"name":"gooo-improvement-proposer-v0.1.1.tar.gz","size_bytes":25402,"sha256":"sha256:55e1d35d67b6c18aedcd26de7e699dc6096c58fc59ad4f624f1bd439f9b433a5","download_url":"https://github.com/kimjooyoon/gooo-improvement-proposer/releases/download/v0.1.1/gooo-improvement-proposer-v0.1.1.tar.gz"},
+        {"id":538032346,"name":"release-manifest.json","size_bytes":679,"sha256":"sha256:a55b06f0658afe4b4b7d875ff6ea00689aeabe4ccf236aa1c0f4be415160f3eb","download_url":"https://github.com/kimjooyoon/gooo-improvement-proposer/releases/download/v0.1.1/release-manifest.json"},
+        {"id":538032343,"name":"SHA256SUMS","size_bytes":309,"sha256":"sha256:822341ef6ab41c6c8e4f10fc4f93db3b29bf3ad4d1c9abe208a249ea24945c34","download_url":"https://github.com/kimjooyoon/gooo-improvement-proposer/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "test_frontier_release": {
+      "repository": "kimjooyoon/gooo-test-frontier",
+      "tag": "v0.1.1",
+      "release_id": 379783807,
+      "release_url": "https://github.com/kimjooyoon/gooo-test-frontier/releases/tag/v0.1.1",
+      "target_commit_sha": "f8e1f8aebb67abbda237073893a4a855a8659df5",
+      "tag_object_sha": "398577621c42eb7450416bdf086b9304c8c1e42a",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33398482775,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33398482775",
+        "head_sha": "4b8c06a32c40db70c4b634d78c6f8103325e6464",
+        "conclusion": "success",
+        "job_id": 99508698139,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33398482775/job/99508698139",
+        "artifact_ids": [9760281954]
+      },
+      "release_run": {
+        "run_id": 33398545885,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33398545885",
+        "head_sha": "4b8c06a32c40db70c4b634d78c6f8103325e6464",
+        "conclusion": "success",
+        "job_id": 99508911340,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33398545885/job/99508911340",
+        "artifact_ids": []
+      },
+      "source_artifact": {
+        "run_id": 33398482775,
+        "artifact_id": 9760281954,
+        "name": "gooo-test-frontier-ci-33398482775",
+        "size_bytes": 2777788,
+        "sha256": "sha256:91f33f285012e6a95861b30f2f7fb259f80165dba99d6087cc261d891619d614"
+      },
+      "release_manifest": {
+        "schema": "gooo/test-frontier/release-manifest/v1",
+        "tag": "v0.1.1",
+        "tag_object_sha": "398577621c42eb7450416bdf086b9304c8c1e42a",
+        "commit_sha": "f8e1f8aebb67abbda237073893a4a855a8659df5",
+        "source_asset": "gooo-test-frontier-v0.1.1.tar.gz",
+        "source_asset_size_bytes": 30719,
+        "source_asset_digest": "sha256:1ef4c6a13288cb8198734e8fde252d470169b2b4f0d09006fdf467d5317917f8",
+        "immutable": true,
+        "manifest_asset": {"name":"release-manifest.json","size_bytes":392,"sha256":"sha256:fbeec8e847b185078fca004d22749de29c1363459cf1eb28fa74a0c601f3429b"}
+      },
+      "pull_requests": [
+        {"number":1,"title":"feat: add semantic test frontier evidence protocol","url":"https://github.com/kimjooyoon/gooo-test-frontier/pull/1","merged":true,"merge_commit_sha":"434776a02bef579cd175e8f1e29be027a9c289cc","merged_at":"2026-08-31T13:16:33Z"},
+        {"number":2,"title":"fix: honor external release immutability authority","url":"https://github.com/kimjooyoon/gooo-test-frontier/pull/2","merged":true,"merge_commit_sha":"f8e1f8aebb67abbda237073893a4a855a8659df5","merged_at":"2026-08-31T13:37:11Z"},
+        {"number":3,"title":"fix(ci): download immutable release assets publicly","url":"https://github.com/kimjooyoon/gooo-test-frontier/pull/3","merged":true,"merge_commit_sha":"aad74d32b8db182aafb98cc95207207b99464fbc","merged_at":"2026-08-31T13:40:01Z"},
+        {"number":4,"title":"fix(ci): use release API as external authority","url":"https://github.com/kimjooyoon/gooo-test-frontier/pull/4","merged":true,"merge_commit_sha":"4b8c06a32c40db70c4b634d78c6f8103325e6464","merged_at":"2026-08-31T13:42:54Z"}
+      ],
+      "protocol_observation": {
+        "schema": "gooo/test-frontier/conformance/v1",
+        "denominator_id": "test-frontier-v1",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "case_facts": [
+          {"ordinal":1,"case_id":"normal-alpha","state":"CLOSED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"CLOSED"},
+          {"ordinal":2,"case_id":"normal-beta","state":"CLOSED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"CLOSED"},
+          {"ordinal":3,"case_id":"normal-gamma","state":"CLOSED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"CLOSED"},
+          {"ordinal":4,"case_id":"unknown-missing-pair","state":"UNKNOWN","total_tests":4,"executed":1,"reused":1,"skipped":1,"not_observed":1,"invalidated_edge_count":2,"economy_state":"UNKNOWN"},
+          {"ordinal":5,"case_id":"unknown-cache-hit-only","state":"UNKNOWN","total_tests":4,"executed":1,"reused":0,"skipped":1,"not_observed":2,"invalidated_edge_count":2,"economy_state":"UNKNOWN"},
+          {"ordinal":6,"case_id":"unknown-unobserved-execution","state":"UNKNOWN","total_tests":4,"executed":0,"reused":1,"skipped":1,"not_observed":2,"invalidated_edge_count":2,"economy_state":"UNKNOWN"},
+          {"ordinal":7,"case_id":"refuted-false-negative","state":"REFUTED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"REFUTED"},
+          {"ordinal":8,"case_id":"refuted-counterexample-replay","state":"REFUTED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"REFUTED"},
+          {"ordinal":9,"case_id":"refuted-priority","state":"REFUTED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"REFUTED"},
+          {"ordinal":10,"case_id":"refuted-platform-immutability","state":"REFUTED","total_tests":4,"executed":1,"reused":2,"skipped":1,"not_observed":0,"invalidated_edge_count":2,"economy_state":"REFUTED"}
+        ],
+        "case_totals": {"normal":3,"unknown":3,"refuted":4,"CLOSED":3,"UNKNOWN":3,"REFUTED":4},
+        "tests": {"total":40,"executed":9,"reused":16,"skipped":10,"not_observed":5,"sum_is_exactly_total":true},
+        "invalidated_edge_count": 20,
+        "output_artifacts": 31,
+        "runtime": {"go":"1.27.0","build_wall_ms":5820,"test_wall_ms":7680,"conformance_wall_ms":0,"peak_rss_kib":274908},
+        "inventory": {"directories":14,"files":33,"physical_lines":2563,"go_files":8,"go_lines":1637,"gooo_files":1,"gooo_lines":15,"root_readme_excluded":true},
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0},
+        "improvement": null
+      },
+      "assets": [
+        {"id":538036992,"name":"gooo-test-frontier-v0.1.1.tar.gz","size_bytes":30719,"sha256":"sha256:1ef4c6a13288cb8198734e8fde252d470169b2b4f0d09006fdf467d5317917f8","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.1/gooo-test-frontier-v0.1.1.tar.gz"},
+        {"id":538036991,"name":"release-manifest.json","size_bytes":392,"sha256":"sha256:fbeec8e847b185078fca004d22749de29c1363459cf1eb28fa74a0c601f3429b","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.1/release-manifest.json"},
+        {"id":538036990,"name":"SHA256SUMS","size_bytes":106,"sha256":"sha256:6bb2bddc43250a84a56c9dd0f039ea2bf06eb7b9777c6efc728610f5355bbf85","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "change_bundle_release": {
+      "repository": "kimjooyoon/gooo-change-bundle",
+      "tag": "v0.1.1",
+      "release_id": 379788730,
+      "release_url": "https://github.com/kimjooyoon/gooo-change-bundle/releases/tag/v0.1.1",
+      "target_commit_sha": "a93c41a28b5718f110b8679556b169f2b11c75b5",
+      "tag_object_sha": "09885ac7480d1ee2e350e907f5dc408b35188f47",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33398653367,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-change-bundle/actions/runs/33398653367",
+        "head_sha": "a93c41a28b5718f110b8679556b169f2b11c75b5",
+        "conclusion": "success",
+        "job_id": 99509422788,
+        "job_name": "audit",
+        "job_url": "https://github.com/kimjooyoon/gooo-change-bundle/actions/runs/33398653367/job/99509422788",
+        "artifact_ids": [9760351466]
+      },
+      "release_run": {
+        "run_id": 33398653367,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-change-bundle/actions/runs/33398653367",
+        "head_sha": "a93c41a28b5718f110b8679556b169f2b11c75b5",
+        "conclusion": "success",
+        "job_id": 99509268842,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-change-bundle/actions/runs/33398653367/job/99509268842",
+        "artifact_ids": []
+      },
+      "source_artifact": {
+        "run_id": 33398653367,
+        "artifact_id": 9760351466,
+        "name": "gooo-change-bundle-release-audit-33398653367",
+        "size_bytes": 735,
+        "sha256": "sha256:30b54d122e4e32f47fecc74f93345e7f9a04a15c1c757f4f83cad36e2ba5f762"
+      },
+      "release_manifest": {
+        "schema": "gooo/change-bundle/release-manifest/v1",
+        "tag": "v0.1.1",
+        "commit_sha": "a93c41a28b5718f110b8679556b169f2b11c75b5",
+        "tag_object_sha": "09885ac7480d1ee2e350e907f5dc408b35188f47",
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0},
+        "assets": {
+          "gooo-change-bundle-v0.1.1.tar.gz": {"size_bytes":30148,"sha256":"sha256:60f6fbedb897467bbf499097a2abebe56e047c9f1da920000daa34f2f675fb5b"},
+          "gooo-change-bundle-ci-v0.1.1.tar.gz": {"size_bytes":6267,"sha256":"sha256:42dd203bd20438db7cc15abbbfe6fa19542cc2bf0de26cbe6db056150e1bb2f6"},
+          "ci-metrics.json": {"size_bytes":641,"sha256":"sha256:1fb8dcd44e0758555acefc75a4e9aabe83806cbe41d69f0e43d38cc5fadd0e03"}
+        }
+      },
+      "pull_requests": [
+        {"number":1,"title":"feat: add fail-closed deterministic change bundles","url":"https://github.com/kimjooyoon/gooo-change-bundle/pull/1","merged":true,"merge_commit_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","merged_at":"2026-08-31T13:21:24Z"},
+        {"number":2,"title":"Refute self-authored release immutability claims","url":"https://github.com/kimjooyoon/gooo-change-bundle/pull/2","merged":true,"merge_commit_sha":"a93c41a28b5718f110b8679556b169f2b11c75b5","merged_at":"2026-08-31T13:43:57Z"}
+      ],
+      "protocol_observation": {
+        "schema": "gooo/change-bundle/denominator/v1",
+        "denominator_id": "change-bundle-v1",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "case_totals": {"CLOSED":3,"UNKNOWN":3,"REFUTED":6},
+        "bundle": {"files":15,"bytes":17527},
+        "change": {"changed_paths":1,"changed_hunks":1},
+        "replay": {"comparisons":13,"mismatches":0},
+        "rollback": {"comparisons":1,"mismatches":0},
+        "runtime": {"go":"1.27.0","build_wall_ms":224,"test_wall_ms":2414,"conformance_wall_ms":5,"peak_rss_kib":112032},
+        "tests": {"executed":16,"reused":0,"skipped":0,"not_observed":0},
+        "inventory": {"files":22,"directories":14,"go_lines":2049,"gooo_lines":18,"root_readme_excluded":true},
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0}
+      },
+      "assets": [
+        {"id":538044874,"name":"ci-metrics.json","size_bytes":641,"sha256":"sha256:1fb8dcd44e0758555acefc75a4e9aabe83806cbe41d69f0e43d38cc5fadd0e03","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.1/ci-metrics.json"},
+        {"id":538044878,"name":"gooo-change-bundle-ci-v0.1.1.tar.gz","size_bytes":6267,"sha256":"sha256:42dd203bd20438db7cc15abbbfe6fa19542cc2bf0de26cbe6db056150e1bb2f6","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.1/gooo-change-bundle-ci-v0.1.1.tar.gz"},
+        {"id":538044876,"name":"gooo-change-bundle-v0.1.1.tar.gz","size_bytes":30148,"sha256":"sha256:60f6fbedb897467bbf499097a2abebe56e047c9f1da920000daa34f2f675fb5b","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.1/gooo-change-bundle-v0.1.1.tar.gz"},
+        {"id":538044877,"name":"release-manifest.json","size_bytes":848,"sha256":"sha256:1920afc524309326cba26109c93d764b4effb5dd4bf717340db654131ecbfc15","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.1/release-manifest.json"},
+        {"id":538044875,"name":"SHA256SUMS","size_bytes":371,"sha256":"sha256:82b7d8c1f177bc36806f5678d27f1db50114b49d279fb14c673ffdc5fe59a196","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "utility_trial_protocol_release": {
+      "repository": "kimjooyoon/gooo-utility-trial",
+      "tag": "v0.1.1",
+      "release_id": 379863199,
+      "release_url": "https://github.com/kimjooyoon/gooo-utility-trial/releases/tag/v0.1.1",
+      "target_commit_sha": "5500f00ec67b75fadf450110acefca713c5b5733",
+      "tag_object_sha": "5a42a68fb1f9a54eaa33097fb6eeca4db421bf05",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33409188187,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409188187",
+        "head_sha": "5500f00ec67b75fadf450110acefca713c5b5733",
+        "conclusion": "success",
+        "job_id": 99544202999,
+        "job_name": "immutable-v0.1.1-release",
+        "job_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409188187/job/99544202999",
+        "artifact_ids": [9764422074]
+      },
+      "release_run": {
+        "run_id": 33409188187,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409188187",
+        "head_sha": "5500f00ec67b75fadf450110acefca713c5b5733",
+        "conclusion": "success",
+        "job_id": 99544202999,
+        "job_name": "immutable-v0.1.1-release",
+        "job_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409188187/job/99544202999",
+        "artifact_ids": [9764422074]
+      },
+      "pre_merge_validation": {
+        "run_id": 33409087319,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409087319",
+        "head_sha": "d6893b9a7f33aa30e9680a3c93c0f17231dfee2c",
+        "conclusion": "success",
+        "job_id": 99543871814,
+        "job_name": "utility-trial-conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409087319/job/99543871814"
+      },
+      "post_main_validation": {
+        "run_id": 33409165999,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409165999",
+        "head_sha": "5500f00ec67b75fadf450110acefca713c5b5733",
+        "conclusion": "success",
+        "job_id": 99544131261,
+        "job_name": "utility-trial-conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33409165999/job/99544131261"
+      },
+      "source_artifact": {
+        "run_id": 33409188187,
+        "artifact_id": 9764422074,
+        "name": "gooo-utility-trial-release-evidence-v0.1.1",
+        "size_bytes": 2764537,
+        "sha256": "sha256:a690b16b4ec7f6271eee23bffa52f1209ab238cfd21ff15f75f7f61a5e93adee"
+      },
+      "release_audit": {
+        "schema": "gooo/utility-trial/release-audit/v1",
+        "audit_run_id": 33409188187,
+        "workflow": "Gooo utility trial release",
+        "tag": {
+          "name": "v0.1.1",
+          "tag_object_sha": "5a42a68fb1f9a54eaa33097fb6eeca4db421bf05",
+          "target_commit_sha": "5500f00ec67b75fadf450110acefca713c5b5733"
+        },
+        "v0_1_0_preserved": {
+          "release_id": 379850805,
+          "tag_name": "v0.1.0",
+          "immutable": true,
+          "assets": [
+            {"id":538157619,"name":"gooo-utility-trial-0.1.0-evidence.zip","size_bytes":11376,"sha256":"sha256:734082b840e915b48c42e14e93252624f5e441538509ff29dafe259b851f9a9e"},
+            {"id":538157605,"name":"SHA256SUMS","size_bytes":104,"sha256":"sha256:152398724ab80d4ad5dbaaa040fc2d63261431322d9344d1305e6c840bbf5ffa"}
+          ]
+        }
+      },
+      "protocol_observation": {
+        "schema": "gooo/utility-trial/denominator/v1",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"CLOSED":3,"UNKNOWN":3,"REFUTED":6},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "protocol_ready": "CLOSED",
+        "utility": "UNKNOWN",
+        "utility_improvement": "UNKNOWN",
+        "external_evidence": 0,
+        "eligible_pairs": 0,
+        "process": "REFUTED",
+        "score": "NOT_COMBINED",
+        "denominator_migration": {"operation":"NONE","delta":0,"protocol_cells_before":12,"protocol_cells_after":12,"protocol_activities_before":12,"protocol_activities_after":12,"process_cells_added":0,"hidden_mutation":false},
+        "runtime": {"go":"1.27.0","build_wall_ms":6690,"test_wall_ms":8238,"conformance_wall_ms":9,"build_peak_rss_kib":268608,"test_peak_rss_kib":264144,"conformance_peak_rss_kib":7128},
+        "tests": {"executed":1,"reused":0,"skipped":0,"not_observed":0},
+        "inventory": {"regular_files":27,"descendant_directories":19,"go_lines":2121,"gooo_lines":28,"root_readme_excluded":true},
+        "authority": {"repository_writes":0,"local_test_executions":0,"cross_project_required_gates":0}
+      },
+      "pull_requests": [
+        {"number":3,"title":"fix: preserve release history rewrite as non-score evidence","url":"https://github.com/kimjooyoon/gooo-utility-trial/pull/3","merged":true,"merge_commit_sha":"5500f00ec67b75fadf450110acefca713c5b5733","merged_at":"2026-08-31T15:33:53Z"}
+      ],
+      "assets": [
+        {"id":538178108,"name":"gooo-utility-trial-0.1.1-evidence.zip","size_bytes":24089,"sha256":"sha256:5e2cf1eb96debfe0540a950ebf4975cbff8ab9ead4695b27493b5d6362ce5edf","download_url":"https://github.com/kimjooyoon/gooo-utility-trial/releases/download/v0.1.1/gooo-utility-trial-0.1.1-evidence.zip"},
+        {"id":538178107,"name":"SHA256SUMS","size_bytes":104,"sha256":"sha256:4983b05ca18df365c41255969729cdff9cfe3c11b08257a20203908ada7cb490","download_url":"https://github.com/kimjooyoon/gooo-utility-trial/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "reflexive_modern_cycle_release": {
+      "repository": "kimjooyoon/gooo-reflexive-loop",
+      "tag": "v0.3.1",
+      "release_id": 379879740,
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/releases/tag/v0.3.1",
+      "target_commit_sha": "ed8ff02c7d8f56d8d9474b68036ea80cdc105261",
+      "tag_object_sha": "e54e08feacb3ea4da67b5aa5e404a4ce0b605895",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33410813438,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33410813438",
+        "head_sha": "ed8ff02c7d8f56d8d9474b68036ea80cdc105261",
+        "conclusion": "success",
+        "job_id": 99549616696,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33410813438/job/99549616696",
+        "artifact_ids": [9765064827]
+      },
+      "source_artifact": {
+        "run_id": 33410813438,
+        "artifact_id": 9765064827,
+        "name": "gooo-reflexive-loop-evidence",
+        "size_bytes": 2122874,
+        "sha256": "sha256:9a800498dca302d6cf9b2c9574d8adc69075f88c6c112db36d25aab34caa04c5"
+      },
+      "release_manifest": {
+        "schema": "gooo/reflexive-loop/release-manifest/v1",
+        "version": "v0.3.1",
+        "tag": {"kind":"annotated","name":"v0.3.1","tag_object_sha":"e54e08feacb3ea4da67b5aa5e404a4ce0b605895","target_commit_sha":"ed8ff02c7d8f56d8d9474b68036ea80cdc105261"},
+        "post_main": {"artifact_name":"gooo-reflexive-loop-evidence","commit_sha":"ed8ff02c7d8f56d8d9474b68036ea80cdc105261","conformance_run_id":33410813438,"conformance_run_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/actions/runs/33410813438","source":"origin/main"},
+        "preserved_prior_release": {
+          "release_id": 379458203,
+          "tag": "v0.3.0",
+          "tag_kind": "lightweight",
+          "immutable": true,
+          "target_commit_sha": "75d655f04a0833b8cf40afa76f4a9703a3ba04fa",
+          "assets": [
+            {"id":537284602,"name":"gooo-reflexive-loop-v0.3.0-evidence.zip","size_bytes":913988,"sha256":"sha256:b91641199575f1d04a42d7c2c0e705248817d5c00c34108aa579f31a88bc58db"},
+            {"id":537284605,"name":"gooo-reflexive-loop-v0.3.0-manifest.json","size_bytes":19878,"sha256":"sha256:0a7f10e6e192b673c611c45e7a3846efaca4ae7cb4243de35efd2011627eb812"},
+            {"id":537284604,"name":"SHA256SUMS","size_bytes":213,"sha256":"sha256:33057331f4ba04455ee43f3782e697c9ff19355c272514589a3f90a7aefa0169"}
+          ]
+        }
+      },
+      "protocol_observation": {
+        "schema": "gooo/reflexive-loop/modern-cycle/conformance/v1",
+        "version": "v0.3.0",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"normal":3,"unknown":3,"refuted":4,"CLOSED":3,"UNKNOWN":3,"REFUTED":4},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "normal_candidate_metrics": {"after_oracle_failures":0,"before_oracle_failures":1,"candidate_count":1,"causal_edges":1,"frontier_count":3,"patch_bytes":1063,"patch_hunks":1,"patch_paths":1,"replay_comparisons":19,"replay_mismatches":0,"rollback_comparisons":1,"rollback_mismatches":0,"tests_executed":2,"tests_not_observed":0,"tests_reused":1,"tests_skipped":1,"tests_total":4},
+        "performance": {"build_wall_ms":7436,"build_peak_rss_kib":270260,"conformance_wall_ms":8844,"conformance_peak_rss_kib":14524},
+        "tests": {"total":4,"executed":2,"reused":1,"skipped":1,"not_observed":0},
+        "inventory": {"directories":16,"files":44,"go_physical_lines":0,"gooo_physical_lines":93,"root_readme_excluded":true},
+        "authority": {"apply_authorized":false,"commit_authorized":false,"cross_project_required_gates":0,"local_test_executions":0,"merge_authorized":false,"pull_request_authorized":false,"push_authorized":false,"repository_writes":0}
+      },
+      "assets": [
+        {"id":538205028,"name":"gooo-reflexive-loop-v0.3.1-evidence.tar.gz","size_bytes":1391362,"sha256":"sha256:76bb2dab68bdaf8926a8a7489aa2cc60545d7165ae4a1c5a86ce407dacee0739","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.1/gooo-reflexive-loop-v0.3.1-evidence.tar.gz"},
+        {"id":538205030,"name":"gooo-reflexive-loop-v0.3.1-manifest.json","size_bytes":3490,"sha256":"sha256:853b02ea5be25873db7e77f65ea0341715a360599064d4fe5abffd0364d07f5d","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.1/gooo-reflexive-loop-v0.3.1-manifest.json"},
+        {"id":538205039,"name":"gooo-reflexive-loop-v0.3.1-source.tar.gz","size_bytes":81187,"sha256":"sha256:6e4757b752756502c99e358cdfc9071fe4950b83f49e9e02651a0b3afee16797","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.1/gooo-reflexive-loop-v0.3.1-source.tar.gz"},
+        {"id":538205026,"name":"SHA256SUMS","size_bytes":431,"sha256":"sha256:85ed7f91b12e4e33d9cd5868ce6459de7cfbb717fc9d7aa823c8d721d4fe7d2c","download_url":"https://github.com/kimjooyoon/gooo-reflexive-loop/releases/download/v0.3.1/SHA256SUMS"}
+      ]
+    },
+    "unknown_resolution_lattice_release": {
+      "repository": "kimjooyoon/gooo-resolution-lattice",
+      "tag": "v0.2.0",
+      "release_id": 379967493,
+      "release_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/releases/tag/v0.2.0",
+      "target_commit_sha": "fac2f5c0688c62fd31912a310e0fae77bc198258",
+      "tag_object_sha": "2f452efe6b05b50760500da1a4bea7d323e9c11d",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33424634161,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33424634161",
+        "event": "pull_request",
+        "head_branch": "resolution-ladder",
+        "head_sha": "8c169cc8d821fb0b68ce28cc519d49935a241b8e",
+        "conclusion": "success",
+        "job_id": 99595118419,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33424634161/job/99595118419",
+        "artifact_ids": [9770260397]
+      },
+      "source_artifact": {
+        "run_id": 33424634161,
+        "artifact_id": 9770260397,
+        "name": "gooo-resolution-lattice-evidence-33424634161",
+        "size_bytes": 23723,
+        "sha256": "sha256:f80e798ca1893937ba49b86e40ad1ac7f2035e9d666acacb71c28fa6109bb294"
+      },
+      "post_main_validation": {
+        "run_id": 33425091977,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33425091977",
+        "event": "pull_request",
+        "head_branch": "release-workflow-fix",
+        "head_sha": "2c7bdc1b5024616cbc70aa55c3726dc22cda048e",
+        "conclusion": "success",
+        "job_id": 99596614819,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33425091977/job/99596614819",
+        "artifact_ids": [9770452642]
+      },
+      "post_main_artifact": {
+        "run_id": 33425091977,
+        "artifact_id": 9770452642,
+        "name": "gooo-resolution-lattice-evidence-33425091977",
+        "size_bytes": 23723,
+        "sha256": "sha256:7f3edacdfb5f58a9391ceb10b90de139368a0f537fffa86648eeaf62f9f5dc0e"
+      },
+      "release_run": {
+        "run_id": 33425271313,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33425271313",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "0f0ec4e696cbd6df756051e908f0d9c86d48ba72",
+        "conclusion": "success",
+        "job_id": 99597213464,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-resolution-lattice/actions/runs/33425271313/job/99597213464",
+        "artifact_ids": []
+      },
+      "release_manifest": {
+        "schema": "gooo/resolution-lattice/release-manifest/v1",
+        "tag": "v0.2.0",
+        "commit": "fac2f5c0688c62fd31912a310e0fae77bc198258",
+        "go_version": "go1.27.0",
+        "immutable": true
+      },
+      "protocol_observation": {
+        "schema": "gooo/resolution-lattice/ci-report/v2",
+        "version": "v0.2.0",
+        "ladder": ["PROJECT","ARTIFACT","ACTIVITY","PREDICATE","FIELD"],
+        "fixed_denominator": 12,
+        "activities": 12,
+        "cells": 12,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"normal":1,"unknown":4,"refuted":5,"CLOSED":1,"UNKNOWN":4,"REFUTED":5},
+        "precedence": ["REFUTED","UNKNOWN","CLOSED"],
+        "unknown_classes": ["DIRECT_MISSING","DEPENDENCY_BLOCKED","DECISION_UNKNOWN","CAUSALITY_UNPROVEN"],
+        "fixed_point_only": true,
+        "top_unknown_decision": "FAIL_CLOSED",
+        "top_unknown_reason": "FEEDBACK_COVERAGE_DECISION_UNKNOWN",
+        "contradiction_priority": "REFUTED",
+        "receipts": {"expected":6,"observed":6,"verified":"6/6"},
+        "identity": {"comparisons":16,"mismatches":0},
+        "normal_exact_pairs": [
+          {"metric":"unidentified_cause_frontier_count","before":4,"after":2,"delta":-2},
+          {"metric":"minimum_cause_reach_stage_count","before":5,"after":3,"delta":-2}
+        ],
+        "improvement_pairs": {
+          "normal": {"unidentified_cause_frontier_count":{"before":4,"after":2},"minimum_cause_reach_stage_count":{"before":5,"after":3}},
+          "decision_unknown": {"unidentified_cause_frontier_count":{"before":2,"after":2},"minimum_cause_reach_stage_count":{"before":5,"after":5}},
+          "dependency_blocked": {"unidentified_cause_frontier_count":{"before":3,"after":3},"minimum_cause_reach_stage_count":{"before":5,"after":5}},
+          "unknown": {"unidentified_cause_frontier_count":{"before":4,"after":4},"minimum_cause_reach_stage_count":{"before":5,"after":5}}
+        },
+        "performance": {
+          "first_run": {"build_wall_ms":5446,"test_wall_ms":1985,"conformance_wall_ms":67,"peak_rss_kib":272748},
+          "post_main": {"build_wall_ms":5869,"test_wall_ms":2259,"conformance_wall_ms":80,"peak_rss_kib":265604}
+        },
+        "tests": {"total":10,"executed":10,"reused":0,"skipped":0,"not_observed":0},
+        "inventory": {"go_files":5,"go_lines":1335,"gooo_files":1,"gooo_lines":27,"directories":14,"files":23,"root_readme_excluded":true},
+        "output_artifacts": {"files":22,"bytes":67397},
+        "authority": {"repository_writes":0,"direct_main_writes":0,"local_test_executions":0,"provider_install_attempts":0,"network_mutation_attempts":0,"infrastructure_mutations":0},
+        "utility_inference": false
+      },
+      "assets": [
+        {"id":538371288,"name":"gooo-resolution-lattice-0.2.0.tar.gz","size_bytes":23967,"sha256":"sha256:f16f43175104a42eb20fd8f701fa8296c289ce69929ff1861269cb3b00ebbc75","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.2.0/gooo-resolution-lattice-0.2.0.tar.gz"},
+        {"id":538371290,"name":"release-manifest.json","size_bytes":186,"sha256":"sha256:c178b312da828be4589352fbc195853ccaa08e48adacf7f5522c4a06df65f9fd","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.2.0/release-manifest.json"},
+        {"id":538371285,"name":"SHA256SUMS","size_bytes":103,"sha256":"sha256:8a9b8575cdd5abae5ebba2d1e33a6e93f6b6bfcd7d3ac6855529c74652454549","download_url":"https://github.com/kimjooyoon/gooo-resolution-lattice/releases/download/v0.2.0/SHA256SUMS"}
+      ]
+    },
+    "self_repair_integration_release": {
+      "repository": "kimjooyoon/gooo-self-repair-example",
+      "tag": "v0.2.1",
+      "release_id": 379971030,
+      "release_url": "https://github.com/kimjooyoon/gooo-self-repair-example/releases/tag/v0.2.1",
+      "target_commit_sha": "28f3589d69796b4630b2e066c6a5c45ac8468096",
+      "tag_object_sha": "b8318c1645bc76286eb5c404b771118b6ce1e07b",
+      "immutable": true,
+      "post_main_validation": {
+        "run_id": 33425759488,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-self-repair-example/actions/runs/33425759488",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "28f3589d69796b4630b2e066c6a5c45ac8468096",
+        "conclusion": "success",
+        "job_id": 99598796427,
+        "job_name": "verify",
+        "job_url": "https://github.com/kimjooyoon/gooo-self-repair-example/actions/runs/33425759488/job/99598796427",
+        "artifact_ids": [9770678796]
+      },
+      "post_main_artifact": {
+        "run_id": 33425759488,
+        "artifact_id": 9770678796,
+        "name": "self-repair-artifacts-28f3589d69796b4630b2e066c6a5c45ac8468096",
+        "size_bytes": 14701,
+        "sha256": "sha256:870a731cf484535e2b1218e1d7eee37a0ccdd9c7ad194ff19030ab31e42c7514"
+      },
+      "release_run": {
+        "run_id": 33425908089,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-self-repair-example/actions/runs/33425908089",
+        "event": "push",
+        "head_branch": "v0.2.1",
+        "head_sha": "28f3589d69796b4630b2e066c6a5c45ac8468096",
+        "conclusion": "success",
+        "job_id": 99599283424,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-self-repair-example/actions/runs/33425908089/job/99599283424",
+        "artifact_ids": []
+      },
+      "pull_requests": [
+        {"number": 3, "title": "Integrate released Gooo self-repair cycle", "url": "https://github.com/kimjooyoon/gooo-self-repair-example/pull/3", "merged": true, "merged_at": "2026-08-31T18:23:49Z", "merge_commit_sha": "c460fd7b568adef24cfa85433b0022b450a51288"},
+        {"number": 4, "title": "Bind release manifest to tagged commit", "url": "https://github.com/kimjooyoon/gooo-self-repair-example/pull/4", "merged": true, "merged_at": "2026-08-31T18:34:20Z", "merge_commit_sha": "28f3589d69796b4630b2e066c6a5c45ac8468096"}
+      ],
+      "historical_process": {
+        "state": "REFUTED",
+        "classification": "DEVELOPMENT_PROCESS_DIRECT_MAIN",
+        "direct_main_push_count": 1,
+        "offending_commit": "5dca56d238751739beba3fafe9a9018c0bb18ce4",
+        "parent_sha": "c460fd7b568adef24cfa85433b0022b450a51288",
+        "changed_paths": [".github/workflows/release.yml"],
+        "historical_violation_count": 1,
+        "current_guard_state": "CLOSED",
+        "current_pr_associated_path": 1,
+        "repository_direct_writes_after_guard": 0
+      },
+      "release_manifest": {
+        "schema": "gooo.self-repair.release-manifest.v1",
+        "tag": "v0.2.1",
+        "commit": "28f3589d69796b4630b2e066c6a5c45ac8468096",
+        "immutable": true
+      },
+      "protocol_observation": {
+        "schema": "gooo/self-repair/repair-manifest.v2",
+        "version": "v0.2.1",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "claims": {"CLOSED": 3, "UNKNOWN": 3, "REFUTED": 3},
+        "proof_totals": {"FOUNDATION": 4, "COHERENCE": 4, "REGRESSION": 4},
+        "indicator_totals": {"DRIVER": 4, "OUTCOME": 4, "GUARDRAIL": 4},
+        "precedence": ["REFUTED", "UNKNOWN", "CLOSED"],
+        "cycles": {"attempts": 2, "candidates": 5, "known_refuted_recurrence": "1->0", "avoided_refuted_candidates": 1, "unknown_candidates": 2, "replay": {"comparisons": 2, "mismatches": 0}},
+        "tests": {"total": 3, "executed": 3, "reused": 0, "skipped": 0, "not_observed": 0},
+        "runtime": {"go": "1.27.x", "build_wall_ms": 250, "test_wall_ms": 240, "conformance_wall_ms": 13757, "peak_rss_kib": 90856},
+        "inventory": {"go_files": 8, "go_lines": 1547, "gooo_files": 2, "gooo_lines": 16, "directories": 15, "files": 25, "root_readme_excluded": true},
+        "output_artifacts": {"files": 12, "bytes": 38440},
+        "authority": {"repository_writes": 0, "local_test_executions": 0, "cross_project_required_gates": 0},
+        "external_utility": {"state": "UNKNOWN", "reason": "RESOURCE_AXES_CROSS", "direct_exact_pair": true},
+        "core_semantic_authority": "CLOSED",
+        "development_process_authority": "REFUTED"
+      },
+      "assets": [
+        {"id": 538378587, "name": "gooo-self-repair-example-0.2.1.tar.gz", "size_bytes": 30698, "sha256": "sha256:7d505a14cfd11c0d6a57cb14ec8de2f51c946285b18d1af8bce1d6ff476b4582", "download_url": "https://github.com/kimjooyoon/gooo-self-repair-example/releases/download/v0.2.1/gooo-self-repair-example-0.2.1.tar.gz"},
+        {"id": 538378586, "name": "release-manifest.json", "size_bytes": 134, "sha256": "sha256:3655571de02ba889fe83676d700e43befbf6130730079a26bed6aa6b65adcdd3", "download_url": "https://github.com/kimjooyoon/gooo-self-repair-example/releases/download/v0.2.1/release-manifest.json"},
+        {"id": 538378585, "name": "SHA256SUMS", "size_bytes": 104, "sha256": "sha256:fd70f404c9238fb6fd2ace7cf36b19ed0ce7d89d15fc794ce96ee4d5333f5d1f", "download_url": "https://github.com/kimjooyoon/gooo-self-repair-example/releases/download/v0.2.1/SHA256SUMS"}
+      ]
+    },
+    "opentofu_durable_semantic_envelope_release": {
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "tag": "v0.1.9",
+      "release_id": 380009987,
+      "release_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.1.9",
+      "target_commit_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda",
+      "tag_object_sha": "8f913ac3bcef39a5105280a6a05114b7abc3ac87",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33432375475,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432375475",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda",
+        "conclusion": "success",
+        "job_id": 99620555197,
+        "job_name": "envelope",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432375475/job/99620555197",
+        "artifact_ids": [9773097414]
+      },
+      "source_artifact": {
+        "run_id": 33432375475,
+        "artifact_id": 9773097414,
+        "name": "gooo-opentofu-envelope-evidence-b482afd68a864400a209cb4f439e727cfdfe2eda",
+        "size_bytes": 99611,
+        "sha256": "sha256:f04619dbd77314bdf84ba2d5c1b9edd4b9a09b533a8a26c2185ec3b786804157"
+      },
+      "release_run": {
+        "run_id": 33432449551,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432449551",
+        "event": "push",
+        "head_branch": "v0.1.9",
+        "head_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda",
+        "conclusion": "success",
+        "job_id": 99620801430,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432449551/job/99620801430",
+        "artifact_ids": []
+      },
+      "pull_requests": [
+        {"number": 10, "title": "fix: add v0.1.9 additive release path", "url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/pull/10", "merged": true, "merged_at": "2026-08-31T19:46:12Z", "merge_commit_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda"}
+      ],
+      "release_manifest": {
+        "schema": "gooo/opentofu-envelope/release-manifest/v1",
+        "version": 1,
+        "source_identity": {
+          "main_ci_head_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda",
+          "main_ci_observation_source_sha": "65bb41f6de07be262bac79476a749611e96ebc84880920c5e9ec412f82769219",
+          "source_sha256": "65bb41f6de07be262bac79476a749611e96ebc84880920c5e9ec412f82769219",
+          "tag": "v0.1.9",
+          "tag_commit_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda"
+        },
+        "release": {
+          "tag": "v0.1.9",
+          "commit_sha": "b482afd68a864400a209cb4f439e727cfdfe2eda",
+          "id": 380009987,
+          "immutable_expected": true,
+          "asset_count_before": 0,
+          "asset_count_after": 4,
+          "url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.1.9",
+          "predecessor_chain": [
+            {"tag":"v0.1.3","release_id":379957493,"release_present":true,"immutable":true,"asset_count":0},
+            {"tag":"v0.1.4","release_id":null,"release_present":false,"target_commit_sha":"480e23a159b533be23811667b68b09562ad4c4f8","tag_object_sha":"074d8c01282f20efb55460a69a5177a378878f90","asset_count":0,"failed_trigger_counterexample":true,"failed_trigger_run_ids":[33429443119,33429524144,33429601185]},
+            {"tag":"v0.1.5","release_id":null,"release_present":false,"target_commit_sha":"bdee16c2506c0efdb3c5562f0d4126a293afc26f","tag_object_sha":"1140c6701c65275bdf6e2cd7e801c9f8191b83ed","asset_count":0,"failed_trigger_counterexample":true,"failed_trigger_run_ids":[33430206446,33430284845,33430367725,33430500643]},
+            {"tag":"v0.1.6","release_id":null,"release_present":false,"target_commit_sha":"744e32655c6a6d1adf8c31d334814b555bce1a69","tag_object_sha":"cbe70a19dbf547868f907cb51954b66a0f774e66","asset_count":0,"failed_trigger_counterexample":true,"failed_trigger_run_ids":[33431118426]},
+            {"tag":"v0.1.7","release_id":null,"release_present":false,"target_commit_sha":"a1682d56ec5d5c6ce5aaf1263a157a981d0e7e79","tag_object_sha":"1c3a06733538dc5f4ae3ec143c838984615e68d1","asset_count":0,"failed_trigger_counterexample":true,"failed_trigger_run_ids":[33431644645]},
+            {"tag":"v0.1.8","release_id":380007644,"release_present":true,"immutable":false,"draft":true,"target_commit_sha":"4d04baa3dc0157a27f4fca2c3f4e3a9f929953c9","tag_object_sha":"79a59ed5edb82a0d7d234525f897207ed3a59247","asset_count":0,"failed_trigger_counterexample":true,"failed_trigger_run_ids":[33432034362]}
+          ]
+        },
+        "denominator": {"target_cells":12,"binding_edges":14,"expected_user_path_steps":5,"proof_counts":{"COHERENCE":4,"FOUNDATION":4,"REGRESSION":4},"indicator_counts":{"DRIVER":4,"GUARDRAIL":4,"OUTCOME":4}},
+        "main_ci": {"artifact_digest":"sha256:f04619dbd77314bdf84ba2d5c1b9edd4b9a09b533a8a26c2185ec3b786804157","artifact_id":9773097414,"artifact_name":"gooo-opentofu-envelope-evidence-b482afd68a864400a209cb4f439e727cfdfe2eda","observation_sha256":"1214180cc3e710eeff33b9a51c0759a6ef6cf3dfb0ed582664a8c43039351c5d","run_id":33432375475,"url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432375475"},
+        "toolchain": {"go_requirement":"1.27.x","go_version_evidence":"go version go1.27.0 linux/amd64"},
+        "pipeline": {"evidence_source":"SUCCESSFUL_MAIN_CI_ARTIFACT","reproduced_without_local_execution":true,"semantic_path":["RELEASED_GOOO_GRAPH","main.tf.json","PINNED_OPENTOFU_VALIDATE_JSON","INDEPENDENT_SERVICE_ORACLE"]},
+        "authority": {"global_core_authority_claim":"NOT_MADE","semantic_graph_authority":{"scope":"GOOO_SEMANTIC_GRAPH_ONLY","state":"CLOSED"},"external_utility":{"state":"UNKNOWN"},"test_counts":{"total":9,"executed":9,"reused":0,"skipped":0,"not_observed":0},"mutation_counts":{"external_mutations":0,"infrastructure":0,"network":0,"provider_install":0,"repository_writes":0,"state":0}}
+      },
+      "protocol_observation": {
+        "schema": "gooo/opentofu-envelope/observation/v2",
+        "state": "CLOSED",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "paths": 5,
+        "edges": 14,
+        "proof_totals": {"FOUNDATION":4,"COHERENCE":4,"REGRESSION":4},
+        "indicator_totals": {"DRIVER":4,"OUTCOME":4,"GUARDRAIL":4},
+        "case_totals": {"CLOSED":3,"UNKNOWN":3,"REFUTED":3},
+        "replay": {"comparisons":2,"mismatches":0},
+        "tests": {"total":9,"executed":9,"reused":0,"skipped":0,"not_observed":0},
+        "runtime": {"go":"1.27.0","opentofu":"1.12.6","build_wall_ms":214,"test_wall_ms":45,"conformance_wall_ms":324,"peak_rss_kib":76084},
+        "inventory": {"directories":7,"files":15,"physical_lines":2401,"go_files":0,"go_lines":0,"gooo_files":1,"gooo_lines":39,"root_readme_excluded":true},
+        "output_artifacts": {"files":3,"bytes":8118},
+        "authority": {"repository_writes":0,"remote_mutations":0,"direct_main_writes":0,"tag_mutations":0,"local_test_executions":0,"cross_project_required_gates":0},
+        "semantic_graph_authority": {"scope":"GOOO_SEMANTIC_GRAPH_ONLY","state":"CLOSED"},
+        "utility": "UNKNOWN",
+        "global_core_authority_claim": "NOT_MADE",
+        "validation": {"official_opentofu_valid":true,"error_count":0,"warning_count":0},
+        "graph_sha256": "ede78867ea82b117dae0067bf7f11d82afa28ade9e784243344f123f54b4b1c3",
+        "source_sha256": "65bb41f6de07be262bac79476a749611e96ebc84880920c5e9ec412f82769219"
+      },
+      "historical_provenance": {
+        "v0.1.3": {"release_id":379957493,"release_present":true,"immutable":true,"asset_count":0},
+        "v0.1.4": {"release_present":false,"asset_count":0,"failed":true,"failed_trigger_run_ids":[33429443119,33429524144,33429601185]},
+        "v0.1.5": {"release_present":false,"asset_count":0,"failed":true,"failed_trigger_run_ids":[33430206446,33430284845,33430367725,33430500643]},
+        "v0.1.6": {"release_present":false,"asset_count":0,"failed":true,"failed_trigger_run_ids":[33431118426]},
+        "v0.1.7": {"release_present":false,"asset_count":0,"failed":true,"failed_trigger_run_ids":[33431644645]},
+        "v0.1.8": {"release_id":380007644,"release_present":true,"draft":true,"immutable":false,"asset_count":0,"failed":true,"failed_trigger_run_ids":[33432034362]}
+      },
+      "assets": [
+        {"id":538450808,"name":"evidence-v0.1.9.tar.gz","size_bytes":13344,"sha256":"sha256:79b549e7471f983e1f3a9f8f19ff73b5c759bac532ad86d8c3d2738885223f6d","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.9/evidence-v0.1.9.tar.gz"},
+        {"id":538450812,"name":"manifest-v0.1.9.json","size_bytes":55115,"sha256":"sha256:a1352aa6cdeeefc0112884673ce672e920033b6d13d7d8e69ffbf270632df2e1","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.9/manifest-v0.1.9.json"},
+        {"id":538450816,"name":"SHA256SUMS","size_bytes":263,"sha256":"sha256:efb3cebd7bcdf2dcc1a1a2279817be1286def7e7387b33f2afc505b3eb7129c6","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.9/SHA256SUMS"},
+        {"id":538450823,"name":"source-v0.1.9.tar.gz","size_bytes":30885,"sha256":"sha256:e33609eee44163d3201d125900d57ea12f183ebb561522e86e930d7f3805338f","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.9/source-v0.1.9.tar.gz"}
+      ]
+    },
+    "language_delta_forge_durable_release": {
+      "repository": "kimjooyoon/gooo-language-delta-forge",
+      "tag": "v0.1.2",
+      "release_id": 380033725,
+      "release_url": "https://github.com/kimjooyoon/gooo-language-delta-forge/releases/tag/v0.1.2",
+      "target_commit_sha": "30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",
+      "tag_object_sha": "5d68c5f2f699f9d73bcf2e87121204512dfd64fc",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33436391757,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-language-delta-forge/actions/runs/33436391757",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",
+        "conclusion": "success",
+        "job_id": 99633759904,
+        "job_name": "verify",
+        "job_url": "https://github.com/kimjooyoon/gooo-language-delta-forge/actions/runs/33436391757/job/99633759904",
+        "artifact_ids": [9774550869]
+      },
+      "source_artifact": {
+        "run_id": 33436391757,
+        "artifact_id": 9774550869,
+        "name": "language-delta-forge-30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",
+        "size_bytes": 27490,
+        "sha256": "sha256:a2f9a55ebb3870f2093e0f3b11439a523c899fac968efb0c449b6c5c6dc486cd"
+      },
+      "release_run": {
+        "run_id": 33436456556,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-language-delta-forge/actions/runs/33436456556",
+        "event": "push",
+        "head_branch": "v0.1.2",
+        "head_sha": "30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",
+        "conclusion": "success",
+        "job_id": 99633967202,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-language-delta-forge/actions/runs/33436456556/job/99633967202",
+        "artifact_ids": [9774576485]
+      },
+      "release_artifact": {
+        "run_id": 33436456556,
+        "artifact_id": 9774576485,
+        "name": "durable-language-delta-forge-v0.1.2",
+        "size_bytes": 58715,
+        "sha256": "sha256:bcf1519c02234b44b69490378723c82fa9e9f83d64b65c2c24138d9ce341013b"
+      },
+      "release_manifest": {
+        "schema": "gooo/language-delta-forge/release-manifest/v2",
+        "tag": "v0.1.2",
+        "commit": "30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",
+        "expected_asset_count": 4,
+        "expected_asset_names": [
+          "checksums.txt",
+          "gooo-language-delta-forge-v0.1.2-contracts.tar.gz",
+          "gooo-language-delta-forge-v0.1.2.tar.gz",
+          "release-manifest-v0.1.2.json"
+        ],
+        "assets": [
+          {"name":"gooo-language-delta-forge-v0.1.2.tar.gz","size":26671,"sha256":"77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba"},
+          {"name":"gooo-language-delta-forge-v0.1.2-contracts.tar.gz","size":7542,"sha256":"e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4"}
+        ]
+      },
+      "protocol_observation": {
+        "schema": "gooo/language-delta-forge/conformance-report/v1",
+        "state": "CLOSED",
+        "fixed_denominator": 18,
+        "program": {
+          "proof_totals": {"FOUNDATION":6,"COHERENCE":6,"REGRESSION":6},
+          "indicator_totals": {"DRIVER":6,"OUTCOME":6,"GUARDRAIL":6}
+        },
+        "cases": {
+          "denominator": 9,
+          "state_totals": {"CLOSED":3,"UNKNOWN":3,"REFUTED":3},
+          "proof_totals": {"FOUNDATION":3,"COHERENCE":3,"REGRESSION":3},
+          "indicator_totals": {"DRIVER":3,"OUTCOME":3,"GUARDRAIL":3}
+        },
+        "candidate_bundles": 10,
+        "generated_json": 11,
+        "representative_delta": {"added":2,"retired":1,"split":1},
+        "rollback": {"added":2,"retired":1,"split":1},
+        "runtime": {"go":"1.27.0","compile_wall_ms":173,"build_wall_ms":199,"test_wall_ms":163,"conformance_wall_ms":8,"peak_rss_kib":95004},
+        "tests": {"discovered":3,"executed":3,"reused":0,"skipped":0,"not_observed":0},
+        "inventory": {"files":27,"directories":13,"go_files":9,"go_lines":1884,"gooo_files":1,"gooo_lines":51,"physical_lines":2610,"root_readme_excluded":true},
+        "output_artifacts": 25,
+        "authority": {"repository_writes":0,"protected_core_adoption":0,"automatic_merge":false,"separate_authority_step":true,"external_utility":"NOT_CLAIMED","global_core_authority_claim":"NOT_MADE"}
+      },
+      "assets": [
+        {"id":538495830,"name":"checksums.txt","size_bytes":240,"sha256":"sha256:cd99462d4d6635ba03024ef3e03ea600dbe65f22ad416f379583f86fa6af7876","download_url":"https://github.com/kimjooyoon/gooo-language-delta-forge/releases/download/v0.1.2/checksums.txt"},
+        {"id":538495829,"name":"gooo-language-delta-forge-v0.1.2-contracts.tar.gz","size_bytes":7542,"sha256":"sha256:e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4","download_url":"https://github.com/kimjooyoon/gooo-language-delta-forge/releases/download/v0.1.2/gooo-language-delta-forge-v0.1.2-contracts.tar.gz"},
+        {"id":538495828,"name":"gooo-language-delta-forge-v0.1.2.tar.gz","size_bytes":26671,"sha256":"sha256:77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba","download_url":"https://github.com/kimjooyoon/gooo-language-delta-forge/releases/download/v0.1.2/gooo-language-delta-forge-v0.1.2.tar.gz"},
+        {"id":538495832,"name":"release-manifest-v0.1.2.json","size_bytes":736,"sha256":"sha256:0c467b96e4b91915139aa0d5990b49c8ca5a038a2ac965d43a4a5656e511064a","download_url":"https://github.com/kimjooyoon/gooo-language-delta-forge/releases/download/v0.1.2/release-manifest-v0.1.2.json"}
+      ]
+    },
+    "opentofu_generated_service_project_durable_release": {
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "tag": "v0.2.1",
+      "release_id": 380037012,
+      "release_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.2.1",
+      "target_commit_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+      "tag_object_sha": "06ab6ccc2f75cf0602715811f51a7a3097d23277",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33436975864,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33436975864",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+        "conclusion": "success",
+        "job_id": 99635653831,
+        "job_name": "project",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33436975864/job/99635653831",
+        "artifact_ids": [9774763580]
+      },
+      "source_artifact": {
+        "run_id": 33436975864,
+        "artifact_id": 9774763580,
+        "name": "gooo-generated-service-project-evidence-bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+        "size_bytes": 16278,
+        "sha256": "sha256:8e2bd75365b7e0e92ee8276cadbfc0d03842145a7bf5fd52efd1a33e2973de06"
+      },
+      "release_run": {
+        "run_id": 33437056751,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33437056751",
+        "event": "push",
+        "head_branch": "v0.2.1",
+        "head_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+        "conclusion": "success",
+        "job_id": 99635914331,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33437056751/job/99635914331",
+        "artifact_ids": []
+      },
+      "release_manifest": {
+        "schema": "gooo/opentofu-envelope/release-manifest/v2",
+        "version": 2,
+        "source_identity": {
+          "all_checks": true,
+          "main_ci_head_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+          "main_ci_observation_source_sha": "a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",
+          "service_contract_source_sha": "a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",
+          "source_sha256": "a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",
+          "tag_commit_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787"
+        },
+        "release": {
+          "tag": "v0.2.1",
+          "commit_sha": "bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+          "id": 380037012,
+          "immutable_expected": true,
+          "asset_count_before": 0,
+          "asset_count_after": 4,
+          "url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.2.1",
+          "required_assets": ["evidence-v0.2.1.tar.gz", "manifest-v0.2.1.json", "SHA256SUMS", "source-v0.2.1.tar.gz"]
+        },
+        "denominator": {"target_cells": 12, "binding_edges": 14, "expected_user_path_steps": 6},
+        "main_ci": {
+          "artifact_digest": "sha256:8e2bd75365b7e0e92ee8276cadbfc0d03842145a7bf5fd52efd1a33e2973de06",
+          "artifact_id": 9774763580,
+          "artifact_name": "gooo-generated-service-project-evidence-bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",
+          "consumer_sha256": "d44b7a561e40ef8ecd8d330ad0e685b2baa1d6ba936c7e8cdcaa74b134dd3802",
+          "observation_sha256": "285de6f94b65081bfd4006afada7320e24ec7103c49345b6c283a06011e0edb8",
+          "run_id": 33436975864,
+          "url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33436975864"
+        },
+        "toolchain": {"go_requirement": "1.27.x", "opentofu_engine": "OPENTOFU", "opentofu_version": "1.12.6"},
+        "pipeline": {
+          "evidence_source": "SUCCESSFUL_MAIN_CI_ARTIFACT",
+          "post_bootstrap_direct_main_mutations": 0,
+          "release_local_execution_count": 0,
+          "semantic_path": ["GOOO_SOURCE", "SEMANTIC_GRAPH", "GENERATED_OPENTOFU_TF_JSON", "GENERATED_SERVICE_CONTRACT_JSON", "PINNED_OPENTOFU_VALIDATE_JSON", "RELATION_EVIDENCE"]
+        },
+        "authority": {
+          "scope": "GENERATED_OPENTOFU_SERVICE_PROJECT_ONLY",
+          "semantic_graph_state": "CLOSED",
+          "global_core_authority_claim": "NOT_MADE",
+          "external_utility": {"state": "UNKNOWN", "reason": "exact user utility before and after observations are not available"},
+          "handwritten_go_physical_files": 0,
+          "mutation_counts": {"external_mutations": 0, "infrastructure": 0, "network": 0, "provider_install": 0, "repository_writes": 0, "state": 0},
+          "test_counts": {"total": 6, "executed": 6, "reused": 0, "passed": 2, "unknown": 2, "refuted": 2}
+        },
+        "generated_outputs": {
+          "count": 5,
+          "bytes": 9019,
+          "files": ["contract-receipt.json", "dossier.md", "main.tf.json", "relation-report.md", "service-contract.json"],
+          "digests": {
+            "contract-receipt.json": {"bytes": 1940, "sha256": "d917919e877bad1b0258a41e88f6b935263e157a49855d36c44e3243388cf324"},
+            "dossier.md": {"bytes": 1035, "sha256": "bf9d431ec311f424c264a55135b3e5423b15c06b2efb017d187955185dc52e4c"},
+            "main.tf.json": {"bytes": 2092, "sha256": "0d6afd48ac1bc7a1fa666514da037939bfb51a901f0cd861e3ba1b359c3c7b98"},
+            "relation-report.md": {"bytes": 1253, "sha256": "7e133a66fb940121be8806268a66ed0603f0be2327cd8885f4b17df45472cf0b"},
+            "service-contract.json": {"bytes": 2699, "sha256": "e32df06439bd8dbd35283b3998314d36fde97761e85f9cfb3793670be3f09c48"}
+          }
+        },
+        "inventory": {"regular_files": 22, "subfolders": 7, "go_physical_files": 0, "go_physical_lines": 0, "gooo_physical_files": 1, "gooo_physical_lines": 46, "root_readme_excluded": true},
+        "project": {"name": "checkout-api", "opentofu_resources": 3, "opentofu_modules": 0, "service_capabilities": 1, "service_endpoints": 2, "bound_relations": 2, "unbound_relations": 2, "refuted_relations": 2},
+        "validation": {"state": "CLOSED", "official_opentofu_valid": true, "error_count": 0, "warning_count": 0},
+        "utility": {"state": "UNKNOWN", "reason": "exact user utility before and after observations are not available"},
+        "improvement": {"state": "UNKNOWN", "reason": "exact before and after observations are not available"}
+      },
+      "protocol_observation": {
+        "schema": "gooo/opentofu-envelope/project-observation/v1",
+        "state": "CLOSED",
+        "fixed_denominator": 12,
+        "activities": 12,
+        "paths": 6,
+        "edges": 14,
+        "proof_totals": {"FOUNDATION": 4, "COHERENCE": 4, "REGRESSION": 4},
+        "indicator_totals": {"DRIVER": 4, "OUTCOME": 4, "GUARDRAIL": 4},
+        "cases": {"denominator": 6, "normal": 2, "unknown": 2, "refuted": 2, "precedence": ["REFUTED", "UNKNOWN", "CLOSED"]},
+        "generated_outputs": {"files": 5, "bytes": 9019},
+        "project": {"resources": 3, "modules": 0, "capabilities": 1, "endpoints": 2, "relations": {"bound": 2, "unbound": 2, "refuted": 2}},
+        "runtime": {"compile_wall_ms": 106, "build_wall_ms": 56, "test_wall_ms": 56, "conformance_wall_ms": 46, "tofu_validate_wall_ms": 30, "peak_rss_kib": 75304},
+        "tests": {"total": 6, "executed": 6, "reused": 0, "unknown": 2, "refuted": 2},
+        "tofu": {"validate": 1, "init": 0, "plan": 0, "apply": 0, "destroy": 0, "provider_install": 0},
+        "inventory": {"files": 22, "directories": 7, "go_files": 0, "go_lines": 0, "gooo_files": 1, "gooo_lines": 46, "root_readme_excluded": true},
+        "authority": {"repository_writes": 0, "local_tests": 0, "local_build": 0, "direct_main_writes": 0, "tag_mutations": 0, "scope": "GENERATED_OPENTOFU_SERVICE_PROJECT_ONLY", "utility": "UNKNOWN", "improvement": "UNKNOWN", "global_core": "NOT_MADE"}
+      },
+      "historical_provenance": {
+        "v0.2.0": {
+          "state": "REFUTED",
+          "tag": "v0.2.0",
+          "release_present": false,
+          "release_api_endpoint": "repos/kimjooyoon/gooo-opentofu-envelope/releases/tags/v0.2.0",
+          "release_api_status": 404,
+          "asset_count": 0,
+          "tag_object_sha": "9dfdee84d61f3acbe899b5ad57fd8f35f8159210",
+          "target_commit_sha": "c9f5de0b33fee1ca8546a627a8a94242b99c0733",
+          "failed_release_run_id": 33435908822,
+          "failed_release_job_id": 99632154067,
+          "failure_reason": "v0.1.5 target in the v0.2.0 release contract contained one extra trailing character"
+        }
+      },
+      "ledger_consumer_observation": {
+        "append_only": true,
+        "local_validation_executions": 1,
+        "inspection_only": false,
+        "artifact_schema_assertion_replays": 1,
+        "local_go_test": 0,
+        "local_go_build": 0,
+        "local_go_vet": 0,
+        "local_go_conformance": 0,
+        "process_state": "REFUTED",
+        "reason": "one diagnostic replay of the artifact assertion step after CI failures; no local Go execution"
+      },
+      "assets": [
+        {"id":538501631,"name":"evidence-v0.2.1.tar.gz","size_bytes":10011,"sha256":"sha256:9f45cf78ef9339d3d694a30fb21131151d8ec61e4eb62455f2848e0d78180832","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.2.1/evidence-v0.2.1.tar.gz"},
+        {"id":538501634,"name":"manifest-v0.2.1.json","size_bytes":15336,"sha256":"sha256:f17271a11b98c48114a740faea96efc3c89f2a5c2746f8efe52d76688ea7ac9f","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.2.1/manifest-v0.2.1.json"},
+        {"id":538501658,"name":"SHA256SUMS","size_bytes":263,"sha256":"sha256:bba568c5f8bbba841976d1f6b9b6c9118e9049d3ed014323770456851e8906e1","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.2.1/SHA256SUMS"},
+        {"id":538501664,"name":"source-v0.2.1.tar.gz","size_bytes":26719,"sha256":"sha256:cdab3d87acf7aad4889ee41027df75f4fbcfd9dc4afe8e23a5a66504ed35dd70","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.2.1/source-v0.2.1.tar.gz"}
+      ]
+    },
+    "reflexive_compiler_phase_durable_release": {
+      "repository": "kimjooyoon/gooo-reflexive-compiler-slice",
+      "tag": "v0.1.1",
+      "release_id": 380040917,
+      "release_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/tag/v0.1.1",
+      "target_commit_sha": "dabbe38badebefdf2979d8862c26a647b0dd15c0",
+      "tag_object_sha": "8db85557f66d4bb61a4fc1816b3a20dab2c40f0c",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33437644781,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33437644781",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "dabbe38badebefdf2979d8862c26a647b0dd15c0",
+        "conclusion": "success",
+        "job_id": 99637878450,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33437644781/job/99637878450",
+        "artifact_ids": [9775010906]
+      },
+      "source_artifact": {
+        "run_id": 33437644781,
+        "artifact_id": 9775010906,
+        "name": "reflexive-conformance-dabbe38badebefdf2979d8862c26a647b0dd15c0",
+        "size_bytes": 19269921,
+        "sha256": "sha256:99934e633fc823b236077fb02f2dee2e0447c40686243cd6e647ca9e30be874c"
+      },
+      "release_run": {
+        "run_id": 33437664492,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33437664492",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "dabbe38badebefdf2979d8862c26a647b0dd15c0",
+        "conclusion": "success",
+        "job_id": 99637944818,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33437664492/job/99637944818",
+        "artifact_ids": []
+      },
+      "release_manifest": {
+        "schema": "gooo/reflexive-release-manifest/v1",
+        "version": "0.1.1",
+        "tag": "v0.1.1",
+        "commit": "dabbe38badebefdf2979d8862c26a647b0dd15c0",
+        "assets": [
+          {"name":"gooo-reflexive-compiler-slice-source-v0.1.1.tar.gz","digest":"sha256:ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c"},
+          {"name":"gooo-reflexive-compiler-slice-linux-amd64-v0.1.1.tar.gz","digest":"sha256:c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387"},
+          {"name":"release-report-v0.1.1.json","digest":"sha256:cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d"},
+          {"name":"version.json","digest":"sha256:363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef"}
+        ]
+      },
+      "protocol_observation": {
+        "schema": "gooo/reflexive-compiler-denominator/v1",
+        "scope": "ONE_COMPILER_PHASE_ONLY",
+        "phase": "reflexive.normalize.v1",
+        "operations": [
+          {"name":"NormalizeSource","input":"Source","output":"SemanticIR"},
+          {"name":"EmitBackend","input":"SemanticIR","output":"GeneratedBackend"},
+          {"name":"VerifyReplay","input":"Evidence","output":"Evidence"}
+        ],
+        "cases": {"denominator":3,"CLOSED":1,"UNKNOWN":1,"REFUTED":1,"precedence":["REFUTED","UNKNOWN","CLOSED"]},
+        "unknown": {"stage":"NORMALIZE","step":"REQUIRE_DECLARED_ENTITY","reason":"REQUIRED_ENTITY_MISSING","unknown_class":"DIRECT_MISSING","next_operation":"ADD_REQUIRED_ENTITY","blocked_by":["gooo://reflexive/input/required"]},
+        "refutation": {"stage":"NORMALIZE","step":"CHECK_STABLE_ID_UNIQUENESS","reason":"DUPLICATE_STABLE_ID","counterexample":"gooo://reflexive/input/duplicate"},
+        "replay": {"decision_matches":3,"digest_mismatches":0,"ir_mismatches":0,"generated_mismatches":0},
+        "rollback": {"possible":3,"baseline_retained":3,"candidate_separate":3},
+        "outputs": {"files":21,"bytes":32273},
+        "runtime": {"peak_rss_bytes":7221248,"compile_wall_ms":58,"build_wall_ms":5388,"test_wall_ms":2093,"conformance_wall_ms":2614},
+        "tests": {"total":3,"executed":3,"reused":0,"failed":0,"unknown":1},
+        "inventory": {"go_files":8,"go_physical_lines":1096,"gooo_files":4,"gooo_physical_lines":33,"regular_files":24,"subdirectories":14,"root_readme_excluded":true},
+        "authority": {"local_test_executions":0,"repository_writes":0,"external_mutations":"NOT_OBSERVED","proof_choice":"NOT_OBSERVED","indicator":"NOT_OBSERVED"},
+        "state": {"global_self_hosting":"UNKNOWN","external_utility":"UNKNOWN","whole_language_improvement":"UNKNOWN"}
+      },
+      "historical_provenance": {
+        "v0.1.0": {
+          "state": "NON_DURABLE",
+          "tag": "v0.1.0",
+          "release_id": 380032434,
+          "immutable": false,
+          "tag_object_sha": "f89b47fedab983b9c3cef0b9be03da65eadff3de",
+          "target_commit_sha": "57f5ef6ce407f51cd36da163b2b267e876c31e33"
+        }
+      },
+      "assets": [
+        {"id":538508362,"name":"gooo-reflexive-compiler-slice-linux-amd64-v0.1.1.tar.gz","size_bytes":2589271,"sha256":"sha256:c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/gooo-reflexive-compiler-slice-linux-amd64-v0.1.1.tar.gz"},
+        {"id":538508360,"name":"gooo-reflexive-compiler-slice-source-v0.1.1.tar.gz","size_bytes":19475,"sha256":"sha256:ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/gooo-reflexive-compiler-slice-source-v0.1.1.tar.gz"},
+        {"id":538508364,"name":"release-manifest-v0.1.1.json","size_bytes":795,"sha256":"sha256:cdd3d3f0cb426c1d26ebc83c2b998151301fd6dade7f7b3bde77202ac9a7e0ad","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/release-manifest-v0.1.1.json"},
+        {"id":538508363,"name":"release-report-v0.1.1.json","size_bytes":2898,"sha256":"sha256:cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/release-report-v0.1.1.json"},
+        {"id":538508367,"name":"SHA256SUMS","size_bytes":506,"sha256":"sha256:1a41949ea027e01ae893dd3872ae32b537a896adaa0df4910628d3a51d73424e","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/SHA256SUMS"},
+        {"id":538508361,"name":"version.json","size_bytes":315,"sha256":"sha256:363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.1.1/version.json"}
+      ]
+    },
+    "causal_verification_runner_durable_release": {
+      "repository": "kimjooyoon/gooo-causal-verification-runner",
+      "tag": "v0.1.1",
+      "release_id": 380048457,
+      "release_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/releases/tag/v0.1.1",
+      "target_commit_sha": "0c16428762d1d1da1b28fe05c4e051d2cc41967b",
+      "tag_object_sha": "82bb99006232a064725df29a53af5405e222cd42",
+      "immutable": true,
+      "source_pull_request": {
+        "number": 2,
+        "base_ref": "main",
+        "head_ref": "process-authority-guard",
+        "head_sha": "65295c74603e1e8ac418f20ef66b12f2ae935979",
+        "merge_commit_sha": "0c16428762d1d1da1b28fe05c4e051d2cc41967b",
+        "merged": true
+      },
+      "source_pr_run": {
+        "run_id": 33438798441,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438798441",
+        "event": "pull_request",
+        "head_branch": "process-authority-guard",
+        "head_sha": "65295c74603e1e8ac418f20ef66b12f2ae935979",
+        "conclusion": "success",
+        "job_id": 99641659758,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438798441/job/99641659758",
+        "artifact_ids": []
+      },
+      "source_run": {
+        "run_id": 33438900833,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438900833",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "0c16428762d1d1da1b28fe05c4e051d2cc41967b",
+        "conclusion": "success",
+        "job_id": 99642001168,
+        "job_name": "conformance",
+        "job_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438900833/job/99642001168",
+        "artifact_ids": [9775474098]
+      },
+      "source_artifact": {
+        "run_id": 33438900833,
+        "artifact_id": 9775474098,
+        "name": "gooo-causal-verification-runner-33438900833",
+        "size_bytes": 3466163,
+        "sha256": "sha256:b3b9b89c820e9aa2f2d48c6686fb4a51bd52ac0b58c2c9ef15bc531191966183"
+      },
+      "release_run": {
+        "run_id": 33439000856,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33439000856",
+        "event": "push",
+        "head_branch": "v0.1.1",
+        "head_sha": "0c16428762d1d1da1b28fe05c4e051d2cc41967b",
+        "conclusion": "success",
+        "job_id": 99642343892,
+        "job_name": "prepare-assets",
+        "job_url": "https://github.com/kimjooyoon/gooo-causal-verification-runner/actions/runs/33439000856/job/99642343892",
+        "artifact_ids": []
+      },
+      "release_manifest": {
+        "archive": "gooo-causal-verification-runner-v0.1.1.tar.gz",
+        "asset_digest": "sha256:fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb",
+        "asset_size_bytes": 38034,
+        "commit_sha": "0c16428762d1d1da1b28fe05c4e051d2cc41967b",
+        "external_platform_authority": "github_release_api.immutable",
+        "release_class": "first_post_guard_durable_release",
+        "schema": "gooo/causal-verification-runner/release-manifest/v1",
+        "self_asserted_immutable": true,
+        "tag": "v0.1.1",
+        "tag_object_sha": "82bb99006232a064725df29a53af5405e222cd42"
+      },
+      "protocol_observation": {
+        "schema": "gooo/causal-verification-runner/denominator/v1",
+        "denominator_id": "causal-verification-runner-v1",
+        "fixed_denominator": 12,
+        "precedence": ["REFUTED", "UNKNOWN", "CLOSED"],
+        "proof_totals": {"FOUNDATION": 4, "COHERENCE": 4, "REGRESSION": 4},
+        "indicator_totals": {"DRIVER": 4, "OUTCOME": 4, "GUARDRAIL": 4},
+        "cases": {"denominator": 6, "CLOSED": 2, "UNKNOWN": 1, "REFUTED": 3},
+        "unknown": {
+          "stage": "AFFECTED_SEMANTIC_PREDICATES",
+          "step": "resolve-impact-edge",
+          "reason": "UNKNOWN_IMPACT_EDGE",
+          "unknown_class": "CAUSAL_EDGE_UNKNOWN",
+          "next_operation": "OBTAIN_SEMANTIC_GRAPH_EDGE_PROOF",
+          "blocked_by": ["edge:edge-component-secret-unknown"]
+        },
+        "fixture_metrics": [
+          {"case_id":"safe-reuse","decision":"CLOSED","total":2,"selected":1,"executed":1,"reused":1,"oracle":2,"fail":0,"unknown":0,"before_wall_ms":100,"after_wall_ms":70,"before_peak_rss_kib":200,"after_peak_rss_kib":180,"avoided_executions":1},
+          {"case_id":"transitive-impact","decision":"CLOSED","total":3,"selected":2,"executed":2,"reused":1,"oracle":3,"fail":0,"unknown":0,"before_wall_ms":130,"after_wall_ms":90,"before_peak_rss_kib":220,"after_peak_rss_kib":190,"avoided_executions":1},
+          {"case_id":"unknown-edge-full-fallback","decision":"UNKNOWN","total":2,"selected":2,"executed":2,"reused":0,"oracle":2,"fail":0,"unknown":1,"before_wall_ms":120,"after_wall_ms":120,"before_peak_rss_kib":210,"after_peak_rss_kib":210,"avoided_executions":0},
+          {"case_id":"stale-proof-rejection","decision":"REFUTED","total":2,"selected":2,"executed":2,"reused":0,"oracle":2,"fail":0,"unknown":0,"before_wall_ms":110,"after_wall_ms":112,"before_peak_rss_kib":205,"after_peak_rss_kib":208,"avoided_executions":0},
+          {"case_id":"hidden-counterexample","decision":"REFUTED","total":2,"selected":1,"executed":1,"reused":1,"oracle":2,"fail":1,"unknown":0,"before_wall_ms":100,"after_wall_ms":65,"before_peak_rss_kib":200,"after_peak_rss_kib":175,"avoided_executions":1},
+          {"case_id":"cache-hit-only","decision":"REFUTED","total":2,"selected":2,"executed":2,"reused":0,"oracle":2,"fail":0,"unknown":0,"before_wall_ms":100,"after_wall_ms":100,"before_peak_rss_kib":200,"after_peak_rss_kib":200,"avoided_executions":0}
+        ],
+        "process_guard": {
+          "cells": 8,
+          "cases": 3,
+          "current_guard": "CLOSED",
+          "decision": "REFUTED",
+          "direct_main": {"bootstrap": 1, "historical_post_bootstrap": 2, "post_guard": 0},
+          "historical_counterexamples": ["historical-direct-main-d5c7687", "historical-direct-main-4421ae4"]
+        },
+        "outputs": {"files": 52, "bytes": 6140304},
+        "runtime": {"compile_wall_ms": 7220, "build_wall_ms": 6880, "test_wall_ms": 2020, "conformance_wall_ms": 12020, "peak_rss_kib": 268496},
+        "tests": {"total": 13, "executed": 10, "reused": 3, "failed": 1, "unknown": 1},
+        "inventory": {"files": 52, "directories": 15, "go_files": 8, "go_physical_lines": 2466, "gooo_files": 1, "gooo_physical_lines": 59, "root_readme_excluded": true},
+        "authority": {"repository_writes": 0, "local_test_executions": 0, "local_build": 0, "verification_authority": "GITHUB_ACTIONS"},
+        "state": {"utility": "UNKNOWN", "global_core": "NOT_MADE"}
+      },
+      "historical_provenance": {
+        "v0.1.0": {
+          "state": "REFUTED",
+          "tag": "v0.1.0",
+          "release_id": 380027888,
+          "immutable": true,
+          "tag_object_sha": "19c627c8a08af656487b6346854a9e6a9d806e2b",
+          "target_commit_sha": "d5c768735b07a1389676964e3a9288487d724b20",
+          "post_bootstrap_direct_main_commits": [
+            {"commit_sha":"d5c768735b07a1389676964e3a9288487d724b20","pull_requests":[]},
+            {"commit_sha":"4421ae44596028c1faa99c19407506fb5265fc1f","pull_requests":[]}
+          ],
+          "process_state": "REFUTED"
+        }
+      },
+      "assets": [
+        {"id":538521941,"name":"gooo-causal-verification-runner-v0.1.1.tar.gz","size_bytes":38034,"sha256":"sha256:fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb","download_url":"https://github.com/kimjooyoon/gooo-causal-verification-runner/releases/download/v0.1.1/gooo-causal-verification-runner-v0.1.1.tar.gz"},
+        {"id":538521943,"name":"release-manifest.json","size_bytes":552,"sha256":"sha256:36d3f52aeb74f32025d0eaa10767e2a6036b5ad42e0636f92b90339af9615eb8","download_url":"https://github.com/kimjooyoon/gooo-causal-verification-runner/releases/download/v0.1.1/release-manifest.json"},
+        {"id":538521942,"name":"SHA256SUMS","size_bytes":214,"sha256":"sha256:4297c6c933c4892016df45367015094c9d2fe122a950f7effa9276607df6201f","download_url":"https://github.com/kimjooyoon/gooo-causal-verification-runner/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    "executable_evolution_trial_counterexample_durable_release": {
+      "repository": "kimjooyoon/gooo-evolution-trial",
+      "tag": "v0.1.0",
+      "release_id": 380086557,
+      "release_url": "https://github.com/kimjooyoon/gooo-evolution-trial/releases/tag/v0.1.0",
+      "target_commit_sha": "d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",
+      "tag_object_sha": "c3a87bd320a24e6c4961afc532fd4df6b5d165c3",
+      "immutable": true,
+      "source_run": {
+        "run_id": 33445305000,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-evolution-trial/actions/runs/33445305000",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",
+        "conclusion": "success",
+        "job_id": 99662940416,
+        "job_name": "verify-and-experiment",
+        "job_url": "https://github.com/kimjooyoon/gooo-evolution-trial/actions/runs/33445305000/job/99662940416",
+        "artifact_ids": [9777794326]
+      },
+      "source_artifact": {
+        "run_id": 33445305000,
+        "artifact_id": 9777794326,
+        "name": "gooo-evolution-trial-33445305000",
+        "size_bytes": 130085,
+        "sha256": "sha256:07c81d12ecf003907678cbbea15d104effd44bdb658893ee426820fdb5b9a13a"
+      },
+      "release_run": {
+        "run_id": 33445379243,
+        "workflow_url": "https://github.com/kimjooyoon/gooo-evolution-trial/actions/runs/33445379243",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",
+        "conclusion": "success",
+        "job_id": 99663170908,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-evolution-trial/actions/runs/33445379243/job/99663170908",
+        "artifact_ids": [9777817257]
+      },
+      "release_artifact": {
+        "run_id": 33445379243,
+        "artifact_id": 9777817257,
+        "name": "gooo-evolution-trial-0.1.0-release-audit",
+        "size_bytes": 33589,
+        "sha256": "sha256:1cf113aaf5a6e629ce2da1f358a5502dba3600ec9f8155b785d72acfd5f20001"
+      },
+      "release_manifest": {
+        "schema": "gooo/evolution-trial/release-manifest/v1",
+        "version": "0.1.0",
+        "tag": "v0.1.0",
+        "commit": "d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",
+        "assets": [
+          {"name":"gooo-evolution-trial-source-v0.1.0.tar.gz","digest":"sha256:b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc"},
+          {"name":"upstream-lock-v0.1.0.json","digest":"sha256:b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330"},
+          {"name":"experiment-dossier-v0.1.0.md","digest":"sha256:6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e"},
+          {"name":"version.json","digest":"sha256:b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07"}
+        ]
+      },
+      "upstream_inputs": [
+        {"producer":"github.com/kimjooyoon/gooo-language-delta-forge","release":"v0.1.2","release_id":380033725,"immutable":true,"tag_object":"5d68c5f2f699f9d73bcf2e87121204512dfd64fc","target_commit":"30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45","release_run_id":33436456556,"release_job_id":99633967202,"release_artifact_id":9774576485,"assets":[{"id":538495830,"size_bytes":240,"sha256":"sha256:cd99462d4d6635ba03024ef3e03ea600dbe65f22ad416f379583f86fa6af7876"},{"id":538495829,"size_bytes":7542,"sha256":"sha256:e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4"},{"id":538495828,"size_bytes":26671,"sha256":"sha256:77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba"},{"id":538495832,"size_bytes":736,"sha256":"sha256:0c467b96e4b91915139aa0d5990b49c8ca5a038a2ac965d43a4a5656e511064a"}]},
+        {"producer":"github.com/kimjooyoon/gooo-reflexive-compiler-slice","release":"v0.1.1","release_id":380040917,"immutable":true,"tag_object":"8db85557f66d4bb61a4fc1816b3a20dab2c40f0c","target_commit":"dabbe38badebefdf2979d8862c26a647b0dd15c0","release_run_id":33437664492,"release_job_id":99637944818,"release_artifact_id":9775010906,"release_conformance_run_id":33437644781,"release_conformance_job_id":99637878450,"assets":[{"id":538508362,"size_bytes":2589271,"sha256":"sha256:c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387"},{"id":538508360,"size_bytes":19475,"sha256":"sha256:ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c"},{"id":538508364,"size_bytes":795,"sha256":"sha256:cdd3d3f0cb426c1d26ebc83c2b998151301fd6dade7f7b3bde77202ac9a7e0ad"},{"id":538508363,"size_bytes":2898,"sha256":"sha256:cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d"},{"id":538508367,"size_bytes":506,"sha256":"sha256:1a41949ea027e01ae893dd3872ae32b537a896adaa0df4910628d3a51d73424e"},{"id":538508361,"size_bytes":315,"sha256":"sha256:363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef"}]},
+        {"producer":"github.com/kimjooyoon/gooo-causal-verification-runner","release":"v0.1.1","release_id":380048457,"immutable":true,"tag_object":"82bb99006232a064725df29a53af5405e222cd42","target_commit":"0c16428762d1d1da1b28fe05c4e051d2cc41967b","release_run_id":33439000856,"release_job_id":99642343892,"release_artifact_id":9775474098,"release_conformance_run_id":33438900833,"release_conformance_job_id":99642001168,"assets":[{"id":538521941,"size_bytes":38034,"sha256":"sha256:fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb"},{"id":538521943,"size_bytes":552,"sha256":"sha256:36d3f52aeb74f32025d0eaa10767e2a6036b5ad42e0636f92b90339af9615eb8"},{"id":538521942,"size_bytes":214,"sha256":"sha256:4297c6c933c4892016df45367015094c9d2fe122a950f7effa9276607df6201f"}]}
+      ],
+      "protocol_observation": {
+        "schema": "gooo/evolution-trial/final-report/v1",
+        "experiment": "first-release-to-release-reflexive-normalization-split",
+        "decision": "REFUTED",
+        "precedence": ["REFUTED", "UNKNOWN", "CLOSED"],
+        "candidate_evolution": {"decision":"CLOSED","added_cells":2,"retired_cells":1,"split_cells":1,"rollback_exact_pair":true,"graph_before":"sha256:ab965892722b03bf9d4da78a6bf91f018d9609018107a90db6435fc34832549b","graph_after":"sha256:9369abeeccfadba001ed001306281cb6b0e413fe094de6353d8208bcf76c0485","delta":"sha256:826a90daaf19fb0f0b0b51af89c53150219ca624331905a4c913e329b085a6e6","candidate":"sha256:4edd900ea94b1cb461b27d61fb06e72993424eb8ad424b82ac19b78b59318bdb"},
+        "baseline": {"decision":"CLOSED","distribution":{"CLOSED":1,"UNKNOWN":1,"REFUTED":1},"failed":0,"replay":true,"phase_digest":"sha256:8a557cb3b7445f5186f0619b14c82dd215f1950a2d298bafe2cbdc7e54768220","receipt_digest":"sha256:ef560e68b9d88054c6e22e385955a698dd4806f014d7df7142987f5d0973c44d"},
+        "candidate": {"decision":"REFUTED","distribution":{"CLOSED":0,"UNKNOWN":0,"REFUTED":3},"failed":3,"replay":false,"phase_digest":"sha256:0be26e6d653f0200c0300334fdf252b0d6ea0fdec81acdf7ac34801a03cd5ff1","reason":"phase graph must declare exactly three executable activities","semantic_ir":"NOT_OBSERVED","backend":"NOT_OBSERVED","result_digest":"sha256:f8a7d659e13ddb36889d7b2c8ad7d64b5c249399f80d62e23914523ed992758e"},
+        "causal": {"decision":"REFUTED","full_oracle":"CLOSED","full_oracle_digest":"sha256:65bf73d71b57aa3a07fe68a22cddf904e0629c7d2b145f1d9a7e55519025cb6c","candidate_result_digest":"sha256:f8a7d659e13ddb36889d7b2c8ad7d64b5c249399f80d62e23914523ed992758e","metrics":{"total":2,"selected":1,"executed":1,"reused":1,"full_oracle":2,"fail":1,"unknown":0,"avoided":1}},
+        "acceptance_predicates": {"candidate_compiled_and_generated_ir_backend":false,"causal_selection_and_full_oracle_closed":false,"closed_unknown_refuted_corpus_preserved":false,"exact_semantic_resolution_pair_observed":true,"replay_digests_match":false,"rollback_possible":true},
+        "released_tools_executed": {"delta_forge":true,"reflexive_compiler":true,"causal_runner":true,"candidate_only":true},
+        "unresolved": ["released compiler phase parser accepts exactly three executable activities and cannot compose the requested four-activity split","candidate semantic IR and backend were therefore not emitted","whole-language self-improvement remains UNKNOWN","external utility remains UNKNOWN/NOT_MADE"],
+        "metrics": {"compile_wall_ms":2673,"build_wall_ms":609,"test_wall_ms":58,"conformance_wall_ms":11384,"integration_wall_ms":11384,"peak_rss_kib":91512,"generated_files":110,"generated_bytes":377573},
+        "tests": {"total":3,"executed":3,"reused":0,"failed":0,"unknown":1},
+        "inventory": {"regular_files":22,"directories":11,"go_files":9,"gooo_files":1,"physical_lines":2164,"per_language_physical_lines":"NOT_OBSERVED","root_readme_excluded":true},
+        "authority": {"repository_writes":0,"upstream_writes":0,"local_test_executions":0,"verification_authority":"GITHUB_ACTIONS"},
+        "state": {"whole_language_improvement":"UNKNOWN","external_utility":"UNKNOWN/NOT_MADE"}
+      },
+      "process_evidence": {"schema":"gooo/evolution-trial/process-evidence/v1","repository":"kimjooyoon/gooo-evolution-trial","phase":"main","main_head":"d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982","bootstrap_root":"cd64acc2077474e459dcbcd457aff0d320524c14","bootstrap_root_parent_count":0,"bootstrap_direct_main":1,"post_bootstrap_direct_main":0,"pull_requests":[{"number":1,"head_sha":"0814b9b737ad0c4a71467322029ffe7596bee754","merge_commit_sha":"e71ad71fe494979e265151bdc70f969ac68f2540","merged":true},{"number":2,"head_sha":"92952fe8df9f692277db820eba342eb8591c1df1","merge_commit_sha":"dc35a659442a4c7f66a5285567e3933c51767ff5","merged":true},{"number":3,"head_sha":"122357b77868c2960c75c35dc3ffdde8373de3f6","merge_commit_sha":"f19d0bea41e642ff76dfd347d0687db7e6b118f7","merged":true},{"number":4,"head_sha":"6c401396ab9ada4a8eb109d22050d7c3adcd2f3c","merge_commit_sha":"d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982","merged":true}],"repository_writes_by_experiment":0,"upstream_writes_by_experiment":0,"local_test_executions":0,"utility_global_core":{"state":"UNKNOWN","status":"NOT_MADE"},"exact":true,"next_operation":"MERGE_ONE_FEATURE_PR_THEN_PUBLISH_IMMUTABLE_RELEASE"},
+      "ledger_consumer_observation": {"append_only":true,"local_validation_executions":1,"artifact_schema_assertion_replays":1,"local_go_test":0,"local_go_build":0,"local_go_vet":0,"local_go_conformance":0,"process_state":"REFUTED"},
+      "assets": [
+        {"id":538589631,"name":"experiment-dossier-v0.1.0.md","size_bytes":2077,"sha256":"sha256:6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/experiment-dossier-v0.1.0.md"},
+        {"id":538589629,"name":"gooo-evolution-trial-source-v0.1.0.tar.gz","size_bytes":28486,"sha256":"sha256:b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/gooo-evolution-trial-source-v0.1.0.tar.gz"},
+        {"id":538589628,"name":"release-manifest-v0.1.0.json","size_bytes":764,"sha256":"sha256:16d908073ae49566fd7186a8d042758a79d30274e94fe5c5ca7ca20773fc9839","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/release-manifest-v0.1.0.json"},
+        {"id":538589633,"name":"SHA256SUMS","size_bytes":469,"sha256":"sha256:e1431e654fe65bdb9a325b1da797b0da613e8712ad32c55854d78610f14380b4","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/SHA256SUMS"},
+        {"id":538589630,"name":"upstream-lock-v0.1.0.json","size_bytes":3888,"sha256":"sha256:b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/upstream-lock-v0.1.0.json"},
+        {"id":538589627,"name":"version.json","size_bytes":319,"sha256":"sha256:b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07","download_url":"https://github.com/kimjooyoon/gooo-evolution-trial/releases/download/v0.1.0/version.json"}
+      ]
+    },
+    "reflexive_compiler_graph_topology_self_improvement_durable_release": {
+      "repository":"kimjooyoon/gooo-reflexive-compiler-slice",
+      "tag":"v0.2.0",
+      "release_id":380102097,
+      "release_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/tag/v0.2.0",
+      "target_commit_sha":"7bdba0c353a73a40111747dbf55512939f6841a0",
+      "tag_object_sha":"5852cc52f4ecec7fc835fdb6ed7adc1108459d6a",
+      "immutable":true,
+      "source_pull_request":{"number":8,"base_ref":"main","head_ref":"agent/reflexive-phase-self-improvement","head_sha":"69727313308f5143319b4bb2b95e67b6bdd2735d","merge_commit_sha":"7bdba0c353a73a40111747dbf55512939f6841a0","merged":true},
+      "source_pr_run":{"run_id":33447973294,"workflow_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33447973294","event":"pull_request","head_branch":"agent/reflexive-phase-self-improvement","head_sha":"69727313308f5143319b4bb2b95e67b6bdd2735d","conclusion":"success","job_id":99671224008,"job_name":"conformance","job_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33447973294/job/99671224008","artifact_ids":[9778718602]},
+      "source_pr_artifact":{"run_id":33447973294,"artifact_id":9778718602,"name":"reflexive-conformance-8e0f45ce97fad9da11e7bbcf1ef5ad8b129fa1d6","size_bytes":24954557,"sha256":"sha256:596a6042d1682097df78e237c7b60541fc05dcc359c05dff749a4bc77debbb75"},
+      "source_run":{"run_id":33448048024,"workflow_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33448048024","event":"push","head_branch":"main","head_sha":"7bdba0c353a73a40111747dbf55512939f6841a0","conclusion":"success","job_id":99671456387,"job_name":"conformance","job_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33448048024/job/99671456387","artifact_ids":[9778748463]},
+      "source_artifact":{"run_id":33448048024,"artifact_id":9778748463,"name":"reflexive-conformance-7bdba0c353a73a40111747dbf55512939f6841a0","size_bytes":24954565,"sha256":"sha256:be15de0147fb86e12e0ccf1432dfab7628e64fe6ac2201f5739fc7e017da98f7"},
+      "release_run":{"run_id":33448121915,"workflow_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33448121915","event":"workflow_dispatch","head_branch":"main","head_sha":"7bdba0c353a73a40111747dbf55512939f6841a0","conclusion":"success","job_id":99671691260,"job_name":"release","job_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/actions/runs/33448121915/job/99671691260","artifact_ids":[]},
+      "release_manifest":{"schema":"gooo/reflexive-release-manifest/v1","version":"0.2.0","tag":"v0.2.0","commit":"7bdba0c353a73a40111747dbf55512939f6841a0","assets":[{"name":"gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz","digest":"sha256:3ced5c624b50afddf6906c093b80a3a83eebfc52ed2c59051ec427b28931eeba"},{"name":"gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz","digest":"sha256:039d8db0457cb8ff9d439ac52234c23de6c19b38212d8c32242155d276bd483b"},{"name":"release-report-v0.2.0.json","digest":"sha256:6d80a3941a55d4199f6fc3fae4ed2c2429f45d1fd24fb2e3aafecc1125ca2fc7"},{"name":"version.json","digest":"sha256:cd55a20257e61a0603bbdc32c47667bf107d3d4dffe31518477ebb9c67a64214"}]},
+      "historical_provenance":{"v0.1.0":{"state":"NON_DURABLE","tag":"v0.1.0","release_id":380032434,"immutable":false,"tag_object_sha":"f89b47fedab983b9c3cef0b9be03da65eadff3de","target_commit_sha":"57f5ef6ce407f51cd36da163b2b267e876c31e33"}},
+      "protocol_observation":{
+        "schema":"gooo/reflexive-compiler-graph-topology/v1",
+        "scope":"ONE_COMPILER_PHASE",
+        "state":"CLOSED",
+        "decision":"CLOSED",
+        "topology":{
+          "before":{"id":"reflexive.normalize.v1","digest":"sha256:8a557cb3b7445f5186f0619b14c82dd215f1950a2d298bafe2cbdc7e54768220","activity_roles":["NormalizeSource","EmitBackend","VerifyReplay"],"activity_count":3,"typed_edge_count":2,"valid":true,"localization_stages":1},
+          "after":{"id":"reflexive.normalize.v1","digest":"sha256:30b38ad566a350a3d0107f48f79ff43db467a94ce4aaf464ad1970e872b862b3","topology":"reflexive.normalize.v2","activity_roles":["ParseSource","ValidateStableIDs","EmitBackend","VerifyReplay"],"activity_count":4,"typed_edge_count":3,"valid":true,"localization_stages":2},
+          "semantics":"ROLE_EDGE_STAGE_TOPOLOGY_NOT_COUNT"
+        },
+        "direct_corpus":{"before":{"CLOSED":1,"UNKNOWN":1,"REFUTED":1},"after":{"CLOSED":1,"UNKNOWN":1,"REFUTED":1},"after_cases":3,"all_independently_verified":true},
+        "resolution_pairs":{"supported_valid_topology_cardinalities":{"before":1,"after":2,"unit":"valid-topology-cardinalities"},"accepted_trial_candidate_cases":{"before":0,"after":3,"unit":"cases"},"coarse_localization_stages":{"before":1,"after":2,"unit":"phase-localization-stages"}},
+        "trial_refutation":{"state":"REFUTED","error":"phase graph must declare exactly three executable activities","delta":{"added_cells":2,"retired_cells":1,"split_cells":1},"rollback_exact_pair":true,"baseline_distribution":{"CLOSED":1,"UNKNOWN":1,"REFUTED":1},"candidate_distribution":{"CLOSED":0,"UNKNOWN":0,"REFUTED":3},"causal":{"total":2,"selected":1,"executed":1,"reused":1,"full_oracle":2,"failures":1}},
+        "applied_bundle":{"sha256":"sha256:49244a778d6e80c67bb5fb0b99342873ba987916b14febb500524a26a5af3490","candidate":"sha256:4edd900ea94b1cb461b27d61fb06e72993424eb8ad424b82ac19b78b59318bdb","delta":"sha256:826a90daaf19fb0f0b0b51af89c53150219ca624331905a4c913e329b085a6e6","applied_root_phase":"sha256:30b38ad566a350a3d0107f48f79ff43db467a94ce4aaf464ad1970e872b862b3","root_match":true},
+        "same_digest_conditions":{"source_tree":"sha256:09fef83853c981cb5d77f31a31e8d424523fec4eb730423b8b27167c1c5db477","contract":"sha256:a15ac998e85d7fe7a62d112260024da08e433b603af03360f348a194c22d03d2","toolchain":"sha256:76227025cc0bc2be7067aa45d11e09cacfd49c58f498f4c2e4f6a9872a607bf9"},
+        "closure":{"state":"CLOSED","stage":"IMPROVEMENT","step":"RESOLVE_TRIAL_COUNTEREXAMPLE","reason":"GRAPH_SEMANTICS_ACCEPT_SPLIT_CANDIDATE","trial_refutation":"REFUTED","protected_core_adoption":0},
+        "metrics":{"go_files":8,"go_lines":1775,"gooo_files":4,"gooo_lines":48,"regular_files":29,"directories":14,"root_readme_excluded":true,"outputs_files":21,"outputs_bytes":32289,"peak_rss_bytes":7008256,"peak_rss_kib":7072,"compile_wall_ms":59,"build_wall_ms":5248,"test_wall_ms":2096,"conformance_wall_ms":2538,"integration_wall_ms":8228},
+        "tests":{"total":3,"executed":3,"reused":0,"failed":0,"unknown":1},
+        "authority":{"repository_writes":0,"upstream_writes":0,"local_test_executions":0,"verification_authority":"GITHUB_ACTIONS"},
+        "state_scope":{"global_self_hosting":"UNKNOWN","external_utility":"UNKNOWN","scope":"ONE_COMPILER_PHASE"}
+      },
+      "ledger_consumer_observation":{"append_only":true,"local_validation_executions":1,"artifact_schema_assertion_replays":1,"local_schema_replays":0,"local_conformance_replays":0,"local_go_test":0,"local_go_build":0,"local_go_vet":0,"process_state":"REFUTED"},
+      "assets":[
+        {"id":538621864,"name":"gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz","size_bytes":2628138,"sha256":"sha256:039d8db0457cb8ff9d439ac52234c23de6c19b38212d8c32242155d276bd483b","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz"},
+        {"id":538621862,"name":"gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz","size_bytes":31726,"sha256":"sha256:3ced5c624b50afddf6906c093b80a3a83eebfc52ed2c59051ec427b28931eeba","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz"},
+        {"id":538621865,"name":"release-manifest-v0.2.0.json","size_bytes":795,"sha256":"sha256:3e9a6b8d409725a1b8e99a387ebd33045e64677364df783c083b32472c3ba171","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/release-manifest-v0.2.0.json"},
+        {"id":538621866,"name":"release-report-v0.2.0.json","size_bytes":10167,"sha256":"sha256:6d80a3941a55d4199f6fc3fae4ed2c2429f45d1fd24fb2e3aafecc1125ca2fc7","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/release-report-v0.2.0.json"},
+        {"id":538621870,"name":"SHA256SUMS","size_bytes":506,"sha256":"sha256:e7554da06237c2b52eaa15f4a5fa4e16b1edbf6240eacffdaea6000fc73d7464","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/SHA256SUMS"},
+        {"id":538621863,"name":"version.json","size_bytes":315,"sha256":"sha256:cd55a20257e61a0603bbdc32c47667bf107d3d4dffe31518477ebb9c67a64214","download_url":"https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/download/v0.2.0/version.json"}
+      ]
+    }
+  },
+  "counterexample_runs": [
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_1",
+      "attempt": 1,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "commit_message": "feat: add causal improvement frontier scheduler",
+      "run_id": 33390048056,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390048056",
+      "event": "pull_request",
+      "head_branch": "implementation",
+      "head_sha": "977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "conclusion": "failure",
+      "job_id": 99481346679,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390048056/job/99481346679",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_2",
+      "attempt": 2,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "commit_message": "feat: add causal improvement frontier scheduler",
+      "run_id": 33390048173,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390048173",
+      "event": "push",
+      "head_branch": "implementation",
+      "head_sha": "977b178a7ec1f79b6f2d7186de8e24063bed3dc2",
+      "conclusion": "failure",
+      "job_id": 99481347299,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390048173/job/99481347299",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_3",
+      "attempt": 3,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "commit_message": "ci: preserve format findings while running required gates",
+      "run_id": 33390167631,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390167631",
+      "event": "push",
+      "head_branch": "implementation",
+      "head_sha": "bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "conclusion": "failure",
+      "job_id": 99481730514,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390167631/job/99481730514",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_4",
+      "attempt": 4,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "commit_message": "ci: preserve format findings while running required gates",
+      "run_id": 33390171403,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390171403",
+      "event": "pull_request",
+      "head_branch": "implementation",
+      "head_sha": "bcab324d3af1ef782bcc467e71554a82388c5e1b",
+      "conclusion": "failure",
+      "job_id": 99481741862,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390171403/job/99481741862",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_5",
+      "attempt": 5,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "commit_message": "ci: expose canonical formatter diff",
+      "run_id": 33390257810,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390257810",
+      "event": "push",
+      "head_branch": "implementation",
+      "head_sha": "e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "conclusion": "failure",
+      "job_id": 99482016254,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390257810/job/99482016254",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "improvement_frontier_failed_attempt_6",
+      "attempt": 6,
+      "repository": "kimjooyoon/gooo-improvement-frontier",
+      "commit_sha": "e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "commit_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/commit/e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "commit_message": "ci: expose canonical formatter diff",
+      "run_id": 33390263187,
+      "run_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390263187",
+      "event": "pull_request",
+      "head_branch": "implementation",
+      "head_sha": "e60cae36340cbb7d854c45b0ae464bad73a7c92e",
+      "conclusion": "failure",
+      "job_id": 99482033392,
+      "job_name": "conformance",
+      "job_url": "https://github.com/kimjooyoon/gooo-improvement-frontier/actions/runs/33390263187/job/99482033392",
+      "reason": "UPSTREAM_FAILED_ATTEMPT",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "opentofu_envelope_failed_release_immutability_push",
+      "attempt": 1,
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "run_id": 33394717115,
+      "run_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33394717115",
+      "event": "push",
+      "head_branch": "feat/read-only-envelope",
+      "head_sha": "fa49384b61bb6f8eb6cc11ef6f3dc6c867fc8025",
+      "conclusion": "failure",
+      "job_id": 99496382005,
+      "job_name": "envelope",
+      "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33394717115/job/99496382005",
+      "reason": "FAILED_CI_VALIDATION",
+      "append_only": true
+    },
+    {
+      "counterexample_id": "opentofu_envelope_failed_release_immutability_pull_request",
+      "attempt": 2,
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "run_id": 33394727232,
+      "run_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33394727232",
+      "event": "pull_request",
+      "head_branch": "feat/read-only-envelope",
+      "head_sha": "fa49384b61bb6f8eb6cc11ef6f3dc6c867fc8025",
+      "conclusion": "failure",
+      "job_id": 99496415701,
+      "job_name": "envelope",
+      "job_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33394727232/job/99496415701",
+      "reason": "FAILED_CI_VALIDATION",
+      "append_only": true
+    }
+  ],
+  "counterexamples": [
+    {
+      "counterexample_id": "counterfactual_change_v0.1.0_mutable",
+      "capability": "COUNTERFACTUAL_CHANGE_RELEASE",
+      "repository": "kimjooyoon/gooo-counterfactual-change",
+      "tag": "v0.1.0",
+      "release_id": 379657848,
+      "release_url": "https://github.com/kimjooyoon/gooo-counterfactual-change/releases/tag/v0.1.0",
+      "target_commit_sha": "ee7d989c8f22e6853dc77461d19fce02b19496af",
+      "tag_object_sha": "3cf01d3d9a55f38be3351c4d3f892ca7a3a5ef6e",
+      "immutable": false,
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "successor_release_key": "counterfactual_change_release",
+      "append_only": true,
+      "assets": [
+        {"id":537797741,"name":"gooo-counterfactual-change-0.1.0.tar.gz","size_bytes":22407,"sha256":"sha256:44927573b98ccf9d50941a5fecc4d7f0c3340921be7875a762329b8051dd657d","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.0/gooo-counterfactual-change-0.1.0.tar.gz"},
+        {"id":537797742,"name":"release-manifest.json","size_bytes":200,"sha256":"sha256:ad37ae92b7094e040460223b0b361d7f6e5f061b62be11ecf218966479a4c7cb","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.0/release-manifest.json"},
+        {"id":537797744,"name":"SHA256SUMS","size_bytes":120,"sha256":"sha256:cd553d239171aad7063f6efeb56cc30863e0bb2d88170b5fd8f13d13ad874f1b","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.0/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "counterfactual_change_v0.1.1_mutable",
+      "capability": "COUNTERFACTUAL_CHANGE_RELEASE",
+      "repository": "kimjooyoon/gooo-counterfactual-change",
+      "tag": "v0.1.1",
+      "release_id": 379661972,
+      "release_url": "https://github.com/kimjooyoon/gooo-counterfactual-change/releases/tag/v0.1.1",
+      "target_commit_sha": "a5038f0147cdc507fc46a7e39da43f87aa499d94",
+      "tag_object_sha": "76525ae8f0bdc85cb5b31944b137027cd7898650",
+      "immutable": false,
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "successor_release_key": "counterfactual_change_release",
+      "append_only": true,
+      "assets": [
+        {"id":537806189,"name":"gooo-counterfactual-change-0.1.1.tar.gz","size_bytes":22443,"sha256":"sha256:c663ad4391c3874b0db76b89c22b1135b07dafbc773c41878389aeb5f87485c5","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.1/gooo-counterfactual-change-0.1.1.tar.gz"},
+        {"id":537806191,"name":"release-manifest.json","size_bytes":200,"sha256":"sha256:78c1a2fd3bfd16f474138f571d1e15b5d0713206403ee5e2b10b26f036e01d67","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.1/release-manifest.json"},
+        {"id":537806190,"name":"SHA256SUMS","size_bytes":106,"sha256":"sha256:14529e10d42cd42e8f9a07baac9b90f45755eaf0c2e4af08bd2428d00d92ff5e","download_url":"https://github.com/kimjooyoon/gooo-counterfactual-change/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "verification_reuse_v0.1.1_mutable",
+      "capability": "VERIFICATION_REUSE_RELEASE",
+      "repository": "kimjooyoon/gooo-verification-reuse",
+      "tag": "v0.1.1",
+      "release_id": 379659735,
+      "release_url": "https://github.com/kimjooyoon/gooo-verification-reuse/releases/tag/v0.1.1",
+      "target_commit_sha": "5252c202d8f7e3637209037c1b0bf9595b7da661",
+      "tag_object_sha": "34ed02e0a8cbed18882c67d3d51988231a849d1a",
+      "immutable": false,
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "successor_release_key": "verification_reuse_release",
+      "append_only": true,
+      "assets": [
+        {"id":537801742,"name":"gooo-verification-reuse-v0.1.1.tar.gz","size_bytes":19947,"sha256":"sha256:f19c4fdcc4b5d1964b1cb160bf93a34d3927660932cd8cecafe7e11768c2ca88","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.1/gooo-verification-reuse-v0.1.1.tar.gz"},
+        {"id":537801743,"name":"release-manifest.json","size_bytes":402,"sha256":"sha256:4b1283d322186f98f115574b6bcb95ee4a52b9fa4d5aaa48daf588e42973322d","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.1/release-manifest.json"},
+        {"id":537801741,"name":"SHA256SUMS","size_bytes":111,"sha256":"sha256:4f02d28061c95b5690d098e97c41145923d7d0135af97cf83807ab11bc64564a","download_url":"https://github.com/kimjooyoon/gooo-verification-reuse/releases/download/v0.1.1/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "semantic_drift_v0.1.0_mutable",
+      "capability": "SEMANTIC_DRIFT_RELEASE",
+      "repository": "kimjooyoon/gooo-semantic-drift",
+      "tag": "v0.1.0",
+      "release_id": 379661097,
+      "release_url": "https://github.com/kimjooyoon/gooo-semantic-drift/releases/tag/v0.1.0",
+      "target_commit_sha": "89377e44c96f6cefff75d05d5c0a8eb3df6d4944",
+      "tag_object_sha": "1848e9b81cb785bda35123f091d3cc2d182669b1",
+      "immutable": false,
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "successor_release_key": "semantic_drift_release",
+      "append_only": true,
+      "assets": [
+        {"id":537804378,"name":"gooo-semantic-drift-v0.1.0.tar.gz","size_bytes":27856,"sha256":"sha256:4090d0b25bd2c58499aa57fa2ffa14f59fa38848bad97faaf7348b2cbb0c5ad2","download_url":"https://github.com/kimjooyoon/gooo-semantic-drift/releases/download/v0.1.0/gooo-semantic-drift-v0.1.0.tar.gz"}
+      ]
+    },
+    {
+      "counterexample_id": "opentofu_envelope_v0.1.0_failed_release_immutability",
+      "capability": "OPENTOFU_ENVELOPE_RELEASE",
+      "repository": "kimjooyoon/gooo-opentofu-envelope",
+      "tag": "v0.1.0",
+      "release_id": 379762192,
+      "release_url": "https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.1.0",
+      "target_commit_sha": "1a908f0c7504654b6ead83beebb0caff1ad16374",
+      "tag_object_sha": "6aca4fde71d6fdd8800000c7fb0f9b687a67423e",
+      "immutable": false,
+      "reason": "FAILED_RELEASE_IMMUTABILITY",
+      "successor_release_key": "opentofu_envelope_release",
+      "append_only": true,
+      "assets": [
+        {"id":537998764,"name":"gooo-opentofu-envelope-v0.1.0-evidence.zip","size_bytes":17424,"sha256":"sha256:60ede272fbc38a88ef1b73ec77b10ac8af5ae38e6a80144ab4d412960d2ac8c1","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.0/gooo-opentofu-envelope-v0.1.0-evidence.zip"},
+        {"id":537998767,"name":"SHA256SUMS","size_bytes":152,"sha256":"sha256:6b0333a1e7938a5acefed37c8dcc932e2c0c7c70692edc945643f38361b9ae60","download_url":"https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/download/v0.1.0/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "test_frontier_v0.1.0_platform_immutability",
+      "capability": "TEST_FRONTIER_RELEASE",
+      "repository": "kimjooyoon/gooo-test-frontier",
+      "tag": "v0.1.0",
+      "release_id": 379770450,
+      "release_url": "https://github.com/kimjooyoon/gooo-test-frontier/releases/tag/v0.1.0",
+      "target_commit_sha": "434776a02bef579cd175e8f1e29be027a9c289cc",
+      "tag_object_sha": "648a114a98db27d61e70f2063586deb8e1cf0d7a",
+      "immutable": false,
+      "self_asserted_immutable": true,
+      "platform_immutable": false,
+      "reason": "SELF_ASSERTED_IMMUTABILITY_CONTRADICTED_BY_PLATFORM",
+      "successor_release_key": "test_frontier_release",
+      "append_only": true,
+      "direct_main_observation": {
+        "commit_sha": "7281ead57069050b73538fa247953a4d1d6d1822",
+        "commit_url": "https://github.com/kimjooyoon/gooo-test-frontier/commit/7281ead57069050b73538fa247953a4d1d6d1822",
+        "changed_paths": [".github/workflows/release.yml"],
+        "pull_requests": [],
+        "scope": "workflow-only"
+      },
+      "failed_release_audit": {
+        "run_id": 33396179603,
+        "run_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33396179603",
+        "event": "push",
+        "head_branch": "v0.1.0",
+        "head_sha": "434776a02bef579cd175e8f1e29be027a9c289cc",
+        "conclusion": "failure",
+        "job_id": 99501127520,
+        "job_name": "release",
+        "job_url": "https://github.com/kimjooyoon/gooo-test-frontier/actions/runs/33396179603/job/99501127520",
+        "failed_step": "Audit release identity and digests"
+      },
+      "assets": [
+        {"id":538014107,"name":"gooo-test-frontier-v0.1.0.tar.gz","size_bytes":27813,"sha256":"sha256:93ce04a14df4578e8711d2b22b86ed04287a47cb9e933cf3a8b79fe0923a90d2","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.0/gooo-test-frontier-v0.1.0.tar.gz"},
+        {"id":538014106,"name":"release-manifest.json","size_bytes":392,"sha256":"sha256:d6323fa42598ce35ba4347ecd05fd83cb7dc728e092aeea155938266687c4ceb","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.0/release-manifest.json"},
+        {"id":538014109,"name":"SHA256SUMS","size_bytes":106,"sha256":"sha256:47ea537d5d1e9bc4ccf49485aec1c94ecada310c616c81cff54818a9d7983988","download_url":"https://github.com/kimjooyoon/gooo-test-frontier/releases/download/v0.1.0/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "change_bundle_v0.1.0_platform_immutability",
+      "capability": "CHANGE_BUNDLE_RELEASE",
+      "repository": "kimjooyoon/gooo-change-bundle",
+      "tag": "v0.1.0",
+      "release_id": 379775534,
+      "release_url": "https://github.com/kimjooyoon/gooo-change-bundle/releases/tag/v0.1.0",
+      "target_commit_sha": "2d98537d1d6d4ff96fc70c98247660990b78191c",
+      "tag_object_sha": "ea288b0f07b89faca3ba3725a54c316771ccd9cf",
+      "immutable": false,
+      "self_asserted_immutable": true,
+      "platform_immutable": false,
+      "reason": "SELF_ASSERTED_IMMUTABILITY_CONTRADICTED_BY_PLATFORM",
+      "successor_release_key": "change_bundle_release",
+      "append_only": true,
+      "development_process": {
+        "state": "REFUTED",
+        "classification": "DEVELOPMENT_PROCESS_DIRECT_MAIN",
+        "after_pull_request": 1,
+        "commits": [
+          {"commit_sha":"5e370da7a36ac1cae339825a6c4c9cc52c3e76b6","commit_url":"https://github.com/kimjooyoon/gooo-change-bundle/commit/5e370da7a36ac1cae339825a6c4c9cc52c3e76b6","commit_message":"fix: dispatch immutable release from annotated tag","parent_sha":"2d98537d1d6d4ff96fc70c98247660990b78191c","changed_paths":[".github/workflows/release.yml"],"pull_requests":[]},
+          {"commit_sha":"51600eac0abc92edb0883b5cff15b31d27a006d6","commit_url":"https://github.com/kimjooyoon/gooo-change-bundle/commit/51600eac0abc92edb0883b5cff15b31d27a006d6","commit_message":"fix: bind release manifest and portable asset checksums","parent_sha":"5e370da7a36ac1cae339825a6c4c9cc52c3e76b6","changed_paths":[".github/workflows/release.yml"],"pull_requests":[]},
+          {"commit_sha":"3d53c9ada1371b8c97eb0ca582715f0d47486bc9","commit_url":"https://github.com/kimjooyoon/gooo-change-bundle/commit/3d53c9ada1371b8c97eb0ca582715f0d47486bc9","commit_message":"docs: preserve failed CI and release counterexamples","parent_sha":"51600eac0abc92edb0883b5cff15b31d27a006d6","changed_paths":["README.md","docs/counterexamples/release-failures-v1.json"],"pull_requests":[]}
+        ]
+      },
+      "assets": [
+        {"id":538025186,"name":"ci-metrics.json","size_bytes":641,"sha256":"sha256:a8fb6c30aa14c8d8b4187fd093c95aad2321ed4be4ec26e556b21b09125387c8","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.0/ci-metrics.json"},
+        {"id":538025184,"name":"gooo-change-bundle-ci-v0.1.0.tar.gz","size_bytes":4675,"sha256":"sha256:9722538ad2f71b429c7c857fb3ad18c909c6b9acfb0353b56e4c8c3f15775a51","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.0/gooo-change-bundle-ci-v0.1.0.tar.gz"},
+        {"id":538025183,"name":"gooo-change-bundle-v0.1.0.tar.gz","size_bytes":25093,"sha256":"sha256:064d58cf42437651b1210c81f184909d0cfb8d352d62f335fe4c4ae1a66c1685","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.0/gooo-change-bundle-v0.1.0.tar.gz"},
+        {"id":538025185,"name":"release-manifest.json","size_bytes":848,"sha256":"sha256:5dabb48804a52e4d03cfe98cf8b230db62252da3a534e108efd992d15c2e1a68","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.0/release-manifest.json"},
+        {"id":538025187,"name":"SHA256SUMS","size_bytes":371,"sha256":"sha256:447d3d48b3dd33e185b51f4b48b24696848a5a233505c1d608636275b4f2998a","download_url":"https://github.com/kimjooyoon/gooo-change-bundle/releases/download/v0.1.0/SHA256SUMS"}
+      ]
+    },
+    {
+      "counterexample_id": "utility_trial_v0.1.0_release_history_rewrite",
+      "capability": "UTILITY_TRIAL_PROTOCOL_RELEASE",
+      "repository": "kimjooyoon/gooo-utility-trial",
+      "tag": "v0.1.0",
+      "release_id": 379848683,
+      "release_url": "https://github.com/kimjooyoon/gooo-utility-trial/releases/tag/v0.1.0",
+      "release_api_endpoint": "repos/kimjooyoon/gooo-utility-trial/releases/379848683",
+      "release_api_status": 404,
+      "release_absent": true,
+      "target_commit_sha": "6521e699f1e1180b7e942ae18d0948383c3d544e",
+      "tag_object_sha": "e30bca521d127d929043557198557710d35afcd2",
+      "immutable": false,
+      "reason": "RELEASE_HISTORY_REWRITE_PROCESS",
+      "successor_release_key": "utility_trial_protocol_release",
+      "append_only": true,
+      "historical_release": true,
+      "failed_release_audit": {
+        "run_id": 33407273856,
+        "run_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33407273856",
+        "event": "push",
+        "head_branch": "v0.1.0",
+        "head_sha": "6521e699f1e1180b7e942ae18d0948383c3d544e",
+        "conclusion": "failure",
+        "job_id": 99537841162,
+        "job_name": "immutable-v0.1.0-release",
+        "job_url": "https://github.com/kimjooyoon/gooo-utility-trial/actions/runs/33407273856/job/99537841162",
+        "artifact_id": 9763659711,
+        "artifact_name": "gooo-utility-trial-release-evidence-v0.1.0",
+        "artifact_size_bytes": 2708572,
+        "artifact_sha256": "sha256:46e54370a7215ea3eb0dd368f55eb035cc50e270d330b231656a9cf052fd6f99"
+      },
+      "assets": [
+        {"id":538154567,"name":"gooo-utility-trial-0.1.0-evidence.zip","size_bytes":11377,"sha256":"sha256:1350c51f5f7db9dc2c6ac64523229f75cf7ec9ebdffaf99aa2c6edf32a40aa72","download_url":"https://github.com/kimjooyoon/gooo-utility-trial/releases/download/v0.1.0/gooo-utility-trial-0.1.0-evidence.zip"},
+        {"id":538154571,"name":"SHA256SUMS","size_bytes":104,"sha256":"sha256:1848476904a222e9fab2fbe2186ba7315ca0fb1df247ea5ddfb5d9462f1997ba","download_url":"https://github.com/kimjooyoon/gooo-utility-trial/releases/download/v0.1.0/SHA256SUMS"}
+      ],
+      "current_historical_release": {
+        "release_id": 379850805,
+        "immutable": true,
+        "tag": "v0.1.0",
+        "tag_object_sha": "e30bca521d127d929043557198557710d35afcd2",
+        "target_commit_sha": "6521e699f1e1180b7e942ae18d0948383c3d544e",
+        "assets": [
+          {"id":538157619,"name":"gooo-utility-trial-0.1.0-evidence.zip","size_bytes":11376,"sha256":"sha256:734082b840e915b48c42e14e93252624f5e441538509ff29dafe259b851f9a9e"},
+          {"id":538157605,"name":"SHA256SUMS","size_bytes":104,"sha256":"sha256:152398724ab80d4ad5dbaaa040fc2d63261431322d9344d1305e6c840bbf5ffa"}
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "gooo/ledger-append-planner/upstream-lock/v1",
+  "repository": "kimjooyoon/gooo-self-improvement-ledger",
+  "tag": "v0.31.0",
+  "release_id": 380120973,
+  "immutable": true,
+  "tag_object_sha": "6a7d03dd69e5a501c4c56db1fa4ec97842da6883",
+  "target_commit_sha": "c0d22d90718753f88552096ac437ea818fd11a25",
+  "release_api_url": "https://api.github.com/repos/kimjooyoon/gooo-self-improvement-ledger/releases/380120973",
+  "tag_ref_api_url": "https://api.github.com/repos/kimjooyoon/gooo-self-improvement-ledger/git/ref/tags/v0.31.0",
+  "source_archive": {
+    "api_url": "https://api.github.com/repos/kimjooyoon/gooo-self-improvement-ledger/zipball/c0d22d90718753f88552096ac437ea818fd11a25",
+    "sha256": "sha256:3b903e2a084b9f32f70787b01a72f4d3761e7aa0eaf4189b2447942074a73f9a"
+  },
+  "release_asset": {
+    "id": 538664422,
+    "name": "gooo-self-improvement-ledger-c0d22d90718753f88552096ac437ea818fd11a25.zip",
+    "size_bytes": 17781866,
+    "sha256": "sha256:328751c6488803f6b35800015fdecf16cc1124175af56c34374482b7545af29a",
+    "download_url": "https://github.com/kimjooyoon/gooo-self-improvement-ledger/releases/download/v0.31.0/gooo-self-improvement-ledger-c0d22d90718753f88552096ac437ea818fd11a25.zip"
+  },
+  "source_tree_sha256": "sha256:91af005372ea71ecceb5908135536c27603cad0ed9826815e24f8b65b840382c"
+}

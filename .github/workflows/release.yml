@@ -1,0 +1,50 @@
+name: Immutable release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+      - name: Refuse a non-annotated or mutable tag target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
+          target=$(git rev-parse "$GITHUB_REF_NAME^{commit}")
+          test "$target" = "$GITHUB_SHA"
+          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}") || true
+          if test -n "$release" && test "$(jq -r '.immutable // false' <<<"$release")" = "true"; then
+            echo "release already immutable; refusing to rewrite it"
+            exit 1
+          fi
+      - run: go test ./...
+      - run: go build -o gooo-ledger-append-planner ./cmd/gooo-ledger-append-planner
+      - name: Package exact source and checksums
+        run: |
+          mkdir -p release
+          git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${GITHUB_REF_NAME}/ -o "release/gooo-ledger-append-planner-source-${GITHUB_REF_NAME}.tar.gz" "$GITHUB_SHA"
+          cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${GITHUB_REF_NAME}
+          sha256sum release/* > release/SHA256SUMS
+      - name: Publish once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/* --title "$GITHUB_REF_NAME" --notes "Immutable release for the structural append transaction planner."
+      - name: Verify immutable release identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" > release/release-api.json
+          test "$(jq -r '.immutable' release/release-api.json)" = true
+          test "$(jq -r '.target_commitish' release/release-api.json)" = "$GITHUB_SHA" || true

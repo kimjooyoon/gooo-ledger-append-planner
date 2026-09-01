@@ -1,0 +1,7 @@
+# Release dossier v0.1.0
+
+This dossier is append-only release evidence. No release or tag is created by the local implementation turn. A future GitHub Actions release must append the exact REST release ID, annotated tag object, target commit, workflow run/job, artifact IDs, asset IDs, sizes, and SHA-256 digests after observing them. Tags and releases must never be rewritten.
+
+The immutable v0.31.0 fixture is locked to release `380120973`, tag object `6a7d03dd69e5a501c4c56db1fa4ec97842da6883`, target commit `c0d22d90718753f88552096ac437ea818fd11a25`, source archive digest `sha256:3b903e2a084b9f32f70787b01a72f4d3761e7aa0eaf4189b2447942074a73f9a`, and release asset `538664422` digest `sha256:328751c6488803f6b35800015fdecf16cc1124175af56c34374482b7545af29a`.
+
+The implementation development observation is preserved as `development_process=REFUTED`: local validation `3`, Go test `9`, Go build `0`, `go run` compilation `3`, Go vet `1`, and conformance `2`. These local executions are not product conformance authority. The historical upstream observation `local_validation_executions=1/process=REFUTED` and multiple uncommitted wrong insertion-point attempts remain motivation only. No matched manual/tool before-after pair exists, so whole-language improvement remains `UNKNOWN` and external utility remains `UNKNOWN/NOT_MADE`.

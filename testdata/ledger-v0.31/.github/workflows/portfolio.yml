@@ -1,0 +1,626 @@
+name: Self-improvement portfolio evidence
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, 'agent/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    env:
+      SUBJECT_SHA: ${{ github.sha }}
+      ARTIFACT_ROOT: /tmp/gooo-self-improvement-ledger
+    steps:
+      - name: Check out the reviewed subject
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SUBJECT_SHA }}
+
+      - name: Install Go 1.27
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.0'
+          cache: false
+
+      - name: Verify toolchain and clean checkout
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = "$SUBJECT_SHA"
+          test "$(go env GOVERSION)" = go1.27.0
+          mkdir -p "$ARTIFACT_ROOT"
+          git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}' > "$RUNNER_TEMP/repository-before"
+
+      - name: Verify formatting, vet, tests, and build in CI
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          files=$(gofmt -l .)
+          if test -n "$files"; then
+            gofmt -d $files
+            exit 1
+          fi
+          go vet ./...
+          build_start=$(date +%s%N)
+          /usr/bin/time -f '%M' -o "$ARTIFACT_ROOT/build-peak-rss" \
+            go build -trimpath -o "$RUNNER_TEMP/ledger-report" ./cmd/ledger-report
+          build_end=$(date +%s%N)
+          test_start=$(date +%s%N)
+          /usr/bin/time -f '%M' -o "$ARTIFACT_ROOT/test-peak-rss" \
+            go test -json ./... > "$ARTIFACT_ROOT/go-test.json"
+          test_end=$(date +%s%N)
+          test_summary=$(jq -s '{event_count:length,package_count:([.[]|select(.Package!=null)|.Package]|unique|length),pass_events:([.[]|select(.Action=="pass")]|length),fail_events:([.[]|select(.Action=="fail")]|length),skip_events:([.[]|select(.Action=="skip")]|length)}' "$ARTIFACT_ROOT/go-test.json")
+          jq -n \
+            --arg schema "gooo/self-improvement-portfolio/ci-observations/v1" \
+            --arg go_version "$(go env GOVERSION)" --arg go_version_line "$(go version)" \
+            --argjson build_wall "$(( (build_end - build_start) / 1000000 ))" \
+            --argjson build_raw "$((build_end - build_start))" \
+            --argjson build_rss "$(cat "$ARTIFACT_ROOT/build-peak-rss")" \
+            --argjson test_wall "$(( (test_end - test_start) / 1000000 ))" \
+            --argjson test_raw "$((test_end - test_start))" \
+            --argjson test_rss "$(cat "$ARTIFACT_ROOT/test-peak-rss")" \
+            --argjson test_summary "$test_summary" \
+            '{schema:$schema,go_version:$go_version,go_version_line:$go_version_line,checks:{gofmt:{command:"gofmt -l .",status:"success"},vet:{command:"go vet ./...",status:"success"},build:{command:"go build -trimpath -o $RUNNER_TEMP/ledger-report ./cmd/ledger-report",status:"success",timing:{wall_ms:$build_wall,duration_ns:$build_raw,peak_rss_kib:$build_rss}},test:{command:"go test -json ./...",status:"success",timing:{wall_ms:$test_wall,duration_ns:$test_raw,peak_rss_kib:$test_rss},summary:$test_summary}}}' \
+            > "$ARTIFACT_ROOT/ci-observations.json"
+
+      - name: Fetch and verify thirty-four immutable release locks plus preserved counterexamples and failed release triggers
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          trap 'status=$?; echo "release evidence assertion failed at line ${LINENO}: ${BASH_COMMAND}" >&2; exit "$status"' ERR
+          /usr/bin/time -f '%M' -o "$ARTIFACT_ROOT/release-verify-peak-rss" \
+          bash scripts/verify-releases.sh contracts/release-locks-v1.json "$ARTIFACT_ROOT/releases"
+          jq -e '.summary=={total:34,verified:34,unknown:0,refuted:0} and (.counterexamples|length)==8 and all(.counterexamples[]; .state=="REFUTED" and .verified==true) and (.counterexample_runs|length)==8 and all(.counterexample_runs[]; .verified==true and .conclusion=="failure") and (.failed_release_triggers|length)==1 and all(.failed_release_triggers[]; .state=="REFUTED" and .verified==true and .release_absent==true and .reason=="FAILED_RELEASE_TRIGGER")' \
+            "$ARTIFACT_ROOT/releases/verification.json" >/dev/null
+          experience_dir="$ARTIFACT_ROOT/releases/experience_memory_release/assets"
+          jq -e '.schema=="gooo/experience-memory/release-manifest/v1" and .tag=="v0.1.0" and .commit_sha=="79fd6edc588ea26279dbe735e5f6e250132f7730" and .immutable==true and .assets==[{digest:"sha256:177f7c872d4e704f5eba6dd96c43e28bfcab2a714b032188c511f3e7872e5d6d",kind:"source",name:"gooo-experience-memory-v0.1.0.tar.gz"},{digest:"sha256:27afa525ccaa5ebdf738fef99615998b51bed85d865ccd6e9367036a46a961f6",kind:"ci-evidence",name:"gooo-experience-memory-evidence-v0.1.0.tar.gz"}]' "$experience_dir/release-manifest.json" >/dev/null
+          test "$(awk 'NF {print NF}' "$experience_dir/SHA256SUMS" | sort -u)" = 2
+          while read -r declared_digest asset_name; do
+            test "$asset_name" = "gooo-experience-memory-v0.1.0.tar.gz" || test "$asset_name" = "gooo-experience-memory-evidence-v0.1.0.tar.gz"
+            actual="sha256:$(sha256sum "$experience_dir/$asset_name" | awk '{print $1}')"
+            test "${declared_digest#sha256:}" = "${actual#sha256:}"
+          done < <(awk '{print $1" "$2}' "$experience_dir/SHA256SUMS")
+          drift_dir="$ARTIFACT_ROOT/releases/semantic_drift_guard_release/assets"
+          test "$(stat -c '%s' "$drift_dir/evidence-v0.1.1.tar.gz")" = 6651
+          test "$(stat -c '%s' "$drift_dir/evidence-v0.1.1.tar.gz.sha256")" = 113
+          test "$(sha256sum "$drift_dir/evidence-v0.1.1.tar.gz" | awk '{print $1}')" = 83ea0adf7b59b08147eb24ef16483682d8f21d204dc93ed337d39900ae9e09ec
+          test "$(sha256sum "$drift_dir/evidence-v0.1.1.tar.gz.sha256" | awk '{print $1}')" = 61e49e62af005dff6a27f43bf20be43d257095bee1b552ab89a433fbe5db111b
+          test "$(awk 'NF {print NF}' "$drift_dir/evidence-v0.1.1.tar.gz.sha256" | sort -u)" = 2
+          declared=$(awk 'NF {print $1}' "$drift_dir/evidence-v0.1.1.tar.gz.sha256")
+          test "${declared#sha256:}" = 83ea0adf7b59b08147eb24ef16483682d8f21d204dc93ed337d39900ae9e09ec
+          census_dir="$ARTIFACT_ROOT/releases/semantic_authority_census_release/assets"
+          jq -e '.schema=="gooo/semantic-authority-release/v1" and .tag=="v0.1.0" and .tag_object=="c81ff9b843dce716c57fe2ab542bde52e922ab2b" and .target=="0451a1f5813e51a2d09145d7516170c7802f9fd5" and .run_id=="33421919840" and .assets=={source:"sha256:3bd78b1b7cb5330dc901003b2d23abee9b95abfe23d1ad0d754d1bdb63471866",evidence:"sha256:e68c93214ef99e65ffd818bf384668c34e8332aa7b4481d6cc70b747afaaf0e3"}' "$census_dir/manifest-v0.1.0.json" >/dev/null
+          test "$(awk 'NF {print NF}' "$census_dir/SHA256SUMS" | sort -u)" = 2
+          test "$(sha256sum "$census_dir/SHA256SUMS" | awk '{print $1}')" = 9ae4216b45722c43f62720a3e3d13048905e3291d7ee595d3fe6ab0f78f11411
+          test "$(sha256sum "$census_dir/manifest-v0.1.0.json" | awk '{print $1}')" = 9c403c7b607c91f1cddced37611875544f047899610be293c96b6475b269b260
+          test "$(sha256sum "$census_dir/source-v0.1.0.tar.gz" | awk '{print $1}')" = 3bd78b1b7cb5330dc901003b2d23abee9b95abfe23d1ad0d754d1bdb63471866
+          test "$(sha256sum "$census_dir/evidence-v0.1.0.tar.gz" | awk '{print $1}')" = e68c93214ef99e65ffd818bf384668c34e8332aa7b4481d6cc70b747afaaf0e3
+          while read -r declared_digest asset_name; do
+            test "$asset_name" = "source-v0.1.0.tar.gz" || test "$asset_name" = "evidence-v0.1.0.tar.gz" || test "$asset_name" = "manifest-v0.1.0.json"
+            test "$(sha256sum "$census_dir/$asset_name" | awk '{print $1}')" = "$declared_digest"
+          done < <(awk '{print $1" "$2}' "$census_dir/SHA256SUMS")
+          learning_dir="$ARTIFACT_ROOT/releases/reflexive_learning_drift_cycle_release/assets"
+          jq -e '.schema=="gooo/reflexive-loop/release-manifest/v1" and .version=="v0.4.0" and .repository=="kimjooyoon/gooo-reflexive-loop" and .release=={tag:"v0.4.0",target_commit_sha:"134d9043e8808147ed2f7252527e809d3eafad44",annotated:true,immutable_required:true} and .implementation=={pull_request:7,correction_pull_request:8,merged_main_commit:"134d9043e8808147ed2f7252527e809d3eafad44"} and .workflow.run_id==33420406673 and .workflow.job_id==99581097777 and .workflow.branch=="main" and .workflow.go_version=="go1.27.0" and .workflow.conformance=="passed" and .evidence_artifact=={name:"gooo-reflexive-loop-evidence",id:9768699219,size_bytes:3624947,digest:"sha256:11f3fffb4c6ee93307e46b5c1fdb8013fe5829983e069d823d896dc77e84a6c2"} and .assets=={source:{name:"gooo-reflexive-loop-v0.4.0-source.tar.gz",size_bytes:96363,digest:"sha256:fc8f5e551bb335d0a9133623c2fdc4549f634a93645b41b8fbb7c0acc98ab957"},evidence:{name:"gooo-reflexive-loop-v0.4.0-evidence.tar.gz",size_bytes:2468418,digest:"sha256:1bac0c50f4508922b5351df3a541f4daa115c60867ca106d11d4593e7c58b5ce"}} and .evidence.schema=="gooo/reflexive-loop/learning-drift-gated/conformance/v1" and .evidence.version=="v0.4.0" and .evidence.scenario_counts=={CLOSED:3,REFUTED:5,UNKNOWN:4} and .evidence.denominator=={cells:12,fixed:true} and .evidence.precedence==["REFUTED","UNKNOWN","CLOSED"] and .evidence.normal.normal_report_digest=="sha256:c1c8686b4e9c96acfe665ead2fd176b2314642f93de428039b0b4a32a59bd6fd" and .evidence.normal.decision=="CLOSED" and .evidence.normal.repository_unchanged==true and .evidence.normal.external_utility_state=="UNKNOWN" and .evidence.authority=={repository_writes:0,pull_request_authorized:false,push_authorized:false,commit_authorized:false,merge_authorized:false,apply_authorized:false,local_test_executions:0,cross_project_required_gates:0} and .evidence.utility_inference==false' "$learning_dir/gooo-reflexive-loop-v0.4.0-manifest.json" >/dev/null
+          test "$(wc -c < "$learning_dir/gooo-reflexive-loop-v0.4.0-manifest.json" | tr -d ' ')" = 6537
+          test "$(wc -c < "$learning_dir/gooo-reflexive-loop-v0.4.0-source.tar.gz" | tr -d ' ')" = 96363
+          test "$(wc -c < "$learning_dir/gooo-reflexive-loop-v0.4.0-evidence.tar.gz" | tr -d ' ')" = 2468418
+          test "$(wc -c < "$learning_dir/SHA256SUMS" | tr -d ' ')" = 323
+          test "$(sha256sum "$learning_dir/gooo-reflexive-loop-v0.4.0-manifest.json" | awk '{print $1}')" = b3de9c74872b8b8ec4fac51393a4ee54256c1f97ab9f8f47effdc68971013977
+          test "$(sha256sum "$learning_dir/gooo-reflexive-loop-v0.4.0-source.tar.gz" | awk '{print $1}')" = fc8f5e551bb335d0a9133623c2fdc4549f634a93645b41b8fbb7c0acc98ab957
+          test "$(sha256sum "$learning_dir/gooo-reflexive-loop-v0.4.0-evidence.tar.gz" | awk '{print $1}')" = 1bac0c50f4508922b5351df3a541f4daa115c60867ca106d11d4593e7c58b5ce
+          test "$(sha256sum "$learning_dir/SHA256SUMS" | awk '{print $1}')" = e55c31a6c66eb82cfcf2d8b39182e07fd39f35f45a7bddfd17407025bda59dc0
+          test "$(awk 'NF {count++} END {print count+0}' "$learning_dir/SHA256SUMS")" = 3
+          test "$(awk 'NF {print NF}' "$learning_dir/SHA256SUMS" | sort -u)" = 2
+          while read -r declared_digest asset_name; do
+            test "$asset_name" = "gooo-reflexive-loop-v0.4.0-source.tar.gz" || test "$asset_name" = "gooo-reflexive-loop-v0.4.0-evidence.tar.gz" || test "$asset_name" = "gooo-reflexive-loop-v0.4.0-manifest.json"
+            test "$(sha256sum "$learning_dir/$asset_name" | awk '{print $1}')" = "$declared_digest"
+          done < <(awk '{print $1" "$2}' "$learning_dir/SHA256SUMS")
+          resolution_dir="$ARTIFACT_ROOT/releases/unknown_resolution_lattice_release/assets"
+          jq -e '. == {commit:"fac2f5c0688c62fd31912a310e0fae77bc198258",go_version:"go1.27.0",immutable:true,schema:"gooo/resolution-lattice/release-manifest/v1",tag:"v0.2.0"}' "$resolution_dir/release-manifest.json" >/dev/null
+          test "$(wc -c < "$resolution_dir/gooo-resolution-lattice-0.2.0.tar.gz" | tr -d ' ')" = 23967
+          test "$(wc -c < "$resolution_dir/release-manifest.json" | tr -d ' ')" = 186
+          test "$(wc -c < "$resolution_dir/SHA256SUMS" | tr -d ' ')" = 103
+          test "$(sha256sum "$resolution_dir/gooo-resolution-lattice-0.2.0.tar.gz" | awk '{print $1}')" = f16f43175104a42eb20fd8f701fa8296c289ce69929ff1861269cb3b00ebbc75
+          test "$(sha256sum "$resolution_dir/release-manifest.json" | awk '{print $1}')" = c178b312da828be4589352fbc195853ccaa08e48adacf7f5522c4a06df65f9fd
+          test "$(sha256sum "$resolution_dir/SHA256SUMS" | awk '{print $1}')" = 8a9b8575cdd5abae5ebba2d1e33a6e93f6b6bfcd7d3ac6855529c74652454549
+          test "$(cat "$resolution_dir/SHA256SUMS")" = "f16f43175104a42eb20fd8f701fa8296c289ce69929ff1861269cb3b00ebbc75  gooo-resolution-lattice-0.2.0.tar.gz"
+          tar -tzf "$resolution_dir/gooo-resolution-lattice-0.2.0.tar.gz" | grep -Fx 'gooo-resolution-lattice-0.2.0/.github/workflows/conformance.yml' >/dev/null
+          tar -tzf "$resolution_dir/gooo-resolution-lattice-0.2.0.tar.gz" | grep -Fx 'gooo-resolution-lattice-0.2.0/.github/workflows/release.yml' >/dev/null
+          self_repair_dir="$ARTIFACT_ROOT/releases/self_repair_integration_release/assets"
+          jq -e '. == {commit:"28f3589d69796b4630b2e066c6a5c45ac8468096",immutable:true,schema:"gooo.self-repair.release-manifest.v1",tag:"v0.2.1"}' "$self_repair_dir/release-manifest.json" >/dev/null
+          test "$(wc -c < "$self_repair_dir/gooo-self-repair-example-0.2.1.tar.gz" | tr -d ' ')" = 30698
+          test "$(wc -c < "$self_repair_dir/release-manifest.json" | tr -d ' ')" = 134
+          test "$(wc -c < "$self_repair_dir/SHA256SUMS" | tr -d ' ')" = 104
+          test "$(sha256sum "$self_repair_dir/gooo-self-repair-example-0.2.1.tar.gz" | awk '{print $1}')" = 7d505a14cfd11c0d6a57cb14ec8de2f51c946285b18d1af8bce1d6ff476b4582
+          test "$(sha256sum "$self_repair_dir/release-manifest.json" | awk '{print $1}')" = 3655571de02ba889fe83676d700e43befbf6130730079a26bed6aa6b65adcdd3
+          test "$(sha256sum "$self_repair_dir/SHA256SUMS" | awk '{print $1}')" = fd70f404c9238fb6fd2ace7cf36b19ed0ce7d89d15fc794ce96ee4d5333f5d1f
+          test "$(cat "$self_repair_dir/SHA256SUMS")" = "7d505a14cfd11c0d6a57cb14ec8de2f51c946285b18d1af8bce1d6ff476b4582  gooo-self-repair-example-0.2.1.tar.gz"
+          tar -tzf "$self_repair_dir/gooo-self-repair-example-0.2.1.tar.gz" | grep -Fx 'gooo-self-repair-example-0.2.1/.github/workflows/ci.yml' >/dev/null
+          tar -tzf "$self_repair_dir/gooo-self-repair-example-0.2.1.tar.gz" | grep -Fx 'gooo-self-repair-example-0.2.1/.github/workflows/release.yml' >/dev/null
+          self_repair_artifact="$RUNNER_TEMP/self-repair-artifact-9770678796.zip"
+          gh api repos/kimjooyoon/gooo-self-repair-example/actions/artifacts/9770678796/zip > "$self_repair_artifact"
+          test "$(wc -c < "$self_repair_artifact" | tr -d ' ')" = 14701
+          test "$(sha256sum "$self_repair_artifact" | awk '{print $1}')" = 870a731cf484535e2b1218e1d7eee37a0ccdd9c7ad194ff19030ab31e42c7514
+          durable_envelope_dir="$ARTIFACT_ROOT/releases/opentofu_durable_semantic_envelope_release/assets"
+          jq -e '
+            .schema=="gooo/opentofu-envelope/release-manifest/v1" and
+            .version==1 and
+            .source_identity=={main_ci_head_sha:"b482afd68a864400a209cb4f439e727cfdfe2eda",main_ci_observation_source_sha:"65bb41f6de07be262bac79476a749611e96ebc84880920c5e9ec412f82769219",source_sha256:"65bb41f6de07be262bac79476a749611e96ebc84880920c5e9ec412f82769219",tag:"v0.1.9",tag_commit_sha:"b482afd68a864400a209cb4f439e727cfdfe2eda"} and
+            .release.tag=="v0.1.9" and .release.commit_sha=="b482afd68a864400a209cb4f439e727cfdfe2eda" and .release.id==380009987 and .release.immutable_expected==true and .release.asset_count_before==0 and .release.asset_count_after==4 and
+            (.release.predecessor_chain|length)==6 and
+            (.release.predecessor_chain|map(select(.tag=="v0.1.3" and .release_id==379957493 and .release_present==true and .immutable==true and .asset_count==0))|length)==1 and
+            (.release.predecessor_chain|map(select((.tag=="v0.1.4" or .tag=="v0.1.5" or .tag=="v0.1.6" or .tag=="v0.1.7") and .release_id==null and .release_present==false and .asset_count==0 and .failed_trigger_counterexample==true))|length)==4 and
+            (.release.predecessor_chain|map(select(.tag=="v0.1.8" and .release_id==380007644 and .release_present==true and .draft==true and .immutable==false and .asset_count==0 and .failed_trigger_counterexample==true))|length)==1 and
+            (.denominator | {target_cells,binding_edges,expected_user_path_steps,proof_counts,indicator_counts})=={target_cells:12,binding_edges:14,expected_user_path_steps:5,proof_counts:{COHERENCE:4,FOUNDATION:4,REGRESSION:4},indicator_counts:{DRIVER:4,GUARDRAIL:4,OUTCOME:4}} and
+            .main_ci=={artifact_digest:"sha256:f04619dbd77314bdf84ba2d5c1b9edd4b9a09b533a8a26c2185ec3b786804157",artifact_id:9773097414,artifact_name:"gooo-opentofu-envelope-evidence-b482afd68a864400a209cb4f439e727cfdfe2eda",observation_sha256:"1214180cc3e710eeff33b9a51c0759a6ef6cf3dfb0ed582664a8c43039351c5d",run_id:33432375475,url:"https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33432375475"} and
+            .toolchain=={go_requirement:"1.27.x",go_version_evidence:"go version go1.27.0 linux/amd64"} and
+            .authority.global_core_authority_claim=="NOT_MADE" and .authority.semantic_graph_authority.scope=="GOOO_SEMANTIC_GRAPH_ONLY" and .authority.semantic_graph_authority.state=="CLOSED" and .authority.external_utility.state=="UNKNOWN" and
+            .authority.test_counts=={total:9,executed:9,reused:0,skipped:0,not_observed:0} and
+            .pipeline=={evidence_source:"SUCCESSFUL_MAIN_CI_ARTIFACT",reproduced_without_local_execution:true,semantic_path:["RELEASED_GOOO_GRAPH","main.tf.json","PINNED_OPENTOFU_VALIDATE_JSON","INDEPENDENT_SERVICE_ORACLE"]}
+          ' "$durable_envelope_dir/manifest-v0.1.9.json" >/dev/null
+          test "$(wc -c < "$durable_envelope_dir/evidence-v0.1.9.tar.gz" | tr -d ' ')" = 13344
+          test "$(wc -c < "$durable_envelope_dir/manifest-v0.1.9.json" | tr -d ' ')" = 55115
+          test "$(wc -c < "$durable_envelope_dir/SHA256SUMS" | tr -d ' ')" = 263
+          test "$(wc -c < "$durable_envelope_dir/source-v0.1.9.tar.gz" | tr -d ' ')" = 30885
+          test "$(sha256sum "$durable_envelope_dir/evidence-v0.1.9.tar.gz" | awk '{print $1}')" = 79b549e7471f983e1f3a9f8f19ff73b5c759bac532ad86d8c3d2738885223f6d
+          test "$(sha256sum "$durable_envelope_dir/manifest-v0.1.9.json" | awk '{print $1}')" = a1352aa6cdeeefc0112884673ce672e920033b6d13d7d8e69ffbf270632df2e1
+          test "$(sha256sum "$durable_envelope_dir/SHA256SUMS" | awk '{print $1}')" = efb3cebd7bcdf2dcc1a1a2279817be1286def7e7387b33f2afc505b3eb7129c6
+          test "$(sha256sum "$durable_envelope_dir/source-v0.1.9.tar.gz" | awk '{print $1}')" = e33609eee44163d3201d125900d57ea12f183ebb561522e86e930d7f3805338f
+          test "$(cat "$durable_envelope_dir/SHA256SUMS")" = $'79b549e7471f983e1f3a9f8f19ff73b5c759bac532ad86d8c3d2738885223f6d  evidence-v0.1.9.tar.gz\na1352aa6cdeeefc0112884673ce672e920033b6d13d7d8e69ffbf270632df2e1  manifest-v0.1.9.json\ne33609eee44163d3201d125900d57ea12f183ebb561522e86e930d7f3805338f  source-v0.1.9.tar.gz'
+          tar -tzf "$durable_envelope_dir/evidence-v0.1.9.tar.gz" | grep -Fx './observation.json' >/dev/null
+          tar -tzf "$durable_envelope_dir/source-v0.1.9.tar.gz" | grep -Fx 'gooo-opentofu-envelope-v0.1.9/.github/workflows/release-v0.1.9.yml' >/dev/null
+          durable_envelope_artifact_metadata="$RUNNER_TEMP/opentofu-envelope-artifact-9773097414.json"
+          curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
+            https://api.github.com/repos/kimjooyoon/gooo-opentofu-envelope/actions/artifacts/9773097414 \
+            -o "$durable_envelope_artifact_metadata"
+          jq -e '
+            .id==9773097414 and
+            .name=="gooo-opentofu-envelope-evidence-b482afd68a864400a209cb4f439e727cfdfe2eda" and
+            .size_in_bytes==99611 and
+            .digest=="sha256:f04619dbd77314bdf84ba2d5c1b9edd4b9a09b533a8a26c2185ec3b786804157" and
+            .expired==false and
+            .workflow_run.id==33432375475 and
+            .workflow_run.head_sha=="b482afd68a864400a209cb4f439e727cfdfe2eda"
+          ' "$durable_envelope_artifact_metadata" >/dev/null
+          echo "upstream artifact API identity verified"
+          durable_envelope_unpacked="$RUNNER_TEMP/opentofu-envelope-artifact-9773097414"
+          mkdir -p "$durable_envelope_unpacked"
+          tar -xzf "$durable_envelope_dir/evidence-v0.1.9.tar.gz" -C "$durable_envelope_unpacked"
+          test "$(sha256sum "$durable_envelope_unpacked/observation.json" | awk '{print $1}')" = 1214180cc3e710eeff33b9a51c0759a6ef6cf3dfb0ed582664a8c43039351c5d
+          jq -e '
+            .schema=="gooo/opentofu-envelope/observation/v2" and .state=="CLOSED" and
+            .semantic_authority.state=="CLOSED" and .utility.state=="UNKNOWN" and
+            .authority.repository_writes==0 and .authority.local_test_executions==0 and .authority.opentofu_validate_executions==1 and
+            .test_counts=={total:9,executed:9,reused:0,skipped:0,not_observed:0} and
+            .repository_inventory=={file_count:15,go_files:0,go_physical_lines:0,gooo_files:1,gooo_physical_lines:39,physical_line_count:2401,subfolder_count:7} and
+            .verification_stages==[{cache_state:"DISABLED",count:2,executed_test_count:0,execution_state:"EXECUTED",not_observed_test_count:0,peak_rss_kib:21524,prior_test_evidence_reuse_state:"NOT_REUSED",reused_test_evidence_count:0,runner_persistence:"EPHEMERAL",skipped_test_count:0,stage:"build",wall_ms:214},{cache_state:"DISABLED",count:9,executed_test_count:9,execution_state:"EXECUTED",not_observed_test_count:0,peak_rss_kib:21652,prior_test_evidence_reuse_state:"NOT_REUSED",reused_test_evidence_count:0,runner_persistence:"EPHEMERAL",skipped_test_count:0,stage:"test",wall_ms:45},{cache_state:"DISABLED",count:4,executed_test_count:0,execution_state:"EXECUTED",not_observed_test_count:0,peak_rss_kib:76084,prior_test_evidence_reuse_state:"NOT_REUSED",reused_test_evidence_count:0,runner_persistence:"EPHEMERAL",skipped_test_count:0,stage:"conformance",wall_ms:324}] and
+            .generated_outputs.file_count==3 and .generated_outputs.bytes==8118 and
+            .replay.comparison_count==2 and (.replay.comparisons|length)==2 and all(.replay.comparisons[]; .byte_equal==true and .first_sha256==.second_sha256) and
+            .validation.official_opentofu.valid==true and .validation.official_opentofu.error_count==0 and .validation.official_opentofu.warning_count==0
+          ' "$durable_envelope_unpacked/observation.json" >/dev/null
+          echo "upstream observation payload verified"
+          language_delta_dir="$ARTIFACT_ROOT/releases/language_delta_forge_durable_release/assets"
+          jq -e '. == {schema:"gooo/language-delta-forge/release-manifest/v2",tag:"v0.1.2",commit:"30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",expected_asset_count:4,expected_asset_names:["checksums.txt","gooo-language-delta-forge-v0.1.2-contracts.tar.gz","gooo-language-delta-forge-v0.1.2.tar.gz","release-manifest-v0.1.2.json"],assets:[{name:"gooo-language-delta-forge-v0.1.2.tar.gz",size:26671,sha256:"77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba"},{name:"gooo-language-delta-forge-v0.1.2-contracts.tar.gz",size:7542,sha256:"e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4"}]}' "$language_delta_dir/release-manifest-v0.1.2.json" >/dev/null
+          test "$(wc -c < "$language_delta_dir/checksums.txt" | tr -d ' ')" = 240
+          test "$(cat "$language_delta_dir/checksums.txt")" = $'77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba  _release/gooo-language-delta-forge-v0.1.2.tar.gz\ne14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4  _release/gooo-language-delta-forge-v0.1.2-contracts.tar.gz'
+          test "$(wc -c < "$language_delta_dir/gooo-language-delta-forge-v0.1.2.tar.gz" | tr -d ' ')" = 26671
+          test "$(sha256sum "$language_delta_dir/gooo-language-delta-forge-v0.1.2.tar.gz" | awk '{print $1}')" = 77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba
+          test "$(wc -c < "$language_delta_dir/gooo-language-delta-forge-v0.1.2-contracts.tar.gz" | tr -d ' ')" = 7542
+          test "$(sha256sum "$language_delta_dir/gooo-language-delta-forge-v0.1.2-contracts.tar.gz" | awk '{print $1}')" = e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4
+          test "$(wc -c < "$language_delta_dir/release-manifest-v0.1.2.json" | tr -d ' ')" = 736
+          test "$(sha256sum "$language_delta_dir/release-manifest-v0.1.2.json" | awk '{print $1}')" = 0c467b96e4b91915139aa0d5990b49c8ca5a038a2ac965d43a4a5656e511064a
+          language_delta_release_artifact_metadata="$RUNNER_TEMP/language-delta-forge-release-artifact-9774576485.json"
+          curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
+            https://api.github.com/repos/kimjooyoon/gooo-language-delta-forge/actions/artifacts/9774576485 \
+            -o "$language_delta_release_artifact_metadata"
+          jq -e '.id==9774576485 and .name=="durable-language-delta-forge-v0.1.2" and .size_in_bytes==58715 and .digest=="sha256:bcf1519c02234b44b69490378723c82fa9e9f83d64b65c2c24138d9ce341013b" and .expired==false and .workflow_run.id==33436456556 and .workflow_run.head_sha=="30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45"' "$language_delta_release_artifact_metadata" >/dev/null
+          language_delta_release_artifact="$RUNNER_TEMP/language-delta-forge-release-artifact-9774576485.zip"
+          gh api repos/kimjooyoon/gooo-language-delta-forge/actions/artifacts/9774576485/zip > "$language_delta_release_artifact"
+          test "$(wc -c < "$language_delta_release_artifact" | tr -d ' ')" = 58715
+          test "$(sha256sum "$language_delta_release_artifact" | awk '{print $1}')" = bcf1519c02234b44b69490378723c82fa9e9f83d64b65c2c24138d9ce341013b
+          language_delta_release_unpacked="$RUNNER_TEMP/language-delta-forge-release-artifact-9774576485"
+          mkdir -p "$language_delta_release_unpacked"
+          unzip -q "$language_delta_release_artifact" -d "$language_delta_release_unpacked"
+          language_delta_artifact_dir="$language_delta_release_unpacked/_artifact"
+          jq -e '.schema=="gooo/language-delta-forge/immutable-release-verification/v1" and .repository=="kimjooyoon/gooo-language-delta-forge" and .tag=="v0.1.2" and .release_id==380033725 and .immutable==true and .tag_object_sha=="5d68c5f2f699f9d73bcf2e87121204512dfd64fc" and .target_sha=="30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45" and (.assets|map(.id))==[538495830,538495829,538495828,538495832] and (.assets|map(.size))==[240,7542,26671,736] and (.assets|map(.digest))==["sha256:cd99462d4d6635ba03024ef3e03ea600dbe65f22ad416f379583f86fa6af7876","sha256:e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4","sha256:77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba","sha256:0c467b96e4b91915139aa0d5990b49c8ca5a038a2ac965d43a4a5656e511064a"]' "$language_delta_artifact_dir/release-verification.json" >/dev/null
+          jq -e '.schema=="gooo/language-delta-forge/conformance-report/v1" and .decision=="CLOSED" and .denominator==18 and .summary=={total:9,closed:3,unknown:3,refuted:3,failures:0} and ([.cases[].proof_choice]|sort)==["COHERENCE","COHERENCE","COHERENCE","FOUNDATION","FOUNDATION","FOUNDATION","REGRESSION","REGRESSION","REGRESSION"] and ([.cases[].indicator_class]|sort)==["DRIVER","DRIVER","DRIVER","GUARDRAIL","GUARDRAIL","GUARDRAIL","OUTCOME","OUTCOME","OUTCOME"] and all(.cases[];.pass==true)' "$language_delta_artifact_dir/conformance/conformance-report.json" >/dev/null
+          jq -e '. == {schema:"gooo/language-delta-forge/inventory/v1",files:27,directories:13,go_files:9,gooo_files:1,physical_lines:2610,go_lines:1884,gooo_lines:51,root_readme_excluded:true}' "$language_delta_artifact_dir/inventory.json" >/dev/null
+          jq -e '.schema=="gooo/language-delta-forge/release-ci-measurements/v2" and .go_version=="go1.27.0" and .tag=="v0.1.2" and .target_sha=="30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45" and .release_id==380033725 and .compile=={status:0,wall_ms:173,peak_rss_kib:31364} and .build=={status:0,wall_ms:199,peak_rss_kib:91268} and .test=={status:0,wall_ms:163,peak_rss_kib:95004} and .conformance=={status:0,wall_ms:8,peak_rss_kib:9356} and .test_execution_count==1 and .reuse_count==0 and .local_test_executions==0 and .repository_writes==0 and .protected_core_mutations==0 and .output_files==25' "$language_delta_artifact_dir/release-ci-measurements.json" >/dev/null
+          echo "upstream language delta forge release and artifact verified"
+
+      - name: Verify generated OpenTofu service-project release and preserved v0.2.0 failure
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          project_dir="$ARTIFACT_ROOT/releases/opentofu_generated_service_project_durable_release/assets"
+          jq -e '
+            .schema=="gooo/opentofu-envelope/release-manifest/v2" and .version==2 and
+            .source_identity=={all_checks:true,main_ci_head_sha:"bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",main_ci_observation_source_sha:"a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",service_contract_source_sha:"a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",source_sha256:"a4e5fb7f93e0d2df065cda3d2a4ba177db8cae6049ad2de06b4a42b97c8089fd",tag_commit_sha:"bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787"} and
+            .release.tag=="v0.2.1" and .release.commit_sha=="bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787" and .release.id==380037012 and .release.immutable_expected==true and .release.asset_count_before==0 and .release.asset_count_after==4 and .release.url=="https://github.com/kimjooyoon/gooo-opentofu-envelope/releases/tag/v0.2.1" and .release.required_assets==["evidence-v0.2.1.tar.gz","manifest-v0.2.1.json","SHA256SUMS","source-v0.2.1.tar.gz"] and
+            (.denominator|{binding_edges,expected_user_path_steps,target_cells})=={binding_edges:14,expected_user_path_steps:6,target_cells:12} and
+            (.main_ci|{artifact_digest,artifact_id,artifact_name,consumer_sha256,observation_sha256,run_id,url})=={artifact_digest:"sha256:8e2bd75365b7e0e92ee8276cadbfc0d03842145a7bf5fd52efd1a33e2973de06",artifact_id:9774763580,artifact_name:"gooo-generated-service-project-evidence-bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787",consumer_sha256:"d44b7a561e40ef8ecd8d330ad0e685b2baa1d6ba936c7e8cdcaa74b134dd3802",observation_sha256:"285de6f94b65081bfd4006afada7320e24ec7103c49345b6c283a06011e0edb8",run_id:33436975864,url:"https://github.com/kimjooyoon/gooo-opentofu-envelope/actions/runs/33436975864"} and
+            .generated_outputs.count==5 and .generated_outputs.bytes==9019 and .generated_outputs.files==["contract-receipt.json","dossier.md","main.tf.json","relation-report.md","service-contract.json"] and
+            .project=={bound_relations:2,declared_bindings:2,name:"checkout-api",opentofu_modules:0,opentofu_resources:3,refuted_relations:2,resources:2,service_capabilities:1,service_endpoints:2,unbound_relations:2} and
+            .inventory=={go_physical_files:0,go_physical_lines:0,gooo_physical_files:1,gooo_physical_lines:46,regular_files:22,root_readme_excluded:true,subfolders:7} and
+            .test_counts=={executed:6,failed:2,passed:2,reused:0,total:6,unknown:2} and
+            .authority.scope=="GENERATED_OPENTOFU_SERVICE_PROJECT_ONLY" and .authority.semantic_graph_state=="CLOSED" and .authority.external_utility.state=="UNKNOWN" and .authority.global_core_authority_claim=="NOT_MADE" and .authority.handwritten_go_physical_files==0 and .authority.mutation_counts.repository_writes==0 and
+            .toolchain=={go_requirement:"1.27.x",opentofu_engine:"OPENTOFU",opentofu_version:"1.12.6"} and .utility.state=="UNKNOWN" and .improvement.state=="UNKNOWN"
+          ' "$project_dir/manifest-v0.2.1.json" >/dev/null
+          expected_checksums=$(printf '%s\n' \
+            '9f45cf78ef9339d3d694a30fb21131151d8ec61e4eb62455f2848e0d78180832  evidence-v0.2.1.tar.gz' \
+            'f17271a11b98c48114a740faea96efc3c89f2a5c2746f8efe52d76688ea7ac9f  manifest-v0.2.1.json' \
+            'cdab3d87acf7aad4889ee41027df75f4fbcfd9dc4afe8e23a5a66504ed35dd70  source-v0.2.1.tar.gz')
+          test "$(cat "$project_dir/SHA256SUMS")" = "$expected_checksums"
+          test "$(wc -c < "$project_dir/evidence-v0.2.1.tar.gz" | tr -d ' ')" = 10011
+          test "$(sha256sum "$project_dir/evidence-v0.2.1.tar.gz" | awk '{print $1}')" = 9f45cf78ef9339d3d694a30fb21131151d8ec61e4eb62455f2848e0d78180832
+          test "$(wc -c < "$project_dir/manifest-v0.2.1.json" | tr -d ' ')" = 15336
+          test "$(sha256sum "$project_dir/manifest-v0.2.1.json" | awk '{print $1}')" = f17271a11b98c48114a740faea96efc3c89f2a5c2746f8efe52d76688ea7ac9f
+          test "$(wc -c < "$project_dir/SHA256SUMS" | tr -d ' ')" = 263
+          test "$(sha256sum "$project_dir/SHA256SUMS" | awk '{print $1}')" = bba568c5f8bbba841976d1f6b9b6c9118e9049d3ed014323770456851e8906e1
+          test "$(wc -c < "$project_dir/source-v0.2.1.tar.gz" | tr -d ' ')" = 26719
+          test "$(sha256sum "$project_dir/source-v0.2.1.tar.gz" | awk '{print $1}')" = cdab3d87acf7aad4889ee41027df75f4fbcfd9dc4afe8e23a5a66504ed35dd70
+          project_outputs="$RUNNER_TEMP/opentofu-generated-service-project-outputs"
+          mkdir -p "$project_outputs"
+          tar -xzf "$project_dir/evidence-v0.2.1.tar.gz" -C "$project_outputs"
+          test "$(find "$project_outputs" -type f | wc -l | tr -d ' ')" = 17
+          test "$(wc -c < "$project_outputs/main.tf.json" | tr -d ' ')" = 2092
+          test "$(sha256sum "$project_outputs/main.tf.json" | awk '{print $1}')" = 0d6afd48ac1bc7a1fa666514da037939bfb51a901f0cd861e3ba1b359c3c7b98
+          test "$(wc -c < "$project_outputs/service-contract.json" | tr -d ' ')" = 2699
+          test "$(sha256sum "$project_outputs/service-contract.json" | awk '{print $1}')" = e32df06439bd8dbd35283b3998314d36fde97761e85f9cfb3793670be3f09c48
+          test "$(wc -c < "$project_outputs/relation-report.md" | tr -d ' ')" = 1253
+          test "$(sha256sum "$project_outputs/relation-report.md" | awk '{print $1}')" = 7e133a66fb940121be8806268a66ed0603f0be2327cd8885f4b17df45472cf0b
+          test "$(wc -c < "$project_outputs/dossier.md" | tr -d ' ')" = 1035
+          test "$(sha256sum "$project_outputs/dossier.md" | awk '{print $1}')" = bf9d431ec311f424c264a55135b3e5423b15c06b2efb017d187955185dc52e4c
+          test "$(wc -c < "$project_outputs/contract-receipt.json" | tr -d ' ')" = 1940
+          test "$(sha256sum "$project_outputs/contract-receipt.json" | awk '{print $1}')" = d917919e877bad1b0258a41e88f6b935263e157a49855d36c44e3243388cf324
+          jq -e '.schema=="gooo/opentofu-envelope/project-bindings/v2" and .activity_count==12 and .binding_edges==14 and (([.bindings[].proof_family]|sort|group_by(.)|map({key:.[0],value:length})|from_entries)=={COHERENCE:4,FOUNDATION:4,REGRESSION:4}) and (([.bindings[].indicator]|sort|group_by(.)|map({key:.[0],value:length})|from_entries)=={DRIVER:4,GUARDRAIL:4,OUTCOME:4})' "$project_outputs/bindings.json" >/dev/null
+          jq -e '.schema=="gooo/opentofu-envelope/project-cases/v2" and .state=="CLOSED" and .case_count==6 and .outcome_counts=={BOUND:2,REFUTED:2,UNBOUND_UNKNOWN:2} and ([.cases[].class]|sort)==["NORMAL","NORMAL","REFUTED","REFUTED","UNKNOWN","UNKNOWN"]' "$project_outputs/cases.json" >/dev/null
+          jq -e '.schema=="gooo/opentofu-envelope/project-validation/v2" and .state=="CLOSED" and .official_opentofu=={error_count:0,valid:true,validation_json_sha256:"4cd9eddc4d07c5aff74dadb6b3544f98186f6705ac60e0d94d545fc42b45b9b6",warning_count:0} and .structural_checks.resource_count==3 and .structural_checks.providerless==true and .structural_checks.outputs_exact==true' "$project_outputs/validation.json" >/dev/null
+          project_artifact_metadata="$RUNNER_TEMP/opentofu-generated-service-project-artifact-9774763580.json"
+          gh api repos/kimjooyoon/gooo-opentofu-envelope/actions/artifacts/9774763580 > "$project_artifact_metadata"
+          jq -e '.id==9774763580 and .name=="gooo-generated-service-project-evidence-bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787" and .size_in_bytes==16278 and .digest=="sha256:8e2bd75365b7e0e92ee8276cadbfc0d03842145a7bf5fd52efd1a33e2973de06" and .expired==false and .workflow_run.id==33436975864 and .workflow_run.head_sha=="bdc5c2cdacb5865f59efd2eb496d58eeb0bd2787"' "$project_artifact_metadata" >/dev/null
+          project_artifact="$RUNNER_TEMP/opentofu-generated-service-project-artifact-9774763580.zip"
+          gh api repos/kimjooyoon/gooo-opentofu-envelope/actions/artifacts/9774763580/zip > "$project_artifact"
+          test "$(wc -c < "$project_artifact" | tr -d ' ')" = 16278
+          test "$(sha256sum "$project_artifact" | awk '{print $1}')" = 8e2bd75365b7e0e92ee8276cadbfc0d03842145a7bf5fd52efd1a33e2973de06
+          project_artifact_dir="$RUNNER_TEMP/opentofu-generated-service-project-artifact-9774763580"
+          mkdir -p "$project_artifact_dir"
+          unzip -q "$project_artifact" -d "$project_artifact_dir"
+          test "$(find "$project_artifact_dir" -type f | wc -l | tr -d ' ')" = 17
+          jq -e '.schema=="gooo/opentofu-envelope/project-observation/v1" and .state=="CLOSED" and (.denominator|{binding_edges,expected_user_path_steps,target_cells})=={binding_edges:14,expected_user_path_steps:6,target_cells:12} and .generated_outputs.count==5 and .generated_outputs.bytes==9019 and .authority.repository_writes==0 and .authority.local_tests==0 and .authority.local_build==0 and .authority.opentofu.validate==1 and .authority.opentofu.init==0 and .authority.opentofu.plan==0 and .authority.opentofu.apply==0 and .authority.opentofu.destroy==0 and .authority.opentofu.provider_install==0 and .test_counts=={executed:6,failed:2,passed:2,reused:0,total:6,unknown:2} and .measurements.compile.wall_ms==106 and .measurements.build.wall_ms==56 and .measurements.test.wall_ms==56 and .measurements.conformance.wall_ms==46 and .measurements.tofu_validate.wall_ms==30 and .measurements.tofu_validate.peak_rss_kib==75304 and .measurements.compile.peak_rss_kib==10952 and .measurements.build.peak_rss_kib==20724 and .measurements.test.peak_rss_kib==20580 and .measurements.conformance.peak_rss_kib==18352' "$project_artifact_dir/observation.json" >/dev/null
+          if gh api repos/kimjooyoon/gooo-opentofu-envelope/releases/tags/v0.2.0 > "$RUNNER_TEMP/opentofu-v0.2.0-release.json"; then
+            echo "historical v0.2.0 release unexpectedly present" >&2
+            exit 1
+          fi
+          jq -e '(.status==404 or .status=="404") and .message=="Not Found"' "$RUNNER_TEMP/opentofu-v0.2.0-release.json" >/dev/null
+          historical_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-opentofu-envelope.git refs/tags/v0.2.0 'refs/tags/v0.2.0^{}')
+          test "$(awk '$2=="refs/tags/v0.2.0" {print $1}' <<< "$historical_refs")" = 9dfdee84d61f3acbe899b5ad57fd8f35f8159210
+          test "$(awk '$2=="refs/tags/v0.2.0^{}" {print $1}' <<< "$historical_refs")" = c9f5de0b33fee1ca8546a627a8a94242b99c0733
+          gh api repos/kimjooyoon/gooo-opentofu-envelope/actions/runs/33435908822 > "$RUNNER_TEMP/opentofu-v0.2.0-failed-run.json"
+          gh api repos/kimjooyoon/gooo-opentofu-envelope/actions/jobs/99632154067 > "$RUNNER_TEMP/opentofu-v0.2.0-failed-job.json"
+          jq -e '.id==33435908822 and .event=="push" and .head_branch=="v0.2.0" and .head_sha=="c9f5de0b33fee1ca8546a627a8a94242b99c0733" and .status=="completed" and .conclusion=="failure"' "$RUNNER_TEMP/opentofu-v0.2.0-failed-run.json" >/dev/null
+          jq -e '.id==99632154067 and .run_id==33435908822 and .name=="release" and .head_sha=="c9f5de0b33fee1ca8546a627a8a94242b99c0733" and .status=="completed" and .conclusion=="failure" and ([.steps[]|select(.name=="Resolve the successful main CI artifact" and .conclusion=="failure")]|length)==1' "$RUNNER_TEMP/opentofu-v0.2.0-failed-job.json" >/dev/null
+          echo "upstream generated OpenTofu service-project release and v0.2.0 counterexample verified"
+
+      - name: Verify reflexive compiler phase release and preserved v0.1.0 non-durable predecessor
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          compiler_dir="$ARTIFACT_ROOT/releases/reflexive_compiler_phase_durable_release/assets"
+          jq -e '. == {schema:"gooo/reflexive-release-manifest/v1",version:"0.1.1",tag:"v0.1.1",commit:"dabbe38badebefdf2979d8862c26a647b0dd15c0",assets:[{name:"gooo-reflexive-compiler-slice-source-v0.1.1.tar.gz",digest:"sha256:ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c"},{name:"gooo-reflexive-compiler-slice-linux-amd64-v0.1.1.tar.gz",digest:"sha256:c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387"},{name:"release-report-v0.1.1.json",digest:"sha256:cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d"},{name:"version.json",digest:"sha256:363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef"}]}' "$compiler_dir/release-manifest-v0.1.1.json" >/dev/null
+          jq -e '. == {schema:"gooo/reflexive-release/v1",version:"0.1.1",tag:"v0.1.1",commit:"dabbe38badebefdf2979d8862c26a647b0dd15c0",phase:"reflexive.normalize.v1",scope:"ONE_COMPILER_PHASE_ONLY",self_hosting:"NOT_MADE",external_utility:"UNKNOWN",global_self_hosting:"UNKNOWN"}' "$compiler_dir/version.json" >/dev/null
+          jq -e '.schema=="gooo/reflexive-release-report/v1" and .version=="0.1.1" and .tag=="v0.1.1" and .commit=="dabbe38badebefdf2979d8862c26a647b0dd15c0" and .scope=="ONE_COMPILER_PHASE_ONLY" and .conformance=={schema:"gooo/reflexive-conformance/v1",decision:"CLOSED/UNKNOWN/REFUTED_CASES_CLOSED",tests:{total:3,executed:3,reused:0,failed:0,unknown:1},cases:{closed:1,unknown:1,refuted:1},compile_wall_ms:58,conformance_wall_ms:2614,peak_rss_bytes:7221248,output_files:21,output_bytes:32273} and .metrics=={schema:"gooo/reflexive-ci-metrics/v1",inventory:{go_files:8,gooo_files:4,go_physical_lines:1096,gooo_physical_lines:33,files_total:24,subdirectories:14,root_readme_inventory_excluded:1},outputs:{count:21,bytes:32273},resources:{peak_rss_bytes:7221248},wall_ms:{compile:58,build:5388,test:2093,conformance:2614},tests:{total:3,executed:3,reused:0,failed:0,unknown:1}}' "$compiler_dir/release-report-v0.1.1.json" >/dev/null
+          expected_checksums=$(printf '%s\n' \
+            'ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c  gooo-reflexive-compiler-slice-source-v0.1.1.tar.gz' \
+            'c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387  gooo-reflexive-compiler-slice-linux-amd64-v0.1.1.tar.gz' \
+            'cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d  release-report-v0.1.1.json' \
+            '363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef  version.json' \
+            'cdd3d3f0cb426c1d26ebc83c2b998151301fd6dade7f7b3bde77202ac9a7e0ad  release-manifest-v0.1.1.json')
+          test "$(cat "$compiler_dir/SHA256SUMS")" = "$expected_checksums"
+          compiler_artifact_metadata="$RUNNER_TEMP/reflexive-compiler-phase-artifact-9775010906.json"
+          gh api repos/kimjooyoon/gooo-reflexive-compiler-slice/actions/artifacts/9775010906 > "$compiler_artifact_metadata"
+          jq -e '.id==9775010906 and .name=="reflexive-conformance-dabbe38badebefdf2979d8862c26a647b0dd15c0" and .size_in_bytes==19269921 and .digest=="sha256:99934e633fc823b236077fb02f2dee2e0447c40686243cd6e647ca9e30be874c" and .expired==false and .workflow_run.id==33437644781 and .workflow_run.head_sha=="dabbe38badebefdf2979d8862c26a647b0dd15c0"' "$compiler_artifact_metadata" >/dev/null
+          compiler_artifact="$RUNNER_TEMP/reflexive-compiler-phase-artifact-9775010906.zip"
+          gh api repos/kimjooyoon/gooo-reflexive-compiler-slice/actions/artifacts/9775010906/zip > "$compiler_artifact"
+          test "$(wc -c < "$compiler_artifact" | tr -d ' ')" = 19269921
+          test "$(sha256sum "$compiler_artifact" | awk '{print $1}')" = 99934e633fc823b236077fb02f2dee2e0447c40686243cd6e647ca9e30be874c
+          historical_release="$RUNNER_TEMP/reflexive-compiler-v0.1.0-release.json"
+          gh api repos/kimjooyoon/gooo-reflexive-compiler-slice/releases/tags/v0.1.0 > "$historical_release"
+          jq -e '.id==380032434 and .tag_name=="v0.1.0" and .immutable==false' "$historical_release" >/dev/null
+          historical_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-reflexive-compiler-slice.git refs/tags/v0.1.0 'refs/tags/v0.1.0^{}')
+          test "$(awk '$2=="refs/tags/v0.1.0" {print $1}' <<< "$historical_refs")" = f89b47fedab983b9c3cef0b9be03da65eadff3de
+          test "$(awk '$2=="refs/tags/v0.1.0^{}" {print $1}' <<< "$historical_refs")" = 57f5ef6ce407f51cd36da163b2b267e876c31e33
+          echo "upstream reflexive compiler phase release and v0.1.0 non-durable predecessor verified"
+
+      - name: Verify causal verification runner release and preserved process counterexamples
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          causal_dir="$ARTIFACT_ROOT/releases/causal_verification_runner_durable_release/assets"
+          jq -e '. == {archive:"gooo-causal-verification-runner-v0.1.1.tar.gz",asset_digest:"sha256:fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb",asset_size_bytes:38034,commit_sha:"0c16428762d1d1da1b28fe05c4e051d2cc41967b",external_platform_authority:"github_release_api.immutable",release_class:"first_post_guard_durable_release",schema:"gooo/causal-verification-runner/release-manifest/v1",self_asserted_immutable:true,tag:"v0.1.1",tag_object_sha:"82bb99006232a064725df29a53af5405e222cd42"}' "$causal_dir/release-manifest.json" >/dev/null
+          expected_checksums=$(printf '%s\n' \
+            'sha256:fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb  gooo-causal-verification-runner-v0.1.1.tar.gz' \
+            'sha256:36d3f52aeb74f32025d0eaa10767e2a6036b5ad42e0636f92b90339af9615eb8  release-manifest.json')
+          test "$(cat "$causal_dir/SHA256SUMS")" = "$expected_checksums"
+          test "$(wc -c < "$causal_dir/gooo-causal-verification-runner-v0.1.1.tar.gz" | tr -d ' ')" = 38034
+          test "$(sha256sum "$causal_dir/gooo-causal-verification-runner-v0.1.1.tar.gz" | awk '{print $1}')" = fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb
+          test "$(wc -c < "$causal_dir/release-manifest.json" | tr -d ' ')" = 552
+          test "$(sha256sum "$causal_dir/release-manifest.json" | awk '{print $1}')" = 36d3f52aeb74f32025d0eaa10767e2a6036b5ad42e0636f92b90339af9615eb8
+          test "$(wc -c < "$causal_dir/SHA256SUMS" | tr -d ' ')" = 214
+          test "$(sha256sum "$causal_dir/SHA256SUMS" | awk '{print $1}')" = 4297c6c933c4892016df45367015094c9d2fe122a950f7effa9276607df6201f
+          source_dir="$RUNNER_TEMP/causal-verification-runner-source"
+          mkdir -p "$source_dir"
+          tar -xzf "$causal_dir/gooo-causal-verification-runner-v0.1.1.tar.gz" -C "$source_dir"
+          source_root="$source_dir/gooo-causal-verification-runner-v0.1.1"
+          jq -e '.schema=="gooo/causal-verification-runner/denominator/v1" and .denominator_id=="causal-verification-runner-v1" and .fixed_denominator==12 and .precedence==["REFUTED","UNKNOWN","CLOSED"] and .proof_totals=={FOUNDATION:4,COHERENCE:4,REGRESSION:4} and .indicator_totals=={DRIVER:4,OUTCOME:4,GUARDRAIL:4} and (.cells|length)==12 and ([.cells[].id]|length)==12 and ([.cells[].activity]|length)==12' "$source_root/contracts/causal-verification-denominator-v1.json" >/dev/null
+          pr_run="$RUNNER_TEMP/causal-verification-runner-pr-run.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438798441 > "$pr_run"
+          jq -e '.id==33438798441 and .event=="pull_request" and .head_branch=="process-authority-guard" and .head_sha=="65295c74603e1e8ac418f20ef66b12f2ae935979" and .status=="completed" and .conclusion=="success"' "$pr_run" >/dev/null
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/jobs/99641659758 > "$RUNNER_TEMP/causal-verification-runner-pr-job.json"
+          jq -e '.id==99641659758 and .run_id==33438798441 and .name=="conformance" and .head_sha=="65295c74603e1e8ac418f20ef66b12f2ae935979" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/causal-verification-runner-pr-job.json" >/dev/null
+          main_run="$RUNNER_TEMP/causal-verification-runner-main-run.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/runs/33438900833 > "$main_run"
+          jq -e '.id==33438900833 and .event=="push" and .head_branch=="main" and .head_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and .status=="completed" and .conclusion=="success"' "$main_run" >/dev/null
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/jobs/99642001168 > "$RUNNER_TEMP/causal-verification-runner-main-job.json"
+          jq -e '.id==99642001168 and .run_id==33438900833 and .name=="conformance" and .head_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/causal-verification-runner-main-job.json" >/dev/null
+          main_artifact_metadata="$RUNNER_TEMP/causal-verification-runner-artifact-9775474098.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/artifacts/9775474098 > "$main_artifact_metadata"
+          jq -e '.id==9775474098 and .name=="gooo-causal-verification-runner-33438900833" and .size_in_bytes==3466163 and .digest=="sha256:b3b9b89c820e9aa2f2d48c6686fb4a51bd52ac0b58c2c9ef15bc531191966183" and .expired==false and .workflow_run.id==33438900833 and .workflow_run.head_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b"' "$main_artifact_metadata" >/dev/null
+          main_artifact="$RUNNER_TEMP/causal-verification-runner-artifact-9775474098.zip"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/artifacts/9775474098/zip > "$main_artifact"
+          test "$(wc -c < "$main_artifact" | tr -d ' ')" = 3466163
+          test "$(sha256sum "$main_artifact" | awk '{print $1}')" = b3b9b89c820e9aa2f2d48c6686fb4a51bd52ac0b58c2c9ef15bc531191966183
+          main_dir="$RUNNER_TEMP/causal-verification-runner-artifact-9775474098"
+          mkdir -p "$main_dir"
+          unzip -q "$main_artifact" -d "$main_dir"
+          jq -e '.schema=="gooo/causal-verification-runner/ci-summary/v1" and .artifacts=={bytes:6140304,dirs:15,files:52,outputs:52} and .causal_verifier.activities==12 and .causal_verifier.cases==6 and .causal_verifier.decisions=={CLOSED:2,REFUTED:3,UNKNOWN:1} and .direct_main=={bootstrap_direct_main:1,historical_post_bootstrap_direct_main:2,post_guard_direct_main:0} and .process_guard.cells==8 and .process_guard.cases==3 and .process_guard.current_guard_decision=="CLOSED" and .process_guard.decision=="REFUTED" and .process_guard.counts=={bootstrap_direct_main:1,historical_post_bootstrap_direct_main:2,post_guard_direct_main:0} and .inventory.go_files==8 and .inventory.go_lines==2466 and .inventory.gooo_files==1 and .inventory.gooo_lines==59 and .inventory.root_readme_excluded==true and .runtime.compile_ms==7220 and .runtime.build_ms==6880 and .runtime.test_ms==2020 and .runtime.conformance_ms==12020 and .runtime.peak_rss_kib==268496 and .tests=={executed:10,failed:1,reused:3,unknown:1} and .utility_global_core=={state:"UNKNOWN",status:"NOT_MADE"}' "$main_dir/ci-artifact-summary.json" >/dev/null
+          jq -e '[.causal_verifier.fixture_metrics[] | {case_id,decision,total:.metrics.total_tests,selected:.metrics.selected,executed:.metrics.executed,reused:.metrics.reused,oracle:.metrics.full_oracle_executed,fail:.metrics.failures,unknown:.metrics.unknowns,before_wall_ms:.metrics.before_wall_ms,after_wall_ms:.metrics.after_wall_ms,before_peak_rss_kib:.metrics.before_peak_rss_kib,after_peak_rss_kib:.metrics.after_peak_rss_kib,avoided_executions:.metrics.avoided_executions}] == [{case_id:"safe-reuse",decision:"CLOSED",total:2,selected:1,executed:1,reused:1,oracle:2,fail:0,unknown:0,before_wall_ms:100,after_wall_ms:70,before_peak_rss_kib:200,after_peak_rss_kib:180,avoided_executions:1},{case_id:"transitive-impact",decision:"CLOSED",total:3,selected:2,executed:2,reused:1,oracle:3,fail:0,unknown:0,before_wall_ms:130,after_wall_ms:90,before_peak_rss_kib:220,after_peak_rss_kib:190,avoided_executions:1},{case_id:"unknown-edge-full-fallback",decision:"UNKNOWN",total:2,selected:2,executed:2,reused:0,oracle:2,fail:0,unknown:1,before_wall_ms:120,after_wall_ms:120,before_peak_rss_kib:210,after_peak_rss_kib:210,avoided_executions:0},{case_id:"stale-proof-rejection",decision:"REFUTED",total:2,selected:2,executed:2,reused:0,oracle:2,fail:0,unknown:0,before_wall_ms:110,after_wall_ms:112,before_peak_rss_kib:205,after_peak_rss_kib:208,avoided_executions:0},{case_id:"hidden-counterexample",decision:"REFUTED",total:2,selected:1,executed:1,reused:1,oracle:2,fail:1,unknown:0,before_wall_ms:100,after_wall_ms:65,before_peak_rss_kib:200,after_peak_rss_kib:175,avoided_executions:1},{case_id:"cache-hit-only",decision:"REFUTED",total:2,selected:2,executed:2,reused:0,oracle:2,fail:0,unknown:0,before_wall_ms:100,after_wall_ms:100,before_peak_rss_kib:200,after_peak_rss_kib:200,avoided_executions:0}]' "$main_dir/ci-artifact-summary.json" >/dev/null
+          jq -e '.unknowns == [{stage:"AFFECTED_SEMANTIC_PREDICATES",step:"resolve-impact-edge",reason:"UNKNOWN_IMPACT_EDGE",unknown_class:"CAUSAL_EDGE_UNKNOWN",next_operation:"OBTAIN_SEMANTIC_GRAPH_EDGE_PROOF",blocked_by:["edge:edge-component-secret-unknown"]}]' "$main_dir/cases/unknown-edge-full-fallback/verification-receipt.json" >/dev/null
+          jq -e '.main_head=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and ([.pull_requests[]|select(.number==2 and .base_ref=="main" and .head_ref=="process-authority-guard" and .head_sha=="65295c74603e1e8ac418f20ef66b12f2ae935979" and .merge_commit_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and .merged==true)]|length)==1 and ([.main_commits[]|select(.sha=="d5c768735b07a1389676964e3a9288487d724b20" or .sha=="4421ae44596028c1faa99c19407506fb5265fc1f")|.pull_request_numbers]|flatten|length)==0' "$main_dir/cases/process-evidence.json" >/dev/null
+          release_audit="$RUNNER_TEMP/causal-verification-runner-release-audit.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/runs/33439000856 > "$release_audit"
+          jq -e '.id==33439000856 and .event=="push" and .head_branch=="v0.1.1" and .head_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and .status=="completed" and .conclusion=="success"' "$release_audit" >/dev/null
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/actions/jobs/99642343892 > "$RUNNER_TEMP/causal-verification-runner-release-audit-job.json"
+          jq -e '.id==99642343892 and .run_id==33439000856 and .name=="prepare-assets" and .head_sha=="0c16428762d1d1da1b28fe05c4e051d2cc41967b" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/causal-verification-runner-release-audit-job.json" >/dev/null
+          historical_release="$RUNNER_TEMP/causal-verification-runner-v0.1.0-release.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/releases/tags/v0.1.0 > "$historical_release"
+          jq -e '.id==380027888 and .tag_name=="v0.1.0" and .immutable==true' "$historical_release" >/dev/null
+          historical_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-causal-verification-runner.git refs/tags/v0.1.0 'refs/tags/v0.1.0^{}')
+          test "$(awk '$2=="refs/tags/v0.1.0" {print $1}' <<< "$historical_refs")" = 19c627c8a08af656487b6346854a9e6a9d806e2b
+          test "$(awk '$2=="refs/tags/v0.1.0^{}" {print $1}' <<< "$historical_refs")" = d5c768735b07a1389676964e3a9288487d724b20
+          echo "upstream causal verification runner release and preserved process counterexamples verified"
+
+      - name: Verify executable evolution trial counterexample durable release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          trial_dir="$ARTIFACT_ROOT/releases/executable_evolution_trial_counterexample_durable_release/assets"
+          jq -e '. == {schema:"gooo/evolution-trial/release-manifest/v1",version:"0.1.0",tag:"v0.1.0",commit:"d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",assets:[{name:"gooo-evolution-trial-source-v0.1.0.tar.gz",digest:"sha256:b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc"},{name:"upstream-lock-v0.1.0.json",digest:"sha256:b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330"},{name:"experiment-dossier-v0.1.0.md",digest:"sha256:6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e"},{name:"version.json",digest:"sha256:b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07"}]}' "$trial_dir/release-manifest-v0.1.0.json" >/dev/null
+          expected_checksums=$(printf '%s\n' \
+            'b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc  gooo-evolution-trial-source-v0.1.0.tar.gz' \
+            'b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330  upstream-lock-v0.1.0.json' \
+            '6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e  experiment-dossier-v0.1.0.md' \
+            'b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07  version.json' \
+            '16d908073ae49566fd7186a8d042758a79d30274e94fe5c5ca7ca20773fc9839  release-manifest-v0.1.0.json')
+          test "$(cat "$trial_dir/SHA256SUMS")" = "$expected_checksums"
+          test "$(wc -c < "$trial_dir/experiment-dossier-v0.1.0.md" | tr -d ' ')" = 2077
+          test "$(sha256sum "$trial_dir/experiment-dossier-v0.1.0.md" | awk '{print $1}')" = 6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e
+          test "$(wc -c < "$trial_dir/gooo-evolution-trial-source-v0.1.0.tar.gz" | tr -d ' ')" = 28486
+          test "$(sha256sum "$trial_dir/gooo-evolution-trial-source-v0.1.0.tar.gz" | awk '{print $1}')" = b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc
+          test "$(wc -c < "$trial_dir/release-manifest-v0.1.0.json" | tr -d ' ')" = 764
+          test "$(sha256sum "$trial_dir/release-manifest-v0.1.0.json" | awk '{print $1}')" = 16d908073ae49566fd7186a8d042758a79d30274e94fe5c5ca7ca20773fc9839
+          test "$(wc -c < "$trial_dir/SHA256SUMS" | tr -d ' ')" = 469
+          test "$(sha256sum "$trial_dir/SHA256SUMS" | awk '{print $1}')" = e1431e654fe65bdb9a325b1da797b0da613e8712ad32c55854d78610f14380b4
+          test "$(wc -c < "$trial_dir/upstream-lock-v0.1.0.json" | tr -d ' ')" = 3888
+          test "$(sha256sum "$trial_dir/upstream-lock-v0.1.0.json" | awk '{print $1}')" = b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330
+          test "$(wc -c < "$trial_dir/version.json" | tr -d ' ')" = 319
+          test "$(sha256sum "$trial_dir/version.json" | awk '{print $1}')" = b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07
+          source_dir="$RUNNER_TEMP/gooo-evolution-trial-source"
+          mkdir -p "$source_dir"
+          tar -xzf "$trial_dir/gooo-evolution-trial-source-v0.1.0.tar.gz" -C "$source_dir"
+          source_root="$source_dir/gooo-evolution-trial-v0.1.0"
+          jq -e '.schema=="gooo/evolution-trial/denominator/v1" and .denominator_id=="evolution-trial-v1" and .fixed_denominator==18 and .precedence==["REFUTED","UNKNOWN","CLOSED"] and .unknown_fields==["stage","step","reason","unknown_class","next_operation","blocked_by"] and .proof_totals=={FOUNDATION:6,COHERENCE:6,REGRESSION:6} and .indicator_totals=={DRIVER:6,OUTCOME:6,GUARDRAIL:6} and (.cells|length)==18 and ([.cells[].id]|length)==18 and ([.cells[].activity]|length)==18' "$source_root/contracts/evolution-trial-denominator-v1.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/upstream-lock/v1" and (.inputs|length)==3 and ([.inputs[]|{producer,release,release_id,immutable,tag_object,target_commit,release_run_id,release_job_id,release_artifact_id}])==[{producer:"github.com/kimjooyoon/gooo-language-delta-forge",release:"v0.1.2",release_id:380033725,immutable:true,tag_object:"5d68c5f2f699f9d73bcf2e87121204512dfd64fc",target_commit:"30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45",release_run_id:33436456556,release_job_id:99633967202,release_artifact_id:9774576485},{producer:"github.com/kimjooyoon/gooo-reflexive-compiler-slice",release:"v0.1.1",release_id:380040917,immutable:true,tag_object:"8db85557f66d4bb61a4fc1816b3a20dab2c40f0c",target_commit:"dabbe38badebefdf2979d8862c26a647b0dd15c0",release_run_id:33437664492,release_job_id:99637944818,release_artifact_id:9775010906},{producer:"github.com/kimjooyoon/gooo-causal-verification-runner",release:"v0.1.1",release_id:380048457,immutable:true,tag_object:"82bb99006232a064725df29a53af5405e222cd42",target_commit:"0c16428762d1d1da1b28fe05c4e051d2cc41967b",release_run_id:33439000856,release_job_id:99642343892,release_artifact_id:9775474098}] and (.inputs[0].assets|map({id,size_bytes,sha256}))==[{id:538495830,size_bytes:240,sha256:"cd99462d4d6635ba03024ef3e03ea600dbe65f22ad416f379583f86fa6af7876"},{id:538495829,size_bytes:7542,sha256:"e14fc1d338ea85a51f1d6f43997e0e1c74d9be2ddc9eaa97d22d98ebfb5ff2d4"},{id:538495828,size_bytes:26671,sha256:"77424f9465322c37ab87efcb920f936e6ddf3e02c2b7e59657fae82ff05283ba"},{id:538495832,size_bytes:736,sha256:"0c467b96e4b91915139aa0d5990b49c8ca5a038a2ac965d43a4a5656e511064a"}] and (.inputs[1].assets|map({id,size_bytes,sha256}))==[{id:538508362,size_bytes:2589271,sha256:"c4ad5900be6a479ab55e18a1bd939cc09389f305f6e6941064c1c6a229399387"},{id:538508360,size_bytes:19475,sha256:"ae6fef819ab034eb614e7a9e8b54ba18afab399ad2e730085ea221c2363fc38c"},{id:538508364,size_bytes:795,sha256:"cdd3d3f0cb426c1d26ebc83c2b998151301fd6dade7f7b3bde77202ac9a7e0ad"},{id:538508363,size_bytes:2898,sha256:"cce11611c7ca561a0ba97004db610808ab924dfc465fd49371a7314cc57e963d"},{id:538508367,size_bytes:506,sha256:"1a41949ea027e01ae893dd3872ae32b537a896adaa0df4910628d3a51d73424e"},{id:538508361,size_bytes:315,sha256:"363fc9e1d352091fb8cc79ff0a80ae464a526eb0fe8c055122320e1c0a0f0eef"}] and (.inputs[2].assets|map({id,size_bytes,sha256}))==[{id:538521941,size_bytes:38034,sha256:"fcf40acd1f09805e526b8e9634cd70b8f308e1f2312b0aac8d3253c4038db7fb"},{id:538521943,size_bytes:552,sha256:"36d3f52aeb74f32025d0eaa10767e2a6036b5ad42e0636f92b90339af9615eb8"},{id:538521942,size_bytes:214,sha256:"4297c6c933c4892016df45367015094c9d2fe122a950f7effa9276607df6201f"}]' "$trial_dir/upstream-lock-v0.1.0.json" >/dev/null
+          language_release="$RUNNER_TEMP/gooo-language-delta-forge-release.json"
+          gh api repos/kimjooyoon/gooo-language-delta-forge/releases/tags/v0.1.2 > "$language_release"
+          jq -e '.id==380033725 and .tag_name=="v0.1.2" and .immutable==true' "$language_release" >/dev/null
+          compiler_release="$RUNNER_TEMP/gooo-reflexive-compiler-release.json"
+          gh api repos/kimjooyoon/gooo-reflexive-compiler-slice/releases/tags/v0.1.1 > "$compiler_release"
+          jq -e '.id==380040917 and .tag_name=="v0.1.1" and .immutable==true' "$compiler_release" >/dev/null
+          causal_release="$RUNNER_TEMP/gooo-causal-runner-release.json"
+          gh api repos/kimjooyoon/gooo-causal-verification-runner/releases/tags/v0.1.1 > "$causal_release"
+          jq -e '.id==380048457 and .tag_name=="v0.1.1" and .immutable==true' "$causal_release" >/dev/null
+          language_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-language-delta-forge.git refs/tags/v0.1.2 'refs/tags/v0.1.2^{}')
+          test "$(awk '$2=="refs/tags/v0.1.2" {print $1}' <<< "$language_refs")" = 5d68c5f2f699f9d73bcf2e87121204512dfd64fc
+          test "$(awk '$2=="refs/tags/v0.1.2^{}" {print $1}' <<< "$language_refs")" = 30ad7a736d5d354a9e0cd998a8a1bd4dd5e11b45
+          compiler_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-reflexive-compiler-slice.git refs/tags/v0.1.1 'refs/tags/v0.1.1^{}')
+          test "$(awk '$2=="refs/tags/v0.1.1" {print $1}' <<< "$compiler_refs")" = 8db85557f66d4bb61a4fc1816b3a20dab2c40f0c
+          test "$(awk '$2=="refs/tags/v0.1.1^{}" {print $1}' <<< "$compiler_refs")" = dabbe38badebefdf2979d8862c26a647b0dd15c0
+          causal_refs=$(git ls-remote https://github.com/kimjooyoon/gooo-causal-verification-runner.git refs/tags/v0.1.1 'refs/tags/v0.1.1^{}')
+          test "$(awk '$2=="refs/tags/v0.1.1" {print $1}' <<< "$causal_refs")" = 82bb99006232a064725df29a53af5405e222cd42
+          test "$(awk '$2=="refs/tags/v0.1.1^{}" {print $1}' <<< "$causal_refs")" = 0c16428762d1d1da1b28fe05c4e051d2cc41967b
+          main_run="$RUNNER_TEMP/gooo-evolution-trial-main-run.json"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/runs/33445305000 > "$main_run"
+          jq -e '.id==33445305000 and .event=="push" and .head_branch=="main" and .head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .status=="completed" and .conclusion=="success"' "$main_run" >/dev/null
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/jobs/99662940416 > "$RUNNER_TEMP/gooo-evolution-trial-main-job.json"
+          jq -e '.id==99662940416 and .run_id==33445305000 and .name=="verify-and-experiment" and .head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/gooo-evolution-trial-main-job.json" >/dev/null
+          main_artifact_metadata="$RUNNER_TEMP/gooo-evolution-trial-main-artifact.json"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/artifacts/9777794326 > "$main_artifact_metadata"
+          jq -e '.id==9777794326 and .name=="gooo-evolution-trial-33445305000" and .size_in_bytes==130085 and .digest=="sha256:07c81d12ecf003907678cbbea15d104effd44bdb658893ee426820fdb5b9a13a" and .expired==false and .workflow_run.id==33445305000 and .workflow_run.head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982"' "$main_artifact_metadata" >/dev/null
+          main_artifact="$RUNNER_TEMP/gooo-evolution-trial-main-artifact.zip"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/artifacts/9777794326/zip > "$main_artifact"
+          test "$(wc -c < "$main_artifact" | tr -d ' ')" = 130085
+          test "$(sha256sum "$main_artifact" | awk '{print $1}')" = 07c81d12ecf003907678cbbea15d104effd44bdb658893ee426820fdb5b9a13a
+          main_dir="$RUNNER_TEMP/gooo-evolution-trial-main-artifact"
+          mkdir -p "$main_dir"
+          unzip -q "$main_artifact" -d "$main_dir"
+          jq -e '.schema=="gooo/evolution-trial/final-report/v1" and .experiment=="first-release-to-release-reflexive-normalization-split" and .decision=="REFUTED" and .candidate=={added_cells:2,candidate_digest:"sha256:4edd900ea94b1cb461b27d61fb06e72993424eb8ad424b82ac19b78b59318bdb",decision:"CLOSED",delta_digest:"sha256:826a90daaf19fb0f0b0b51af89c53150219ca624331905a4c913e329b085a6e6",retired_cells:1,rollback_exact_pair:true,split_cells:1} and .baseline_corpus.total==3 and .baseline_corpus.executed==3 and .baseline_corpus.failed==0 and .baseline_corpus.unknown==1 and .baseline_corpus.closed==1 and .baseline_corpus.refuted==1 and .baseline_corpus.replay_digest_match==true and .candidate_corpus.total==3 and .candidate_corpus.executed==3 and .candidate_corpus.failed==3 and .candidate_corpus.unknown==0 and .candidate_corpus.closed==0 and .candidate_corpus.refuted==3 and .candidate_corpus.replay_digest_match==false and .candidate_corpus.interface_decision=="REFUTED" and .causal_decision=="REFUTED" and .causal_full_oracle_state=="CLOSED" and .acceptance_predicates=={candidate_compiled_and_generated_ir_backend:false,causal_selection_and_full_oracle_closed:false,closed_unknown_refuted_corpus_preserved:false,exact_semantic_resolution_pair_observed:true,replay_digests_match:false,rollback_possible:true} and .unresolved==["released compiler phase parser accepts exactly three executable activities and cannot compose the requested four-activity split","candidate semantic IR and backend were therefore not emitted","whole-language self-improvement remains UNKNOWN","external utility remains UNKNOWN/NOT_MADE"] and .process_evidence.main_head=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .process_evidence.bootstrap_root=="cd64acc2077474e459dcbcd457aff0d320524c14" and .process_evidence.bootstrap_root_parent_count==0 and .process_evidence.bootstrap_direct_main==1 and .process_evidence.post_bootstrap_direct_main==0 and .process_evidence.exact==true and ([.process_evidence.pull_requests[]|{number,head:.headRefOid,merge:.mergeCommit.oid,state}]|sort_by(.number))==[{number:1,head:"0814b9b737ad0c4a71467322029ffe7596bee754",merge:"e71ad71fe494979e265151bdc70f969ac68f2540",state:"MERGED"},{number:2,head:"92952fe8df9f692277db820eba342eb8591c1df1",merge:"dc35a659442a4c7f66a5285567e3933c51767ff5",state:"MERGED"},{number:3,head:"122357b77868c2960c75c35dc3ffdde8373de3f6",merge:"f19d0bea41e642ff76dfd347d0687db7e6b118f7",state:"MERGED"},{number:4,head:"6c401396ab9ada4a8eb109d22050d7c3adcd2f3c",merge:"d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",state:"MERGED"}]' "$main_dir/final-report.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/ci-metrics/v1" and .go_files==9 and .gooo_files==1 and .physical_lines==2164 and .regular_files==22 and .subdirectories==11 and .root_readme_excluded==true and .generated_files==110 and .generated_bytes==377573 and .compile_wall_ms==2673 and .build_wall_ms==609 and .test_wall_ms==58 and .conformance_wall_ms==11384 and .integration_wall_ms==11384 and .peak_rss_kib==91512 and .tests=={total:3,executed:3,reused:0,failed:0,unknown:1} and .repository_writes==0 and .upstream_writes==0 and .local_test_executions==0' "$main_dir/ci-metrics.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/released-tools-executed/v1" and .delta_forge==true and .reflexive_compiler==true and .causal_runner==true and .candidate_only==true and .upstream_writes==0 and .repository_writes==0' "$main_dir/tool-execution-report.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/inventory/v1" and .regular_files==22 and .subdirectories==11 and .go_files==9 and .gooo_files==1 and .physical_lines==2164 and .root_readme_excluded==true' "$main_dir/repository-inventory.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/process-evidence/v1" and .main_head=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .bootstrap_direct_main==1 and .post_bootstrap_direct_main==0 and .exact==true and .repository_writes_by_experiment==0 and .upstream_writes_by_experiment==0 and .local_test_executions==0 and .utility_global_core=={state:"UNKNOWN",status:"NOT_MADE"}' "$main_dir/process-evidence.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/corpus-report/v1" and .role=="baseline" and .total==3 and .executed==3 and .failed==0 and .unknown==1 and .closed==1 and .refuted==1 and .replay_digest_match==true and .interface_decision=="CLOSED"' "$main_dir/baseline-report.json" >/dev/null
+          jq -e '.schema=="gooo/evolution-trial/corpus-report/v1" and .role=="candidate" and .total==3 and .executed==3 and .failed==3 and .unknown==0 and .closed==0 and .refuted==3 and .replay_digest_match==false and .interface_decision=="REFUTED" and ([.cases[]|.error]|unique)==["phase graph must declare exactly three executable activities"]' "$main_dir/candidate-report.json" >/dev/null
+          release_run="$RUNNER_TEMP/gooo-evolution-trial-release-run.json"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/runs/33445379243 > "$release_run"
+          jq -e '.id==33445379243 and .event=="workflow_dispatch" and .head_branch=="main" and .head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .status=="completed" and .conclusion=="success"' "$release_run" >/dev/null
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/jobs/99663170908 > "$RUNNER_TEMP/gooo-evolution-trial-release-job.json"
+          jq -e '.id==99663170908 and .run_id==33445379243 and .name=="release" and .head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/gooo-evolution-trial-release-job.json" >/dev/null
+          release_artifact_metadata="$RUNNER_TEMP/gooo-evolution-trial-release-artifact.json"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/artifacts/9777817257 > "$release_artifact_metadata"
+          jq -e '.id==9777817257 and .name=="gooo-evolution-trial-0.1.0-release-audit" and .size_in_bytes==33589 and .digest=="sha256:1cf113aaf5a6e629ce2da1f358a5502dba3600ec9f8155b785d72acfd5f20001" and .expired==false and .workflow_run.id==33445379243 and .workflow_run.head_sha=="d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982"' "$release_artifact_metadata" >/dev/null
+          release_artifact="$RUNNER_TEMP/gooo-evolution-trial-release-artifact.zip"
+          gh api repos/kimjooyoon/gooo-evolution-trial/actions/artifacts/9777817257/zip > "$release_artifact"
+          test "$(wc -c < "$release_artifact" | tr -d ' ')" = 33589
+          test "$(sha256sum "$release_artifact" | awk '{print $1}')" = 1cf113aaf5a6e629ce2da1f358a5502dba3600ec9f8155b785d72acfd5f20001
+          audit_dir="$RUNNER_TEMP/gooo-evolution-trial-release-artifact"
+          mkdir -p "$audit_dir"
+          unzip -q "$release_artifact" -d "$audit_dir"
+          jq -e '. == {schema:"gooo/evolution-trial/release-audit/v1",repository:"kimjooyoon/gooo-evolution-trial",tag:"v0.1.0",release_id:380086557,tag_object:"c3a87bd320a24e6c4961afc532fd4df6b5d165c3",target_commit:"d917eec6344f2eaa9a6fb0069f7fe0aaafeb6982",run_id:33445379243,job_id:99663170908,assets:[{id:538589631,name:"experiment-dossier-v0.1.0.md",size:2077,digest:"sha256:6d72387f9ee60cc994166595d1cd1c2abc3d72863f05c857bcb1470352b73b5e"},{id:538589629,name:"gooo-evolution-trial-source-v0.1.0.tar.gz",size:28486,digest:"sha256:b22d716111c7bcbe5dab18a1bb8caee03388579ac394f93a15798ebca5c43bfc"},{id:538589628,name:"release-manifest-v0.1.0.json",size:764,digest:"sha256:16d908073ae49566fd7186a8d042758a79d30274e94fe5c5ca7ca20773fc9839"},{id:538589633,name:"SHA256SUMS",size:469,digest:"sha256:e1431e654fe65bdb9a325b1da797b0da613e8712ad32c55854d78610f14380b4"},{id:538589630,name:"upstream-lock-v0.1.0.json",size:3888,digest:"sha256:b7cff57d0a300af2876cc6da1a2ccf6aad51f1a153ac794761eb76763c1e8330"},{id:538589627,name:"version.json",size:319,digest:"sha256:b5475730a3726c2e2ff89457e8e976d8f5aada46bfcee6218e99cf6689b51b07"}],immutable:true}' "$audit_dir/release-audit.json" >/dev/null
+          echo "upstream executable evolution trial counterexample durable release and exact REFUTED evidence verified"
+
+      - name: Verify reflexive compiler graph topology durable release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          compiler_repo="kimjooyoon/gooo-reflexive-compiler-slice"
+          compiler_dir="$ARTIFACT_ROOT/releases/reflexive_compiler_graph_topology_self_improvement_durable_release/assets"
+          compiler_release_json="$ARTIFACT_ROOT/releases/reflexive_compiler_graph_topology_self_improvement_durable_release.release.json"
+          jq -e '.id==380102097 and .tag_name=="v0.2.0" and .html_url=="https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/tag/v0.2.0" and .draft==false and .prerelease==false and .immutable==true' "$compiler_release_json" >/dev/null
+          jq -e '. == {schema:"gooo/reflexive-release-manifest/v1",version:"0.2.0",tag:"v0.2.0",commit:"7bdba0c353a73a40111747dbf55512939f6841a0",assets:[{name:"gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz",digest:"sha256:3ced5c624b50afddf6906c093b80a3a83eebfc52ed2c59051ec427b28931eeba"},{name:"gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz",digest:"sha256:039d8db0457cb8ff9d439ac52234c23de6c19b38212d8c32242155d276bd483b"},{name:"release-report-v0.2.0.json",digest:"sha256:6d80a3941a55d4199f6fc3fae4ed2c2429f45d1fd24fb2e3aafecc1125ca2fc7"},{name:"version.json",digest:"sha256:cd55a20257e61a0603bbdc32c47667bf107d3d4dffe31518477ebb9c67a64214"}]}' "$compiler_dir/release-manifest-v0.2.0.json" >/dev/null
+          expected_checksums=$'3ced5c624b50afddf6906c093b80a3a83eebfc52ed2c59051ec427b28931eeba  gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz\n039d8db0457cb8ff9d439ac52234c23de6c19b38212d8c32242155d276bd483b  gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz\n6d80a3941a55d4199f6fc3fae4ed2c2429f45d1fd24fb2e3aafecc1125ca2fc7  release-report-v0.2.0.json\ncd55a20257e61a0603bbdc32c47667bf107d3d4dffe31518477ebb9c67a64214  version.json\n3e9a6b8d409725a1b8e99a387ebd33045e64677364df783c083b32472c3ba171  release-manifest-v0.2.0.json'
+          test "$(cat "$compiler_dir/SHA256SUMS")" = "$expected_checksums"
+          test "$(wc -c < "$compiler_dir/gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz" | tr -d ' ')" = 31726
+          test "$(wc -c < "$compiler_dir/gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz" | tr -d ' ')" = 2628138
+          test "$(wc -c < "$compiler_dir/release-report-v0.2.0.json" | tr -d ' ')" = 10167
+          test "$(wc -c < "$compiler_dir/version.json" | tr -d ' ')" = 315
+          test "$(wc -c < "$compiler_dir/release-manifest-v0.2.0.json" | tr -d ' ')" = 795
+          test "$(wc -c < "$compiler_dir/SHA256SUMS" | tr -d ' ')" = 506
+          test "$(sha256sum "$compiler_dir/gooo-reflexive-compiler-slice-source-v0.2.0.tar.gz" | awk '{print $1}')" = 3ced5c624b50afddf6906c093b80a3a83eebfc52ed2c59051ec427b28931eeba
+          test "$(sha256sum "$compiler_dir/gooo-reflexive-compiler-slice-linux-amd64-v0.2.0.tar.gz" | awk '{print $1}')" = 039d8db0457cb8ff9d439ac52234c23de6c19b38212d8c32242155d276bd483b
+          test "$(sha256sum "$compiler_dir/release-report-v0.2.0.json" | awk '{print $1}')" = 6d80a3941a55d4199f6fc3fae4ed2c2429f45d1fd24fb2e3aafecc1125ca2fc7
+          test "$(sha256sum "$compiler_dir/version.json" | awk '{print $1}')" = cd55a20257e61a0603bbdc32c47667bf107d3d4dffe31518477ebb9c67a64214
+          test "$(sha256sum "$compiler_dir/release-manifest-v0.2.0.json" | awk '{print $1}')" = 3e9a6b8d409725a1b8e99a387ebd33045e64677364df783c083b32472c3ba171
+          test "$(sha256sum "$compiler_dir/SHA256SUMS" | awk '{print $1}')" = e7554da06237c2b52eaa15f4a5fa4e16b1edbf6240eacffdaea6000fc73d7464
+          jq -e '.schema=="gooo/reflexive-release-report/v1" and .version=="0.2.0" and .tag=="v0.2.0" and .commit=="7bdba0c353a73a40111747dbf55512939f6841a0" and .scope=="ONE_COMPILER_PHASE_ONLY" and (.improvement|type)=="object"' "$compiler_dir/release-report-v0.2.0.json" >/dev/null
+          pr_json="$RUNNER_TEMP/gooo-reflexive-compiler-pr-8.json"
+          gh api "repos/$compiler_repo/pulls/8" > "$pr_json"
+          jq -e '.number==8 and .base.ref=="main" and .head.ref=="agent/reflexive-phase-self-improvement" and .head.sha=="69727313308f5143319b4bb2b95e67b6bdd2735d" and .merge_commit_sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .merged==true' "$pr_json" >/dev/null
+          pr_run="$RUNNER_TEMP/gooo-reflexive-compiler-pr-run.json"
+          gh api "repos/$compiler_repo/actions/runs/33447973294" > "$pr_run"
+          jq -e '.id==33447973294 and .event=="pull_request" and .head_branch=="agent/reflexive-phase-self-improvement" and .head_sha=="69727313308f5143319b4bb2b95e67b6bdd2735d" and .status=="completed" and .conclusion=="success"' "$pr_run" >/dev/null
+          gh api "repos/$compiler_repo/actions/jobs/99671224008" > "$RUNNER_TEMP/gooo-reflexive-compiler-pr-job.json"
+          jq -e '.id==99671224008 and .run_id==33447973294 and .name=="conformance" and .head_sha=="69727313308f5143319b4bb2b95e67b6bdd2735d" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/gooo-reflexive-compiler-pr-job.json" >/dev/null
+          pr_artifact="$RUNNER_TEMP/gooo-reflexive-compiler-pr-artifact-9778718602.zip"
+          gh api "repos/$compiler_repo/actions/artifacts/9778718602" > "$RUNNER_TEMP/gooo-reflexive-compiler-pr-artifact.json"
+          jq -e '.id==9778718602 and .name=="reflexive-conformance-8e0f45ce97fad9da11e7bbcf1ef5ad8b129fa1d6" and .size_in_bytes==24954557 and .digest=="sha256:596a6042d1682097df78e237c7b60541fc05dcc359c05dff749a4bc77debbb75" and .expired==false and .workflow_run.id==33447973294 and .workflow_run.head_sha=="69727313308f5143319b4bb2b95e67b6bdd2735d"' "$RUNNER_TEMP/gooo-reflexive-compiler-pr-artifact.json" >/dev/null
+          gh api "repos/$compiler_repo/actions/artifacts/9778718602/zip" > "$pr_artifact"
+          test "$(wc -c < "$pr_artifact" | tr -d ' ')" = 24954557
+          test "$(sha256sum "$pr_artifact" | awk '{print $1}')" = 596a6042d1682097df78e237c7b60541fc05dcc359c05dff749a4bc77debbb75
+          main_run="$RUNNER_TEMP/gooo-reflexive-compiler-main-run.json"
+          gh api "repos/$compiler_repo/actions/runs/33448048024" > "$main_run"
+          jq -e '.id==33448048024 and .event=="push" and .head_branch=="main" and .head_sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .status=="completed" and .conclusion=="success"' "$main_run" >/dev/null
+          gh api "repos/$compiler_repo/actions/jobs/99671456387" > "$RUNNER_TEMP/gooo-reflexive-compiler-main-job.json"
+          jq -e '.id==99671456387 and .run_id==33448048024 and .name=="conformance" and .head_sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/gooo-reflexive-compiler-main-job.json" >/dev/null
+          main_artifact="$RUNNER_TEMP/gooo-reflexive-compiler-main-artifact-9778748463.zip"
+          gh api "repos/$compiler_repo/actions/artifacts/9778748463" > "$RUNNER_TEMP/gooo-reflexive-compiler-main-artifact.json"
+          jq -e '.id==9778748463 and .name=="reflexive-conformance-7bdba0c353a73a40111747dbf55512939f6841a0" and .size_in_bytes==24954565 and .digest=="sha256:be15de0147fb86e12e0ccf1432dfab7628e64fe6ac2201f5739fc7e017da98f7" and .expired==false and .workflow_run.id==33448048024 and .workflow_run.head_sha=="7bdba0c353a73a40111747dbf55512939f6841a0"' "$RUNNER_TEMP/gooo-reflexive-compiler-main-artifact.json" >/dev/null
+          gh api "repos/$compiler_repo/actions/artifacts/9778748463/zip" > "$main_artifact"
+          test "$(wc -c < "$main_artifact" | tr -d ' ')" = 24954565
+          test "$(sha256sum "$main_artifact" | awk '{print $1}')" = be15de0147fb86e12e0ccf1432dfab7628e64fe6ac2201f5739fc7e017da98f7
+          release_run="$RUNNER_TEMP/gooo-reflexive-compiler-release-run.json"
+          gh api "repos/$compiler_repo/actions/runs/33448121915" > "$release_run"
+          jq -e '.id==33448121915 and .event=="workflow_dispatch" and .head_branch=="main" and .head_sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .status=="completed" and .conclusion=="success"' "$release_run" >/dev/null
+          gh api "repos/$compiler_repo/actions/jobs/99671691260" > "$RUNNER_TEMP/gooo-reflexive-compiler-release-job.json"
+          jq -e '.id==99671691260 and .run_id==33448121915 and .name=="release" and .head_sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .status=="completed" and .conclusion=="success"' "$RUNNER_TEMP/gooo-reflexive-compiler-release-job.json" >/dev/null
+          tag_json="$RUNNER_TEMP/gooo-reflexive-compiler-tag.json"
+          gh api "repos/$compiler_repo/git/ref/tags/v0.2.0" > "$tag_json"
+          jq -e '.object.sha=="5852cc52f4ecec7fc835fdb6ed7adc1108459d6a" and .object.type=="tag"' "$tag_json" >/dev/null
+          gh api "repos/$compiler_repo/git/tags/5852cc52f4ecec7fc835fdb6ed7adc1108459d6a" > "$RUNNER_TEMP/gooo-reflexive-compiler-tag-object.json"
+          jq -e '.object.sha=="7bdba0c353a73a40111747dbf55512939f6841a0" and .object.type=="commit"' "$RUNNER_TEMP/gooo-reflexive-compiler-tag-object.json" >/dev/null
+          compiler_refs=$(git ls-remote "https://github.com/$compiler_repo.git" refs/tags/v0.2.0 'refs/tags/v0.2.0^{}')
+          test "$(awk '$2=="refs/tags/v0.2.0" {print $1}' <<< "$compiler_refs")" = 5852cc52f4ecec7fc835fdb6ed7adc1108459d6a
+          test "$(awk '$2=="refs/tags/v0.2.0^{}" {print $1}' <<< "$compiler_refs")" = 7bdba0c353a73a40111747dbf55512939f6841a0
+          echo "upstream reflexive compiler graph topology durable release and CI evidence verified"
+
+      - name: Verify separate seventeen-entry non-completeness capability evidence registry
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          bash scripts/verify-capability-evidence-registry.sh \
+            contracts/non-completeness-capability-evidence-registry-v1.json \
+            evidence/non-completeness-capability-evidence-registry-v1.json \
+            "$ARTIFACT_ROOT/capability-registry"
+          jq -e '.entry_count==17 and .summary=={closed:13,unknown:0,refuted:4} and (has("percentage")|not) and (has("score")|not)' \
+            "$ARTIFACT_ROOT/capability-registry/verification.json" >/dev/null
+
+      - name: Materialize runtime measurements
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          before=$(cat "$RUNNER_TEMP/repository-before")
+          git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}' > "$RUNNER_TEMP/repository-after"
+          test "$before" = "$(cat "$RUNNER_TEMP/repository-after")"
+          fetch=$(jq '.timing.fetch' "$ARTIFACT_ROOT/releases/verification.json")
+          verify=$(jq '.timing.verify' "$ARTIFACT_ROOT/releases/verification.json")
+          ci=$(cat "$ARTIFACT_ROOT/ci-observations.json")
+          verify_rss=$(cat "$ARTIFACT_ROOT/release-verify-peak-rss")
+          jq -n \
+            --arg schema "gooo/self-improvement-portfolio/runtime/v1" \
+            --arg subject "$SUBJECT_SHA" --arg go_version "$(go env GOVERSION)" \
+            --argjson fetch "$fetch" --argjson verify "$verify" --argjson verify_rss "$verify_rss" --argjson ci "$ci" \
+            '{schema:$schema,subject_sha:$subject,go_version:$go_version,timing:{fetch:$fetch,verify:($verify|.peak_rss_kib=$verify_rss),report:{wall_ms:0,duration_ns:0,peak_rss_kib:0}},ci_observations:$ci,authority:{runtime_repository_writes:0,caller_owned_temp_output:true,cross_project_required_gates:0},local_execution_counts:{gofmt:0,build:0,test:0,vet:0,conformance:0}}' \
+            > "$ARTIFACT_ROOT/runtime.json"
+
+      - name: Run fixed-denominator conformance and emit human report
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          bash scripts/conformance.sh "$RUNNER_TEMP/ledger-report" "$GITHUB_WORKSPACE" "$ARTIFACT_ROOT"
+          final_before=$(cat "$RUNNER_TEMP/repository-after")
+          git status --porcelain=v1 -z --untracked-files=all | sha256sum | awk '{print $1}' > "$RUNNER_TEMP/repository-final"
+          test "$final_before" = "$(cat "$RUNNER_TEMP/repository-final")"
+          jq -e '.repository_writes==0 and .summary=={total:37,closed:34,unknown:1,refuted:2}' "$ARTIFACT_ROOT/conformance.json" >/dev/null
+          cat "$ARTIFACT_ROOT/ci-observations.json" >> "$GITHUB_STEP_SUMMARY"
+          cat "$ARTIFACT_ROOT/report.md" >> "$GITHUB_STEP_SUMMARY"
+          cat "$ARTIFACT_ROOT/conformance.json" >> "$GITHUB_STEP_SUMMARY"
+          cat "$ARTIFACT_ROOT/capability-registry/verification.json" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload human-readable evidence
+        if: always()
+        id: evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooo-self-improvement-ledger-${{ env.SUBJECT_SHA }}
+          path: ${{ env.ARTIFACT_ROOT }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Record artifact identity
+        if: always()
+        run: |
+          {
+            echo "### Evidence artifact"
+            echo "artifact_id: ${{ steps.evidence.outputs.artifact-id }}"
+            echo "artifact_digest: ${{ steps.evidence.outputs.artifact-digest }}"
+          } >> "$GITHUB_STEP_SUMMARY"
