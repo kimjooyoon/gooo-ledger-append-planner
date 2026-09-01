@@ -72,9 +72,9 @@ func Execute(transactionPath string, options Options) (Result, error) {
 	}
 	manifestPath := options.TransactionManifestPath
 	manifest := TransactionManifest{}
-	if transaction.Schema == "gooo/ledger-append-transaction/v2" {
+	if transaction.Schema == "gooo/ledger-append-transaction/v2" || transaction.Schema == "gooo/ledger-append-transaction/v3" {
 		if manifestPath == "" {
-			manifestPath = meta.TransactionManifestPath
+			manifestPath = defaultManifestPath(transaction.Schema, meta.TransactionManifestPath)
 		}
 		if manifestPath != "" {
 			manifest, err = LoadTransactionManifest(resolveAuthorityPath(options.MetaCodePath, manifestPath))
@@ -159,6 +159,19 @@ func resolveAuthorityPath(metaCodePath, declaredPath string) string {
 	return filepath.Join(metaRoot, declaredPath)
 }
 
+func defaultManifestPath(transactionSchema, declaredPath string) string {
+	if transactionSchema == "gooo/ledger-append-transaction/v3" {
+		if strings.HasSuffix(declaredPath, "-v3.gooo") {
+			return declaredPath
+		}
+		return ".gooo/append-transaction-manifest-v3.gooo"
+	}
+	if strings.HasSuffix(declaredPath, "-v2.gooo") {
+		return declaredPath
+	}
+	return ".gooo/append-transaction-manifest-v2.gooo"
+}
+
 func loadTransaction(path string) (Transaction, map[string]any, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -197,9 +210,9 @@ func validateExecution(state *runState, options Options) error {
 	validateManifestBinding(state)
 	validateBaseline(state, options)
 	validateTransaction(state)
-	validateLedgerShape(state)
 	validateManifestTarget(state)
 	validateManifestDeclaration(state)
+	validateLedgerShape(state)
 	if len(state.Findings) > 0 {
 		state.Plan = basePlan(state)
 		return nil
@@ -214,11 +227,11 @@ func validateExecution(state *runState, options Options) error {
 }
 
 func validateManifestBinding(state *runState) {
-	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" {
+	if !hasTransactionManifest(state.Transaction.Schema) {
 		return
 	}
 	if state.Manifest.Schema == "" {
-		state.Findings = append(state.Findings, unknown("VERIFY", "LOAD_TRANSACTION_MANIFEST", "v2 transaction manifest is unavailable", "TRANSACTION_MANIFEST_UNOBSERVED", "supply the declared .gooo transaction manifest", []string{"transaction-manifest"}))
+		state.Findings = append(state.Findings, unknown("VERIFY", "LOAD_TRANSACTION_MANIFEST", "transaction manifest is unavailable", "TRANSACTION_MANIFEST_UNOBSERVED", "supply the declared .gooo transaction manifest", []string{"transaction-manifest"}))
 		return
 	}
 	if state.Manifest.Operation != state.Meta.Operation || state.Manifest.TransactionSchema != state.Transaction.Schema {
@@ -249,7 +262,11 @@ func validateManifestBinding(state *runState) {
 }
 
 func validateManifestDeclaration(state *runState) {
-	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.Manifest.Schema == "" {
+	if !hasTransactionManifest(state.Transaction.Schema) || state.Manifest.Schema == "" {
+		return
+	}
+	if state.Transaction.Schema == "gooo/ledger-append-transaction/v3" {
+		validateManifestDeclarationV3(state)
 		return
 	}
 	for role, path := range state.Meta.Paths {
@@ -267,8 +284,89 @@ func validateManifestDeclaration(state *runState) {
 	}
 }
 
+func validateManifestDeclarationV3(state *runState) {
+	if state.Manifest.Schema != transactionManifestSchemaV3 {
+		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_TRANSACTION_MANIFEST_VERSION", "TRANSACTION_MANIFEST_VERSION_MISMATCH", state.Manifest.Schema))
+		return
+	}
+	wantRoles := map[string]bool{}
+	missingSemantic := false
+	extraTarget := false
+	for role, path := range state.Meta.Paths {
+		wantRoles[role] = true
+		target, ok := state.Manifest.FileTargets[role]
+		if !ok {
+			if state.Meta.PathKinds[role] == "DERIVED_PROJECTION" {
+				appendProjectionAuthorityUnknown(state, role, path, []string{"target-file", "projection-kind", "projection-before-digest", "projection-source-semantic-digest", "projection-after-invariant"})
+			} else {
+				missingSemantic = true
+				state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_TARGET_SET", "MANIFEST_SEMANTIC_TARGET_MISSING", role))
+			}
+			continue
+		}
+		if target.Path != path {
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_TARGET_SET", "MANIFEST_TARGET_PATH_MISMATCH", role+"="+target.Path))
+		}
+		if target.Kind != state.Meta.PathKinds[role] {
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_TARGET_KIND", "MANIFEST_TARGET_KIND_MISMATCH", role+"="+target.Kind))
+		}
+		if target.Kind == "DERIVED_PROJECTION" {
+			missing := []string{}
+			if target.ProjectionKind == "" {
+				missing = append(missing, "projection-kind")
+			}
+			if target.BeforeDigest == "" {
+				missing = append(missing, "projection-before-digest")
+			}
+			if target.SourceSemanticDigest == "" {
+				missing = append(missing, "projection-source-semantic-digest")
+			}
+			if target.AfterInvariant == "" {
+				missing = append(missing, "projection-after-invariant")
+			}
+			if len(missing) > 0 {
+				appendProjectionAuthorityUnknown(state, role, path, missing)
+			} else if target.AfterInvariant != projectionAfterInvariant {
+				state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_PROJECTION_AFTER_INVARIANT", "PROJECTION_AFTER_INVARIANT_UNSUPPORTED", role+"="+target.AfterInvariant))
+			}
+		}
+	}
+	for role := range state.Manifest.FileTargets {
+		if !wantRoles[role] {
+			extraTarget = true
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_TARGET_SET", "MANIFEST_UNDECLARED_TARGET", role))
+		}
+	}
+	if (missingSemantic || extraTarget) && len(state.Manifest.FileTargets) != len(state.Meta.Paths) {
+		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_TARGET_SET", "MANIFEST_TARGET_SET_MISMATCH", fmt.Sprintf("manifest=%d declared=%d", len(state.Manifest.FileTargets), len(state.Meta.Paths))))
+	}
+	for _, invariant := range requiredManifestAfterInvariantsV3 {
+		if !contains(state.Manifest.AfterInvariants, invariant) {
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_AFTER_INVARIANTS", "MANIFEST_AFTER_INVARIANT_MISSING", invariant))
+		}
+	}
+	for role, target := range state.Manifest.FileTargets {
+		if target.Kind != "DERIVED_PROJECTION" || target.ProjectionKind == "" || target.BeforeDigest == "" || target.SourceSemanticDigest == "" || target.AfterInvariant == "" {
+			continue
+		}
+		before, exists := state.BeforeFiles[target.Path]
+		if !exists {
+			state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_PROJECTION_BEFORE_DIGEST", "UNEXPECTED_PROJECTION_DELETE", role+" at "+target.Path))
+		} else if fileDigest(before) != target.BeforeDigest {
+			state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_PROJECTION_BEFORE_DIGEST", "PROJECTION_BEFORE_DIGEST_MISMATCH", role+" observed="+fileDigest(before)+" expected="+target.BeforeDigest))
+		}
+		if target.SourceSemanticDigest != state.BeforeDigest {
+			state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_PROJECTION_SOURCE_SEMANTIC_DIGEST", "PROJECTION_SOURCE_SEMANTIC_DIGEST_MISMATCH", role+" observed="+state.BeforeDigest+" expected="+target.SourceSemanticDigest))
+		}
+	}
+}
+
+func appendProjectionAuthorityUnknown(state *runState, role, path string, blocked []string) {
+	state.Findings = append(state.Findings, unknown("VERIFY", "BIND_DERIVED_PROJECTION", "derived projection authority is unavailable for "+role+" at "+path, "DERIVED_PROJECTION_AUTHORITY_UNOBSERVED", "supply the exact before digest, projection kind, source semantic digest, and after invariant", blocked))
+}
+
 func validateManifestTarget(state *runState) {
-	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.TargetBinding == nil {
+	if !hasTransactionManifest(state.Transaction.Schema) || state.TargetBinding == nil {
 		return
 	}
 	binding := state.TargetBinding
@@ -536,10 +634,24 @@ func validateLedgerShape(state *runState) {
 	if len(activityNames) != len(profileCells) {
 		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_ACTIVITY_CELL_CARDINALITY", "ACTIVITY_CELL_CARDINALITY_MISMATCH", fmt.Sprintf("activities=%d cells=%d", len(activityNames), len(profileCells))))
 	}
-	for _, key := range []string{"report", "history"} {
-		if _, exists := state.BeforeFiles[state.Meta.Paths[key]]; exists {
-			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_PROJECTION_TARGET", "NO_OVERWRITE", state.Meta.Paths[key]))
+	for role, kind := range state.Meta.PathKinds {
+		if kind != "DERIVED_PROJECTION" {
+			continue
 		}
+		path := state.Meta.Paths[role]
+		if _, exists := state.BeforeFiles[path]; !exists {
+			continue
+		}
+		if state.Transaction.Schema == "gooo/ledger-append-transaction/v3" {
+			target, declared := state.Manifest.FileTargets[role]
+			if declared && target.Kind == "DERIVED_PROJECTION" && target.ProjectionKind != "" && target.BeforeDigest != "" && target.SourceSemanticDigest != "" && target.AfterInvariant != "" {
+				continue
+			}
+			// validateManifestDeclarationV3 supplies the six-field UNKNOWN frontier
+			// for an absent or incomplete projection authority.
+			continue
+		}
+		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_PROJECTION_TARGET", "NO_OVERWRITE", path))
 	}
 }
 
@@ -699,10 +811,15 @@ func basePlan(state *runState) PatchPlan {
 		Process: state.Meta.Process, Claims: state.Meta.Claims, InputRepositoryMutated: false,
 		BeforeDigest: state.BeforeDigest,
 	}
-	if tx.Schema == "gooo/ledger-append-transaction/v2" {
+	if hasTransactionManifest(tx.Schema) {
 		plan.ManifestKey = tx.ManifestKey
 		plan.ManifestAfterInvariants = append([]string(nil), state.Manifest.AfterInvariants...)
-		plan.ManifestPlannedFiles = manifestPlannedPaths(state.Manifest.PlannedFiles)
+		if tx.Schema == "gooo/ledger-append-transaction/v2" {
+			plan.ManifestPlannedFiles = manifestPlannedPaths(state.Manifest.PlannedFiles)
+		} else {
+			plan.ManifestPlannedFiles = manifestTargetPaths(state.Manifest.FileTargets)
+			plan.ManifestFileTargets = manifestFileTargets(state.Manifest.FileTargets)
+		}
 		if state.TargetBinding != nil {
 			plan.TargetBeforeDigest = state.TargetBinding.BeforeDigest
 		}
@@ -717,6 +834,28 @@ func manifestPlannedPaths(planned map[string]string) []string {
 	}
 	sort.Strings(paths)
 	return paths
+}
+
+func manifestTargetPaths(targets map[string]ManifestFileTarget) []string {
+	paths := make([]string, 0, len(targets))
+	for _, target := range targets {
+		paths = append(paths, target.Path)
+	}
+	sort.Strings(paths)
+	return paths
+}
+
+func manifestFileTargets(targets map[string]ManifestFileTarget) []ManifestFileTarget {
+	roles := make([]string, 0, len(targets))
+	for role := range targets {
+		roles = append(roles, role)
+	}
+	sort.Strings(roles)
+	result := make([]ManifestFileTarget, 0, len(roles))
+	for _, role := range roles {
+		result = append(result, targets[role])
+	}
+	return result
 }
 
 func buildPatch(state *runState) error {
@@ -831,6 +970,9 @@ func buildPatch(state *runState) error {
 
 func renderAndFinalize(state *runState, options Options) error {
 	baseFiles := state.Plan.Files
+	if state.Transaction.Schema == "gooo/ledger-append-transaction/v3" {
+		return renderAndFinalizeV3(state, baseFiles)
+	}
 	context := templateContext(state, baseFiles)
 	var report, history []byte
 	for iteration := 0; iteration < 8; iteration++ {
@@ -869,14 +1011,89 @@ func renderAndFinalize(state *runState, options Options) error {
 	return nil
 }
 
+func renderAndFinalizeV3(state *runState, baseFiles []FileMutation) error {
+	targets := derivedProjectionTargets(state)
+	if len(targets) == 0 {
+		return fmt.Errorf("v3 manifest declares no derived projections")
+	}
+	generated := map[string][]byte{}
+	var generatedBytes int64
+	previousBytes := int64(-1)
+	for iteration := 0; iteration < 8; iteration++ {
+		context := templateContext(state, baseFiles)
+		generated = map[string][]byte{}
+		generatedBytes = 0
+		for _, target := range targets {
+			data, err := renderTemplate(state.Meta, target.Role, context)
+			if err != nil {
+				return err
+			}
+			if !json.Valid(data) {
+				return fmt.Errorf("projection template emitted invalid JSON: %s", target.Role)
+			}
+			generated[target.Path] = data
+			generatedBytes += int64(len(data))
+		}
+		state.Plan.Metrics.GeneratedBytes = generatedBytes
+		if generatedBytes == previousBytes {
+			break
+		}
+		previousBytes = generatedBytes
+	}
+	for _, target := range targets {
+		data := generated[target.Path]
+		context := templateContext(state, baseFiles)
+		replayed, err := renderTemplate(state.Meta, target.Role, context)
+		if err != nil {
+			return err
+		}
+		if !bytes.Equal(data, replayed) {
+			return fmt.Errorf("derived projection regeneration is not deterministic: %s", target.Path)
+		}
+		state.AfterFiles[target.Path] = data
+		before := state.BeforeFiles[target.Path]
+		action := "create"
+		if before != nil {
+			action = "replace"
+		}
+		state.Plan.Files = append(state.Plan.Files, mutation(target.Path, before, data, action, []string{"/"}, "regenerate derived projection from post-append semantic source"))
+	}
+	state.Plan.Metrics.GeneratedFiles = int64(len(targets))
+	state.Plan.Metrics.GeneratedBytes = generatedBytes
+	state.Plan.Metrics.ExactFilesChanged = int64(len(state.Plan.Files))
+	state.Plan.Metrics.ExactFilesPlanned = int64(len(state.Plan.Files))
+	return validateManifestAfter(state)
+}
+
+func derivedProjectionTargets(state *runState) []ManifestFileTarget {
+	roles := []string{}
+	for role, target := range state.Manifest.FileTargets {
+		if target.Kind == "DERIVED_PROJECTION" && state.Meta.PathKinds[role] == "DERIVED_PROJECTION" {
+			roles = append(roles, role)
+		}
+	}
+	sort.Strings(roles)
+	result := make([]ManifestFileTarget, 0, len(roles))
+	for _, role := range roles {
+		result = append(result, state.Manifest.FileTargets[role])
+	}
+	return result
+}
+
 func validateManifestAfter(state *runState) error {
-	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.TargetBinding == nil {
+	if !hasTransactionManifest(state.Transaction.Schema) || state.TargetBinding == nil {
 		return nil
 	}
 	binding := state.TargetBinding
 	wantPaths := map[string]bool{}
-	for _, path := range state.Manifest.PlannedFiles {
-		wantPaths[path] = true
+	if state.Transaction.Schema == "gooo/ledger-append-transaction/v2" {
+		for _, path := range state.Manifest.PlannedFiles {
+			wantPaths[path] = true
+		}
+	} else {
+		for _, target := range state.Manifest.FileTargets {
+			wantPaths[target.Path] = true
+		}
 	}
 	gotPaths := map[string]bool{}
 	for _, file := range state.Plan.Files {
@@ -959,16 +1176,43 @@ func validateManifestAfter(state *runState) error {
 	if err != nil || len(entries) != len(beforeEntries)+1 || !sameCanonical(entries[len(entries)-1], state.Transaction.RegistryEntry) || intValue(registry["entry_count"]) != int64(len(entries)) {
 		return fmt.Errorf("after registry does not append exactly one manifest entry")
 	}
-	for _, role := range []string{"report", "history"} {
-		if _, ok := state.AfterFiles[state.Meta.Paths[role]]; !ok {
-			return fmt.Errorf("after invariant missing generated file: %s", state.Meta.Paths[role])
+	if state.Transaction.Schema == "gooo/ledger-append-transaction/v3" {
+		for path := range state.BeforeFiles {
+			if _, ok := state.AfterFiles[path]; !ok {
+				return fmt.Errorf("unexpected delete outside the v3 manifest: %s", path)
+			}
+		}
+		for _, target := range derivedProjectionTargets(state) {
+			data, ok := state.AfterFiles[target.Path]
+			if !ok || !json.Valid(data) {
+				return fmt.Errorf("after invariant missing regenerated projection: %s", target.Path)
+			}
+			mutation, ok := mutationByPath(state.Plan.Files, target.Path)
+			if !ok || mutation.BeforeDigest != target.BeforeDigest || mutation.Action != "replace" || mutation.AfterExists == false {
+				return fmt.Errorf("projection mutation does not bind the exact before state: %s", target.Path)
+			}
+		}
+	} else {
+		for _, role := range []string{"report", "history"} {
+			if _, ok := state.AfterFiles[state.Meta.Paths[role]]; !ok {
+				return fmt.Errorf("after invariant missing generated file: %s", state.Meta.Paths[role])
+			}
 		}
 	}
 	return nil
 }
 
+func mutationByPath(files []FileMutation, path string) (FileMutation, bool) {
+	for _, file := range files {
+		if file.Path == path {
+			return file, true
+		}
+	}
+	return FileMutation{}, false
+}
+
 func validateManifestReceipt(state *runState) error {
-	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" {
+	if !hasTransactionManifest(state.Transaction.Schema) {
 		return nil
 	}
 	if !contains(state.Manifest.AfterInvariants, "replay-mismatches-zero") || len(state.Receipt.Mismatches) != 0 || state.Receipt.RepositoryWrites != 0 || state.Plan.Metrics.RepositoryWrites != 0 || state.Plan.InputRepositoryMutated {
@@ -1281,13 +1525,31 @@ func cloneFiles(files map[string][]byte) map[string][]byte {
 
 func subjectDigest(ledger LedgerAST, files map[string][]byte, meta MetaCode) (string, error) {
 	selected := map[string][]byte{}
-	for _, key := range []string{"activity_file", "profile", "release_locks", "assessment", "registry"} {
+	for _, key := range semanticTargetRoles(meta) {
 		path := meta.Paths[key]
 		if data, ok := files[path]; ok {
 			selected[path] = data
 		}
 	}
-	return ledgerDigest(ledger, selected)
+	digestLedger := ledger
+	if activity, ok := files[ledger.ActivityFile]; ok {
+		digestLedger.ActivityRaw = activity
+	}
+	return ledgerDigest(digestLedger, selected)
+}
+
+func semanticTargetRoles(meta MetaCode) []string {
+	roles := []string{}
+	for role, kind := range meta.PathKinds {
+		if kind == "SEMANTIC_APPEND_ONLY" {
+			roles = append(roles, role)
+		}
+	}
+	if len(roles) == 0 {
+		roles = []string{"activity_file", "profile", "release_locks", "assessment", "registry"}
+	}
+	sort.Strings(roles)
+	return roles
 }
 
 func reduceFindings(meta MetaCode, findings []Finding) string {
@@ -1498,7 +1760,7 @@ func emptyMetrics(meta MetaCode) Metrics {
 func projectionBytes(files []FileMutation) int64 {
 	var result int64
 	for _, file := range files {
-		if file.Action == "create" {
+		if file.Action == "create" || file.Action == "replace" {
 			result += file.AfterBytes
 		}
 	}

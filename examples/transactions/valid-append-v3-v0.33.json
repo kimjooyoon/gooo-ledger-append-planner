@@ -1,0 +1,112 @@
+{
+  "schema": "gooo/ledger-append-transaction/v3",
+  "transaction_id": "append-planner-projection-v0.3.0-v0.33",
+  "manifest_key": "v0.33.0",
+  "insertion_strategy": "ast",
+  "baseline": {
+    "repository": "kimjooyoon/gooo-self-improvement-ledger",
+    "tag": "v0.33.0",
+    "release_id": 380165562,
+    "tag_object_sha": "f1150846ca5b660b7c19321f6845ff35fe8affeb",
+    "target_commit_sha": "0723f7cdcc149a74a9a7a7aee03117f6b108cbd3",
+    "immutable": true,
+    "source_archive_sha256": "sha256:fe518bb651c4842218f91fd65e3cdd7ffe98c1f6957305697f78e0b2e9cdd6ef",
+    "source_tree_sha256": "sha256:b0ba210450cba861c38cf9c44eb69a9c6986cc85233ce3a350aa796671666cb1",
+    "release_asset_id": 538796911,
+    "release_asset_sha256": "sha256:9c9b893b341f9e7bffe26620909c9e20fa178c56530e47924834a9fda7fb9256"
+  },
+  "cell": {
+    "ordinal": 40,
+    "id": "EXPLANATION_CARRYING_COMPILER_DURABLE_RELEASE",
+    "axis": "EXPLANATION_CARRYING_COMPILER_DURABLE_RELEASE",
+    "proof": "COHERENCE",
+    "indicator": "OUTCOME",
+    "activity": "AdoptExplanationCarryingCompilerDurableRelease",
+    "source": "examples/self-improvement-portfolio/main.gooo#AdoptExplanationCarryingCompilerDurableRelease",
+    "ir": "semantic-ir/activity/AdoptExplanationCarryingCompilerDurableRelease",
+    "generated_artifact": "evidence/cells/EXPLANATION_CARRYING_COMPILER_DURABLE_RELEASE.json",
+    "evaluator": "ledger/explanation-carrying-compiler",
+    "metric_id": "gooo.metric.self-improvement.explanation-carrying-compiler-durable-release.v1",
+    "metric_denominator": 1,
+    "release_key": "explanation_carrying_compiler_durable_release",
+    "depends_on": []
+  },
+  "activity": {
+    "name": "AdoptExplanationCarryingCompilerDurableRelease",
+    "input_type": "PortfolioInput",
+    "output_type": "PortfolioEvidence",
+    "computes": "self-improvement-portfolio:v1;axis=EXPLANATION_CARRYING_COMPILER_DURABLE_RELEASE;proof=COHERENCE;indicator=OUTCOME"
+  },
+  "release_key": "explanation_carrying_compiler_durable_release",
+  "release_lock": {
+    "repository": "kimjooyoon/gooo-reflexive-compiler-slice",
+    "tag": "v0.3.0",
+    "release_id": 380150043,
+    "release_url": "https://github.com/kimjooyoon/gooo-reflexive-compiler-slice/releases/tag/v0.3.0",
+    "target_commit_sha": "0cf44db8b0d6cd96d190e9f902312d0be9394029",
+    "tag_object_sha": "d7e2bd301f5d1634e92b0de90d54798a35db424a",
+    "immutable": true,
+    "assets": [
+      {"id": 538741020, "name": "gooo-reflexive-compiler-slice-linux-amd64-v0.3.0.tar.gz", "size_bytes": 2647664, "sha256": "sha256:e03b605c14f5d4d0faf262e57556506f8cf7765756aee49a4ceb99fd700ae862"},
+      {"id": 538741018, "name": "gooo-reflexive-compiler-slice-source-v0.3.0.tar.gz", "size_bytes": 38820, "sha256": "sha256:62c45b663084690ff0ad964991d9d7fda1c30ee361876f31fc4f10ef34b68dbc"},
+      {"id": 538741021, "name": "release-manifest-v0.3.0.json", "size_bytes": 795, "sha256": "sha256:4d3bbafb7e31f1fabf83d39ff4f7ea918c658fed1ded18d9b9d177e7d9e95231"},
+      {"id": 538741019, "name": "release-report-v0.3.0.json", "size_bytes": 11497, "sha256": "sha256:6a20f41e9f5700f7e400597833e72b055d1d495aeada5f0c57ea4fae5842d514"},
+      {"id": 538741023, "name": "SHA256SUMS", "size_bytes": 506, "sha256": "sha256:560883657ad1bda5053d903beb113615f90bd8a2b4ac59c269abfce8c786d3c7"},
+      {"id": 538741017, "name": "version.json", "size_bytes": 315, "sha256": "sha256:32519d4c2b0372e3b5abe6a5a188b04d7f0be3f7d6cd037e53a3ab73b6223195"}
+    ]
+  },
+  "outcome": {
+    "state": "CLOSED",
+    "evidence": [
+      "structural-append:cell=EXPLANATION_CARRYING_COMPILER_DURABLE_RELEASE:activity=AdoptExplanationCarryingCompilerDurableRelease:lock=explanation_carrying_compiler_durable_release",
+      "immutable-v0.33.0-baseline:semantic-source-bound",
+      "derived-projection-regeneration:report-and-history-replaced-in-caller-copy",
+      "explanation-carrying-compiler:v0.3.0:terminal-records",
+      "replay-mismatches:0",
+      "input-repository-writes:0"
+    ]
+  },
+  "registry_entry": {
+    "entry_id": "explanation-carrying-compiler-v0.3.0",
+    "state": "CLOSED",
+    "evidence": [
+      "immutable compiler v0.3.0 release",
+      "explanation-carrying terminal records",
+      "matched v0.33.0 semantic baseline",
+      "derived report/history projection regeneration"
+    ],
+    "observed": {
+      "target_commit_sha": "0cf44db8b0d6cd96d190e9f902312d0be9394029",
+      "release_immutable": true,
+      "source_tree_digest": "sha256:09fef83853c981cb5d77f31a31e8d424523fec4eb730423b8b27167c1c5db477",
+      "scope": "ONE_COMPILER_PHASE_ONLY",
+      "repository_writes": 0
+    }
+  },
+  "migration": {
+    "operation": "ADD1",
+    "from": 39,
+    "to": 40,
+    "add": 1,
+    "retire": 0,
+    "split": 0
+  },
+  "expected": {
+    "proof_totals": {
+      "FOUNDATION": 4,
+      "COHERENCE": 31,
+      "REGRESSION": 5
+    },
+    "indicator_totals": {
+      "DRIVER": 4,
+      "OUTCOME": 31,
+      "GUARDRAIL": 5
+    },
+    "status_counts": {
+      "CLOSED": 37,
+      "UNKNOWN": 1,
+      "REFUTED": 2
+    },
+    "portfolio_decision": "REFUTED"
+  }
+}

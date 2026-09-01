@@ -22,6 +22,7 @@ type MetaCode struct {
 	Activities              []ActivitySpec
 	Edges                   []EdgeSpec
 	Paths                   map[string]string
+	PathKinds               map[string]string
 	Templates               map[string]string
 	Required                []string
 	UnknownFields           []string
@@ -205,33 +206,44 @@ type Metrics struct {
 }
 
 type PatchPlan struct {
-	Schema                  string            `json:"schema"`
-	TransactionID           string            `json:"transaction_id"`
-	Operation               string            `json:"operation"`
-	OperationDecision       string            `json:"decision"`
-	PortfolioDecision       string            `json:"portfolio_decision"`
-	Findings                []Finding         `json:"findings,omitempty"`
-	Baseline                Baseline          `json:"baseline"`
-	Migration               Migration         `json:"migration"`
-	NewCell                 Cell              `json:"new_cell"`
-	NewActivity             Activity          `json:"new_activity"`
-	ReleaseKey              string            `json:"release_key"`
-	ProofTotals             map[string]int    `json:"proof_totals"`
-	IndicatorTotals         map[string]int    `json:"indicator_totals"`
-	StatusCounts            map[string]int    `json:"status_counts"`
-	Files                   []FileMutation    `json:"files"`
-	BeforeDigest            string            `json:"canonical_before_digest"`
-	AfterDigest             string            `json:"canonical_after_digest"`
-	Metrics                 Metrics           `json:"metrics"`
-	Authority               map[string]any    `json:"authority"`
-	Process                 map[string]string `json:"process"`
-	Claims                  map[string]string `json:"claims"`
-	RepositoryOutput        string            `json:"repository_output,omitempty"`
-	InputRepositoryMutated  bool              `json:"input_repository_mutated"`
-	ManifestKey             string            `json:"manifest_key,omitempty"`
-	TargetBeforeDigest      string            `json:"target_before_digest,omitempty"`
-	ManifestPlannedFiles    []string          `json:"manifest_planned_files,omitempty"`
-	ManifestAfterInvariants []string          `json:"manifest_after_invariants,omitempty"`
+	Schema                  string               `json:"schema"`
+	TransactionID           string               `json:"transaction_id"`
+	Operation               string               `json:"operation"`
+	OperationDecision       string               `json:"decision"`
+	PortfolioDecision       string               `json:"portfolio_decision"`
+	Findings                []Finding            `json:"findings,omitempty"`
+	Baseline                Baseline             `json:"baseline"`
+	Migration               Migration            `json:"migration"`
+	NewCell                 Cell                 `json:"new_cell"`
+	NewActivity             Activity             `json:"new_activity"`
+	ReleaseKey              string               `json:"release_key"`
+	ProofTotals             map[string]int       `json:"proof_totals"`
+	IndicatorTotals         map[string]int       `json:"indicator_totals"`
+	StatusCounts            map[string]int       `json:"status_counts"`
+	Files                   []FileMutation       `json:"files"`
+	BeforeDigest            string               `json:"canonical_before_digest"`
+	AfterDigest             string               `json:"canonical_after_digest"`
+	Metrics                 Metrics              `json:"metrics"`
+	Authority               map[string]any       `json:"authority"`
+	Process                 map[string]string    `json:"process"`
+	Claims                  map[string]string    `json:"claims"`
+	RepositoryOutput        string               `json:"repository_output,omitempty"`
+	InputRepositoryMutated  bool                 `json:"input_repository_mutated"`
+	ManifestKey             string               `json:"manifest_key,omitempty"`
+	TargetBeforeDigest      string               `json:"target_before_digest,omitempty"`
+	ManifestPlannedFiles    []string             `json:"manifest_planned_files,omitempty"`
+	ManifestAfterInvariants []string             `json:"manifest_after_invariants,omitempty"`
+	ManifestFileTargets     []ManifestFileTarget `json:"manifest_file_targets,omitempty"`
+}
+
+type ManifestFileTarget struct {
+	Role                 string `json:"role"`
+	Path                 string `json:"path"`
+	Kind                 string `json:"kind"`
+	ProjectionKind       string `json:"projection_kind,omitempty"`
+	BeforeDigest         string `json:"before_digest,omitempty"`
+	SourceSemanticDigest string `json:"source_semantic_digest,omitempty"`
+	AfterInvariant       string `json:"after_invariant,omitempty"`
 }
 
 type ReplayReceipt struct {
@@ -264,7 +276,7 @@ type RollbackFile struct {
 }
 
 func (t Transaction) ValidateShape() error {
-	if t.Schema != "gooo/ledger-append-transaction/v1" && t.Schema != "gooo/ledger-append-transaction/v2" {
+	if t.Schema != "gooo/ledger-append-transaction/v1" && t.Schema != "gooo/ledger-append-transaction/v2" && t.Schema != "gooo/ledger-append-transaction/v3" {
 		return fmt.Errorf("transaction schema is %q", t.Schema)
 	}
 	if t.TransactionID == "" {

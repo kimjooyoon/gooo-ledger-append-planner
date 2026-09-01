@@ -1,0 +1,487 @@
+{
+  "entries": [
+    {
+      "entry_id": "evaluator-lineage-v0.1.0",
+      "evidence": [
+        "release API",
+        "gooo-evaluator-lineage-0.1.0.tar.gz",
+        "gooo-evaluator-lineage-0.1.0.tar.gz.sha256"
+      ],
+      "observed": {
+        "release_immutable": false,
+        "target_commit_sha": "3b0605b11c81065123ff834a3c5213887681b788"
+      },
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "state": "REFUTED"
+    },
+    {
+      "entry_id": "counterexample-memory-v0.1.0",
+      "evidence": [
+        "release API",
+        "gooo-counterexample-memory-v0.1.0.tar.gz",
+        "release-manifest.json",
+        "SHA256SUMS"
+      ],
+      "observed": {
+        "release_immutable": false,
+        "target_commit_sha": "40fbad10ad4d4cf14015084b28e0df01ef747c38"
+      },
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "state": "REFUTED"
+    },
+    {
+      "entry_id": "improvement-selector-v0.1.0",
+      "evidence": [
+        "release API",
+        "gooo-improvement-selector-v0.1.0-evidence.tar.gz",
+        "release-lock-v0.1.0.json",
+        "SHA256SUMS"
+      ],
+      "observed": {
+        "development_provenance": {
+          "go_version_checks": 1,
+          "local_build_executions": 0,
+          "local_gofmt_executions": 3,
+          "local_test_executions": 0,
+          "local_vet_executions": 0
+        },
+        "release_immutable": false,
+        "source_run_id": 33350323072,
+        "target_commit_sha": "a2ad62caf907e87703abe0c6e8debb0d3602c8d3"
+      },
+      "reason": "RELEASE_API_IMMUTABLE_FALSE",
+      "state": "REFUTED"
+    },
+    {
+      "entry_id": "proof-kernel-boundary-v0.1.0",
+      "evidence": [
+        "release API",
+        "proof-kernel-boundary-v0.1.0-evidence.tar.gz",
+        "proof-kernel-boundary-v0.1.0-evidence.tar.gz.sha256"
+      ],
+      "observed": {
+        "release_immutable": true,
+        "target_commit_sha": "e08ec36b31754ba0f853b0f3932de5ff7a70f5ac"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "semantic-mutation-lab-v0.1.1",
+      "evidence": [
+        "release API",
+        "source Actions artifact 9743650902"
+      ],
+      "observed": {
+        "release_assets": 0,
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9743650902,
+          "run_id": 33351140449,
+          "sha256": "sha256:082062e6395c3c7c8bdbd0aeb8bffc0b770b10d861e6445562d46fc297eff8de",
+          "size_bytes": 32399
+        },
+        "target_commit_sha": "1c2ed798200edaadd34853deb2bc4c7e9828e40b"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "evaluator-lineage-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-evaluator-lineage-0.1.1.tar.gz",
+        "gooo-evaluator-lineage-0.1.1.tar.gz.sha256",
+        "source Actions artifact 9743949053"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "19915a992613b3b404df7745c9ab54856a6d39c5",
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9743949053,
+          "run_id": 33352061227,
+          "sha256": "sha256:f30b979ed62decc2cf57b4be2150ce7769f7972b0f66ade71c294550649bf07f",
+          "size_bytes": 14752
+        },
+        "source_run_id": 33352061227,
+        "target_commit_sha": "19915a992613b3b404df7745c9ab54856a6d39c5"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "counterexample-memory-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-counterexample-memory-v0.1.1.tar.gz",
+        "release-manifest.json",
+        "SHA256SUMS",
+        "source Actions artifact 9743959074"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "255a2ecb804d8ad26642bef17a1ff21d8e668940",
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9743959074,
+          "run_id": 33352075333,
+          "sha256": "sha256:781d37eb80470f20419f504636ca0082d1bdb44eb5cd6242c44f0e6fed39a1b1",
+          "size_bytes": 23466
+        },
+        "source_run_id": 33352075333,
+        "target_commit_sha": "255a2ecb804d8ad26642bef17a1ff21d8e668940"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "improvement-selector-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-improvement-selector-v0.1.1-evidence.tar.gz",
+        "release-lock-v0.1.1.json",
+        "SHA256SUMS",
+        "source Actions artifact 9743952071"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "5dc7686d14bbfc80513772e0c133e69fb99aea9e",
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9743952071,
+          "run_id": 33352064373,
+          "sha256": "sha256:3d4eee4293f7c047e0507f9cec5d169632db23b647fb158eea8a38ed9a26f2df",
+          "size_bytes": 53809
+        },
+        "source_run_id": 33352064373,
+        "target_commit_sha": "5dc7686d14bbfc80513772e0c133e69fb99aea9e"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "receipt-schema-migration-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-receipt-schema-migration-v0.1.1-conformance.tar.gz",
+        "adoption-proposal.json",
+        "source Actions artifact 9744345755"
+      ],
+      "observed": {
+        "adoption_proposal": {
+          "declared_proposal_digest": "sha256:182d99c99985ad49e5a7365e1f975b9662cf020a44bd335f45cdf6629b7578b0",
+          "sha256": "sha256:7f7edfd4e4e4a8622b20f15868e96d6707f3b44f1fab183f5c2e466f854be106"
+        },
+        "graphql_tag_commit_sha": "69efc70d91dbd39420bbb214d4ae64887bf5e237",
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9744345755,
+          "run_id": 33353396559,
+          "sha256": "sha256:eddada2591a81c8480e12f2d508ba89642df4852ad9b76a0de0666aa79063e7c",
+          "size_bytes": 32262
+        },
+        "source_run_id": 33353396559,
+        "target_commit_sha": "69efc70d91dbd39420bbb214d4ae64887bf5e237"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "receipt-schema-migration-v0.2.2",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-receipt-schema-migration-v0.2.2-conformance.tar.gz",
+        "adoption-proposal.json",
+        "source Actions artifact 9745614408"
+      ],
+      "observed": {
+        "adoption_proposal": {
+          "declared_proposal_digest": "sha256:54cde81ff704cc6afe10f3dfaf0d2dbca2bb29eb18d61a29efe9c9dc4d6d718e",
+          "sha256": "sha256:f55a204da6e258f1345a52e5e9f164226eff4b6cafa8ba3a65daf97f2247e451"
+        },
+        "graphql_tag_commit_sha": "977e622db99c16fbe37db5912b07f403cd09cdb2",
+        "release_asset": {
+          "name": "gooo-receipt-schema-migration-v0.2.2-conformance.tar.gz",
+          "sha256": "sha256:e4a2cb8acd608141bdcdb66db6f6369a9480fc691d8a67b3572dd711d02dadf3",
+          "size_bytes": 28877
+        },
+        "release_immutable": true,
+        "source_artifact": {
+          "artifact_id": 9745614408,
+          "run_id": 33357554531,
+          "sha256": "sha256:6e3989aaf21e760f57868a756847dbc9b75824f3b0b8c47ed984e53f12f40146",
+          "size_bytes": 41821
+        },
+        "source_run_id": 33357554531,
+        "target_commit_sha": "977e622db99c16fbe37db5912b07f403cd09cdb2"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "receipt-schema-migration-v0.3.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-receipt-schema-migration-v0.3.1-conformance.tar.gz",
+        "source Actions artifact 9747211896",
+        "development provenance"
+      ],
+      "observed": {
+        "development_deviations": {
+          "failed_packaging_attempts": 1,
+          "failure_reason": "ARCHIVE_RECURSIVE_SELF_INCLUSION_AND_WRONG_TEMP_PATH",
+          "local_go_commands": 0,
+          "node_vm_guardian_harness_executions": 1
+        },
+        "graphql_tag_commit_sha": "7f651f45f548fb38357649578d9984fd77c5a451",
+        "release_asset": {
+          "name": "gooo-receipt-schema-migration-v0.3.1-conformance.tar.gz",
+          "sha256": "sha256:fe00e049fcf4c946fef1a6bc3a7c5295d3e3fa2aed630edcae0039dfcee81a76",
+          "size_bytes": 36114
+        },
+        "source_artifact": {
+          "artifact_id": 9747211896,
+          "run_id": 33362658147,
+          "sha256": "sha256:cfd0344151b3ce1311b389fe398389b7f68c7252ff79c45c36d7e1fb1d60ffd2",
+          "size_bytes": 50699
+        },
+        "source_run_id": 33362658147,
+        "target_commit_sha": "7f651f45f548fb38357649578d9984fd77c5a451"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "adoption-transaction-v0.1.0",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "consumer-manifest-v1.json",
+        "gooo-adoption-transaction-evidence-v0.1.0.tar.gz",
+        "gooo-adoption-transaction-v0.1.0.tar.gz",
+        "SHA256SUMS",
+        "source Actions artifact 9746766170"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "ae68e4678c37836f6d4e971501811d674833e9a0",
+        "source_artifact": {
+          "artifact_id": 9746766170,
+          "run_id": 33361277657,
+          "sha256": "sha256:cc3c3f2083354c641af5391d8cc7971dae1244bdfe2ca40935b300f644378f27",
+          "size_bytes": 12696
+        },
+        "source_run_id": 33361277657,
+        "target_commit_sha": "ae68e4678c37836f6d4e971501811d674833e9a0"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "self-repair-example-v0.1.0",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-self-repair-example-0.1.0.tar.gz",
+        "release-manifest.json",
+        "SHA256SUMS",
+        "source Actions artifact 9746868213"
+      ],
+      "observed": {
+        "assessment_summary": {
+          "closed": 9,
+          "refuted": 3,
+          "unknown": 0
+        },
+        "graphql_tag_commit_sha": "cb3a6145ac5dbf1999f955495229032202892b89",
+        "source_artifact": {
+          "artifact_id": 9746868213,
+          "expected_workflow_head_sha": "8d2ed757e6df2d90e1e1ce9e85f91921707e7b10",
+          "run_id": 33361612275,
+          "sha256": "sha256:a7c2cc236a8c7286184e92f9012f0a3d49012a7d1048471e97fff9adcf8f65b8",
+          "size_bytes": 7955
+        },
+        "source_run_expected_head_sha": "8d2ed757e6df2d90e1e1ce9e85f91921707e7b10",
+        "source_run_id": 33361612275,
+        "target_commit_sha": "cb3a6145ac5dbf1999f955495229032202892b89"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "semantic-observer-v0.1.0",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-semantic-observer-0.1.0.tar.gz",
+        "gooo-semantic-observer-0.1.0.tar.gz.sha256",
+        "immutable baseline release history"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "091764a433400dbd0c31a2f48e257ac300a99d4f",
+        "known_refutation": {
+          "append_only": true,
+          "case": "closed-github-run",
+          "code": "REFUTED_RECEIPT_DIGEST_UNBOUND",
+          "observed_value": "",
+          "path": "closed-github-run/observer-receipt.json#/authority_chain/observer_receipt/digest",
+          "reason": "receipt digest not bound in observation-manifest.json"
+        },
+        "release_immutable": true,
+        "target_commit_sha": "091764a433400dbd0c31a2f48e257ac300a99d4f"
+      },
+      "reason": "REFUTED_RECEIPT_DIGEST_UNBOUND",
+      "state": "REFUTED"
+    },
+    {
+      "entry_id": "semantic-observer-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "gooo-semantic-observer-0.1.1.tar.gz",
+        "gooo-semantic-observer-0.1.1.tar.gz.sha256",
+        "source Actions artifact 9747115261",
+        "detached receipt"
+      ],
+      "observed": {
+        "detached_receipt": {
+          "closed": 12,
+          "total": 12,
+          "verified": true
+        },
+        "graphql_tag_commit_sha": "50c6915f8ebdf68a56c50479e0044d5edee58ac0",
+        "source_artifact": {
+          "artifact_id": 9747115261,
+          "run_id": 33362362604,
+          "sha256": "sha256:2a95d0e5a93cbdc87ecb8694a8fe88dceeaf324e01eedee68569a3ff9c8f0b4d",
+          "size_bytes": 49026
+        },
+        "source_run_id": 33362362604,
+        "target_commit_sha": "50c6915f8ebdf68a56c50479e0044d5edee58ac0"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "adoption-regression-v0.1.0",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "adoption-regression-v0.1.0-receipts.zip",
+        "immutable baseline comparison manifest"
+      ],
+      "observed": {
+        "baseline_observation": {
+          "artifact_count": 7,
+          "case_count": 12,
+          "closed": 3,
+          "fixed_denominator": 16,
+          "job_id": 99392113197,
+          "local_test_executions": 0,
+          "refuted": 5,
+          "repository_writes": 0,
+          "run_id": 33360974539,
+          "unknown": 4
+        },
+        "graphql_tag_commit_sha": "0d74f4dbb7bd943215444e5fcb551a44e8691386",
+        "release_immutable": true,
+        "target_commit_sha": "0d74f4dbb7bd943215444e5fcb551a44e8691386"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "adoption-regression-v0.1.1",
+      "evidence": [
+        "REST release API",
+        "GraphQL release lookup",
+        "adoption-regression-v0.1.1-receipts.zip",
+        "source Actions artifact 9747030184"
+      ],
+      "observed": {
+        "graphql_tag_commit_sha": "a2526412ea9131f0e4a3b9b32dde5d5f255c69c0",
+        "source_artifact": {
+          "artifact_id": 9747030184,
+          "run_id": 33362100684,
+          "sha256": "sha256:e68fbbec138e378ebf66ac91a4b1e493c3f881301954131a3d8bfa53143ee149",
+          "size_bytes": 9656
+        },
+        "source_run_id": 33362100684,
+        "target_commit_sha": "a2526412ea9131f0e4a3b9b32dde5d5f255c69c0"
+      },
+      "state": "CLOSED"
+    },
+    {
+      "entry_id": "structural-ledger-append-planner-v0.2.0",
+      "evidence": [
+        "AST transaction-manifest append via immutable planner v0.2.0",
+        "immutable v0.32.0 baseline",
+        "canonical replay receipt"
+      ],
+      "observed": {
+        "release_immutable": true,
+        "repository_writes": 0,
+        "target_commit_sha": "5486b346aa193875383cdafa0763f3bd371c2fc1"
+      },
+      "state": "CLOSED"
+    }
+  ],
+  "entry_count": 18,
+  "frontier_additions": [
+    "receipt-schema-migration-v0.1.1",
+    "receipt-schema-migration-v0.2.2",
+    "receipt-schema-migration-v0.3.1",
+    "adoption-transaction-v0.1.0",
+    "self-repair-example-v0.1.0",
+    "semantic-observer-v0.1.0",
+    "semantic-observer-v0.1.1",
+    "adoption-regression-v0.1.0",
+    "adoption-regression-v0.1.1",
+    "structural-ledger-append-planner-v0.2.0"
+  ],
+  "lineage": [
+    {
+      "historical_entry_id": "evaluator-lineage-v0.1.0",
+      "historical_state": "REFUTED",
+      "successor_entry_id": "evaluator-lineage-v0.1.1",
+      "successor_state": "CLOSED",
+      "transition": "REFUTED_TO_CLOSED"
+    },
+    {
+      "historical_entry_id": "counterexample-memory-v0.1.0",
+      "historical_state": "REFUTED",
+      "successor_entry_id": "counterexample-memory-v0.1.1",
+      "successor_state": "CLOSED",
+      "transition": "REFUTED_TO_CLOSED"
+    },
+    {
+      "historical_entry_id": "improvement-selector-v0.1.0",
+      "historical_state": "REFUTED",
+      "successor_entry_id": "improvement-selector-v0.1.1",
+      "successor_state": "CLOSED",
+      "transition": "REFUTED_TO_CLOSED"
+    },
+    {
+      "historical_entry_id": "receipt-schema-migration-v0.1.1",
+      "historical_state": "CLOSED",
+      "successor_entry_id": "receipt-schema-migration-v0.2.2",
+      "successor_state": "CLOSED",
+      "transition": "CLOSED_TO_CLOSED_SUCCESSOR"
+    },
+    {
+      "historical_entry_id": "receipt-schema-migration-v0.2.2",
+      "historical_state": "CLOSED",
+      "successor_entry_id": "receipt-schema-migration-v0.3.1",
+      "successor_state": "CLOSED",
+      "transition": "CLOSED_TO_CLOSED_SUCCESSOR"
+    },
+    {
+      "historical_entry_id": "semantic-observer-v0.1.0",
+      "historical_state": "REFUTED",
+      "successor_entry_id": "semantic-observer-v0.1.1",
+      "successor_state": "CLOSED",
+      "transition": "REFUTED_TO_CLOSED"
+    },
+    {
+      "historical_entry_id": "adoption-regression-v0.1.0",
+      "historical_state": "CLOSED",
+      "successor_entry_id": "adoption-regression-v0.1.1",
+      "successor_state": "CLOSED",
+      "transition": "CLOSED_TO_CLOSED_SUCCESSOR"
+    }
+  ],
+  "registry_id": "non-completeness-capability-evidence-registry-v1",
+  "schema": "gooo/non-completeness/capability-evidence-registry/assessment/v1",
+  "source_lock": "contracts/non-completeness-capability-evidence-registry-v1.json"
+}

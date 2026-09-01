@@ -8,7 +8,11 @@ import (
 	"strings"
 )
 
-const transactionManifestSchema = "gooo/transaction-manifest/v2"
+const (
+	transactionManifestSchemaV2 = "gooo/transaction-manifest/v2"
+	transactionManifestSchemaV3 = "gooo/transaction-manifest/v3"
+	projectionAfterInvariant    = "deterministic-regenerate-from-post-append-semantic-source"
+)
 
 var requiredManifestAfterInvariants = []string{
 	"append-one-cell",
@@ -24,6 +28,16 @@ var requiredManifestAfterInvariants = []string{
 	"no-input-repository-writes",
 }
 
+var requiredManifestAfterInvariantsV3 = append(append([]string(nil), requiredManifestAfterInvariants...),
+	"semantic-targets-declared",
+	"derived-projection-targets-declared",
+	"projection-kind-declared",
+	"projection-before-digest-exact",
+	"projection-source-semantic-digest-exact",
+	"projection-regenerate-deterministic",
+	"unexpected-deletes-refuted",
+)
+
 type TransactionManifest struct {
 	Path              string
 	Schema            string
@@ -32,6 +46,7 @@ type TransactionManifest struct {
 	PlannedFiles      map[string]string
 	AfterInvariants   []string
 	Targets           map[string]TargetBinding
+	FileTargets       map[string]ManifestFileTarget
 }
 
 type TargetBinding struct {
@@ -45,13 +60,17 @@ type TargetBinding struct {
 	Anchors             map[string]string
 }
 
+func hasTransactionManifest(schema string) bool {
+	return schema == "gooo/ledger-append-transaction/v2" || schema == "gooo/ledger-append-transaction/v3"
+}
+
 func LoadTransactionManifest(path string) (TransactionManifest, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return TransactionManifest{}, err
 	}
 	manifest := TransactionManifest{
-		Path: path, PlannedFiles: map[string]string{}, Targets: map[string]TargetBinding{},
+		Path: path, PlannedFiles: map[string]string{}, Targets: map[string]TargetBinding{}, FileTargets: map[string]ManifestFileTarget{},
 	}
 	var current *TargetBinding
 	scanner := bufio.NewScanner(strings.NewReader(string(raw)))
@@ -66,10 +85,14 @@ func LoadTransactionManifest(path string) (TransactionManifest, error) {
 		}
 		switch fields[0] {
 		case "gooo":
-			if len(fields) != 3 || fields[1] != "transaction_manifest" || fields[2] != "v2" {
+			if len(fields) != 3 || fields[1] != "transaction_manifest" || (fields[2] != "v2" && fields[2] != "v3") {
 				return TransactionManifest{}, fmt.Errorf("%s:%d: malformed transaction manifest declaration", path, lineNumber)
 			}
-			manifest.Schema = transactionManifestSchema
+			if fields[2] == "v2" {
+				manifest.Schema = transactionManifestSchemaV2
+			} else {
+				manifest.Schema = transactionManifestSchemaV3
+			}
 		case "operation":
 			manifest.Operation = strings.TrimSpace(strings.TrimPrefix(line, "operation "))
 		case "transaction-schema":
@@ -87,6 +110,36 @@ func LoadTransactionManifest(path string) (TransactionManifest, error) {
 				return TransactionManifest{}, fmt.Errorf("%s:%d: duplicate planned file %q", path, lineNumber, key)
 			}
 			manifest.PlannedFiles[key] = value
+		case "target-file":
+			if current != nil {
+				return TransactionManifest{}, fmt.Errorf("%s:%d: target file inside target", path, lineNumber)
+			}
+			kind, role, value, ok := parseTargetFile(strings.TrimSpace(strings.TrimPrefix(line, "target-file ")))
+			if !ok || (kind != "SEMANTIC_APPEND_ONLY" && kind != "DERIVED_PROJECTION") || manifest.FileTargets[role].Role != "" {
+				return TransactionManifest{}, fmt.Errorf("%s:%d: malformed target file", path, lineNumber)
+			}
+			manifest.FileTargets[role] = ManifestFileTarget{Role: role, Path: value, Kind: kind}
+		case "projection-kind", "projection-before-digest", "projection-source-semantic-digest", "projection-after-invariant":
+			if current != nil {
+				return TransactionManifest{}, fmt.Errorf("%s:%d: projection declaration inside target", path, lineNumber)
+			}
+			role, value, ok := parseQuotedPair(strings.TrimSpace(strings.TrimPrefix(line, fields[0]+" ")))
+			if !ok {
+				return TransactionManifest{}, fmt.Errorf("%s:%d: malformed %s", path, lineNumber, fields[0])
+			}
+			target := manifest.FileTargets[role]
+			target.Role = role
+			switch fields[0] {
+			case "projection-kind":
+				target.ProjectionKind = value
+			case "projection-before-digest":
+				target.BeforeDigest = value
+			case "projection-source-semantic-digest":
+				target.SourceSemanticDigest = value
+			case "projection-after-invariant":
+				target.AfterInvariant = value
+			}
+			manifest.FileTargets[role] = target
 		case "after-invariant":
 			if current != nil || strings.TrimSpace(strings.TrimPrefix(line, "after-invariant ")) == "" {
 				return TransactionManifest{}, fmt.Errorf("%s:%d: malformed after invariant", path, lineNumber)
@@ -183,13 +236,29 @@ func LoadTransactionManifest(path string) (TransactionManifest, error) {
 }
 
 func validateTransactionManifest(manifest TransactionManifest) error {
-	if manifest.Schema != transactionManifestSchema || manifest.Operation == "" || manifest.TransactionSchema != "gooo/ledger-append-transaction/v2" {
+	if manifest.Operation == "" || (manifest.Schema != transactionManifestSchemaV2 && manifest.Schema != transactionManifestSchemaV3) {
 		return fmt.Errorf("transaction manifest identity is incomplete")
 	}
-	if len(manifest.PlannedFiles) != 7 || len(manifest.AfterInvariants) == 0 || len(manifest.Targets) == 0 {
+	if manifest.Schema == transactionManifestSchemaV2 && manifest.TransactionSchema != "gooo/ledger-append-transaction/v2" {
+		return fmt.Errorf("transaction manifest identity is incomplete")
+	}
+	if manifest.Schema == transactionManifestSchemaV3 && manifest.TransactionSchema != "gooo/ledger-append-transaction/v3" {
+		return fmt.Errorf("transaction manifest identity is incomplete")
+	}
+	if len(manifest.AfterInvariants) == 0 || len(manifest.Targets) == 0 {
 		return fmt.Errorf("transaction manifest contract is incomplete")
 	}
-	for _, invariant := range requiredManifestAfterInvariants {
+	if manifest.Schema == transactionManifestSchemaV2 && len(manifest.PlannedFiles) != 7 {
+		return fmt.Errorf("transaction manifest contract is incomplete")
+	}
+	if manifest.Schema == transactionManifestSchemaV3 && len(manifest.FileTargets) == 0 {
+		return fmt.Errorf("transaction manifest contract is incomplete")
+	}
+	required := requiredManifestAfterInvariants
+	if manifest.Schema == transactionManifestSchemaV3 {
+		required = requiredManifestAfterInvariantsV3
+	}
+	for _, invariant := range required {
 		if !contains(manifest.AfterInvariants, invariant) {
 			return fmt.Errorf("transaction manifest invariant %q is missing", invariant)
 		}
@@ -200,6 +269,15 @@ func validateTransactionManifest(manifest TransactionManifest) error {
 		}
 	}
 	return nil
+}
+
+func parseTargetFile(value string) (string, string, string, bool) {
+	parts := strings.SplitN(strings.TrimSpace(value), " ", 3)
+	if len(parts) != 3 || parts[0] == "" || parts[1] == "" {
+		return "", "", "", false
+	}
+	path, ok := quotedValue(parts[2])
+	return parts[0], parts[1], path, ok
 }
 
 func parseManifestCounts(value string) (map[string]int, bool) {

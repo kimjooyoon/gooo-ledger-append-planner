@@ -13,7 +13,7 @@ func LoadMetaCode(path string) (MetaCode, error) {
 	if err != nil {
 		return MetaCode{}, err
 	}
-	meta := MetaCode{Path: path, Digest: fileDigest(raw), Paths: map[string]string{}, Templates: map[string]string{}, Authority: map[string]int{}, Process: map[string]string{}, Claims: map[string]string{}}
+	meta := MetaCode{Path: path, Digest: fileDigest(raw), Paths: map[string]string{}, PathKinds: map[string]string{}, Templates: map[string]string{}, Authority: map[string]int{}, Process: map[string]string{}, Claims: map[string]string{}}
 	scanner := bufio.NewScanner(strings.NewReader(string(raw)))
 	for lineNumber := 1; scanner.Scan(); lineNumber++ {
 		line := strings.TrimSpace(scanner.Text())
@@ -53,6 +53,12 @@ func LoadMetaCode(path string) (MetaCode, error) {
 				return MetaCode{}, fmt.Errorf("%s:%d: malformed path", path, lineNumber)
 			}
 			meta.Paths[key] = value
+		case strings.HasPrefix(line, "path-kind "):
+			fields := strings.Fields(strings.TrimSpace(strings.TrimPrefix(line, "path-kind ")))
+			if len(fields) != 2 || (fields[0] != "SEMANTIC_APPEND_ONLY" && fields[0] != "DERIVED_PROJECTION") || meta.Paths[fields[1]] == "" {
+				return MetaCode{}, fmt.Errorf("%s:%d: malformed path kind", path, lineNumber)
+			}
+			meta.PathKinds[fields[1]] = fields[0]
 		case strings.HasPrefix(line, "template "):
 			key, value, ok := parseQuotedPair(strings.TrimSpace(strings.TrimPrefix(line, "template ")))
 			if !ok {
@@ -249,6 +255,16 @@ func validateMetaCode(meta MetaCode) error {
 	for _, path := range []string{"activity_file", "profile", "release_locks", "assessment", "registry", "report", "history"} {
 		if meta.Paths[path] == "" {
 			return fmt.Errorf("metacode path %q is missing", path)
+		}
+	}
+	for _, role := range []string{"activity_file", "profile", "release_locks", "assessment", "registry"} {
+		if meta.PathKinds[role] != "SEMANTIC_APPEND_ONLY" {
+			return fmt.Errorf("metacode path kind %q is missing or not semantic", role)
+		}
+	}
+	for _, role := range []string{"report", "history"} {
+		if meta.PathKinds[role] != "DERIVED_PROJECTION" {
+			return fmt.Errorf("metacode path kind %q is missing or not derived", role)
 		}
 	}
 	if meta.Templates["report"] == "" || meta.Templates["history"] == "" {

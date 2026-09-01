@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -182,6 +183,138 @@ func TestTransactionManifestCorpus(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestProjectionManifestV3CorpusAndRollback(t *testing.T) {
+	input := filepath.Join(testRoot, "testdata/ledger-v0.33")
+	options := Options{
+		InputRepository:         input,
+		OutputDirectory:         t.TempDir(),
+		MetaCodePath:            filepath.Join(testRoot, ".gooo/append-planner.gooo"),
+		TransactionManifestPath: ".gooo/append-transaction-manifest-v3.gooo",
+		BaselineLockPath:        filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
+	}
+	result, err := Execute(filepath.Join(testRoot, "examples/transactions/valid-append-v3-v0.33.json"), options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Plan.OperationDecision != DecisionClosed || len(result.Plan.Files) != 7 || result.Plan.Metrics.GeneratedFiles != 2 || result.Plan.Metrics.RepositoryWrites != 0 {
+		t.Fatalf("unexpected v3 projection plan: decision=%s files=%d generated=%d writes=%d", result.Plan.OperationDecision, len(result.Plan.Files), result.Plan.Metrics.GeneratedFiles, result.Plan.Metrics.RepositoryWrites)
+	}
+	for _, path := range []string{"evidence/report-v1.json", "evidence/history-v1.json"} {
+		mutation, ok := mutationByPath(result.Plan.Files, path)
+		if !ok || mutation.Action != "replace" || !mutation.BeforeExists || mutation.BeforeDigest == "" || !mutation.AfterExists {
+			t.Fatalf("projection mutation is not an exact replacement: %+v", mutation)
+		}
+	}
+	rollback, err := ReplayRollback(filepath.Join(result.OutputDirectory, "rollback-bundle.json"), result.Plan.RepositoryOutput)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rollback.State != DecisionClosed || len(rollback.Mismatches) != 0 {
+		t.Fatalf("projection rollback = %+v", rollback)
+	}
+	if _, err := os.Stat(filepath.Join(result.Plan.RepositoryOutput, "evidence/report-v1.json")); err != nil {
+		t.Fatalf("projection rollback deleted an existing report: %v", err)
+	}
+}
+
+func TestProjectionManifestV3AuthorityFindings(t *testing.T) {
+	input := filepath.Join(testRoot, "testdata/ledger-v0.33")
+	tests := []struct {
+		name       string
+		mutate     func(string) string
+		decision   string
+		reason     string
+		allUnknown bool
+	}{
+		{
+			name: "before-digest-mismatch",
+			mutate: func(value string) string {
+				return strings.Replace(value, "projection-before-digest report \"sha256:94999f6037cfeb8875ed1bc4323a146e4a7b3bcac9208bfcd209020c1f5ee4df\"", "projection-before-digest report \"sha256:0000000000000000000000000000000000000000000000000000000000000000\"", 1)
+			},
+			decision: DecisionRefuted, reason: "PROJECTION_BEFORE_DIGEST_MISMATCH",
+		},
+		{
+			name: "source-semantic-mismatch",
+			mutate: func(value string) string {
+				return strings.Replace(value, "projection-source-semantic-digest report \"sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90\"", "projection-source-semantic-digest report \"sha256:0000000000000000000000000000000000000000000000000000000000000000\"", 1)
+			},
+			decision: DecisionRefuted, reason: "PROJECTION_SOURCE_SEMANTIC_DIGEST_MISMATCH",
+		},
+		{
+			name: "missing-projection-authority",
+			mutate: func(value string) string {
+				for _, line := range []string{
+					"target-file DERIVED_PROJECTION report \"evidence/report-v1.json\"\n",
+					"projection-kind report \"assessment-report\"\n",
+					"projection-before-digest report \"sha256:94999f6037cfeb8875ed1bc4323a146e4a7b3bcac9208bfcd209020c1f5ee4df\"\n",
+					"projection-source-semantic-digest report \"sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90\"\n",
+					"projection-after-invariant report \"deterministic-regenerate-from-post-append-semantic-source\"\n",
+				} {
+					value = strings.Replace(value, line, "", 1)
+				}
+				return value
+			},
+			decision: DecisionUnknown, allUnknown: true,
+		},
+	}
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			manifest, err := os.ReadFile(filepath.Join(testRoot, ".gooo/append-transaction-manifest-v3.gooo"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			manifestPath := filepath.Join(t.TempDir(), "manifest.gooo")
+			if err := os.WriteFile(manifestPath, []byte(testCase.mutate(string(manifest))), 0o644); err != nil {
+				t.Fatal(err)
+			}
+			result, err := Execute(filepath.Join(testRoot, "examples/transactions/valid-append-v3-v0.33.json"), Options{
+				InputRepository: input, OutputDirectory: t.TempDir(), MetaCodePath: filepath.Join(testRoot, ".gooo/append-planner.gooo"),
+				TransactionManifestPath: manifestPath, BaselineLockPath: filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.Plan.OperationDecision != testCase.decision {
+				t.Fatalf("decision=%s findings=%+v", result.Plan.OperationDecision, result.Plan.Findings)
+			}
+			if testCase.reason != "" && !hasFindingReason(result.Plan.Findings, testCase.reason) {
+				t.Fatalf("findings=%+v, want reason %s", result.Plan.Findings, testCase.reason)
+			}
+			if testCase.allUnknown {
+				if len(result.Plan.Findings) == 0 || result.Plan.Findings[0].State != DecisionUnknown || result.Plan.Findings[0].Stage == "" || result.Plan.Findings[0].Step == "" || result.Plan.Findings[0].Reason == "" || result.Plan.Findings[0].UnknownClass == "" || result.Plan.Findings[0].NextOperation == "" || len(result.Plan.Findings[0].BlockedBy) == 0 {
+					t.Fatalf("unknown frontier is incomplete: %+v", result.Plan.Findings)
+				}
+			}
+		})
+	}
+	deletedInput := filepath.Join(t.TempDir(), "ledger-v0.33-deleted-projection")
+	if err := copyTree(filepath.Join(testRoot, "testdata/ledger-v0.33"), deletedInput); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(deletedInput, "evidence/report-v1.json")); err != nil {
+		t.Fatal(err)
+	}
+	deletedResult, err := Execute(filepath.Join(testRoot, "examples/transactions/valid-append-v3-v0.33.json"), Options{
+		InputRepository: deletedInput, OutputDirectory: t.TempDir(), MetaCodePath: filepath.Join(testRoot, ".gooo/append-planner.gooo"),
+		TransactionManifestPath: ".gooo/append-transaction-manifest-v3.gooo", BaselineLockPath: filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if deletedResult.Plan.OperationDecision != DecisionRefuted || !hasFindingReason(deletedResult.Plan.Findings, "UNEXPECTED_PROJECTION_DELETE") {
+		t.Fatalf("deleted projection decision/findings = %s/%+v", deletedResult.Plan.OperationDecision, deletedResult.Plan.Findings)
+	}
+}
+
+func hasFindingReason(findings []Finding, reason string) bool {
+	for _, finding := range findings {
+		if finding.Reason == reason {
+			return true
+		}
+	}
+	return false
 }
 
 func mustCanonical(t *testing.T, value any) []byte {
