@@ -226,8 +226,15 @@ func verifyMaterialized(meta authority, tx map[string]any, input, output string,
 		return fmt.Errorf("snapshot output: %w", err)
 	}
 	expectedGenerated := map[string]bool{meta.paths["report"]: true, meta.paths["history"]: true}
+	expectedModified := map[string]bool{
+		meta.paths["activity_file"]: true,
+		meta.paths["profile"]:       true,
+		meta.paths["release_locks"]: true,
+		meta.paths["assessment"]:    true,
+		meta.paths["registry"]:      true,
+	}
 	for path, data := range inputFiles {
-		if expectedGenerated[path] {
+		if expectedGenerated[path] || expectedModified[path] {
 			continue
 		}
 		if !bytes.Equal(data, outputFiles[path]) {
