@@ -21,6 +21,7 @@ import (
 
 type authority struct {
 	paths                   map[string]string
+	pathKinds               map[string]string
 	directives              map[string][]string
 	transactionManifestPath string
 	activities              int
@@ -32,7 +33,7 @@ func main() {
 	output := flag.String("output", "", "planner output directory")
 	transaction := flag.String("transaction", "", "transaction JSON")
 	metacode := flag.String("metacode", ".gooo/append-planner.gooo", "Gooo authority file")
-	transactionManifest := flag.String("transaction-manifest", ".gooo/append-transaction-manifest-v2.gooo", "Gooo transaction manifest")
+	transactionManifest := flag.String("transaction-manifest", "", "Gooo transaction manifest; defaults by transaction schema")
 	baselineLock := flag.String("baseline-lock", "contracts/upstream-lock-v0.31.0.json", "immutable upstream lock")
 	flag.Parse()
 	if *repository == "" || *output == "" || *transaction == "" {
@@ -79,8 +80,12 @@ func verify(repository, output, transactionPath, metacodePath, baselineLockPath,
 		return fmt.Errorf("snapshot input: %w", err)
 	}
 	var manifest verifierTransactionManifest
-	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" {
-		manifest, err = parseTransactionManifest(transactionManifestPath)
+	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" || stringField(tx, "schema") == "gooo/ledger-append-transaction/v3" {
+		manifestPath := transactionManifestPath
+		if manifestPath == "" {
+			manifestPath = defaultVerifierManifestPath(stringField(tx, "schema"), meta.transactionManifestPath)
+		}
+		manifest, err = parseTransactionManifest(manifestPath)
 		if err != nil {
 			return fmt.Errorf("transaction manifest: %w", err)
 		}
@@ -88,10 +93,14 @@ func verify(repository, output, transactionPath, metacodePath, baselineLockPath,
 			return err
 		}
 	}
-	if err := verifyMaterialized(meta, tx, repository, filepath.Join(output, "repository"), plan); err != nil {
+	if manifest.schema == "gooo/transaction-manifest/v3" {
+		if err := verifyMaterializedV3(meta, tx, repository, filepath.Join(output, "repository"), plan, manifest); err != nil {
+			return err
+		}
+	} else if err := verifyMaterialized(meta, tx, repository, filepath.Join(output, "repository"), plan); err != nil {
 		return err
 	}
-	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" {
+	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" || stringField(tx, "schema") == "gooo/ledger-append-transaction/v3" {
 		outputFiles, err := snapshot(filepath.Join(output, "repository"))
 		if err != nil {
 			return fmt.Errorf("snapshot output: %w", err)
@@ -103,12 +112,25 @@ func verify(repository, output, transactionPath, metacodePath, baselineLockPath,
 	return nil
 }
 
+func defaultVerifierManifestPath(transactionSchema, declaredPath string) string {
+	if transactionSchema == "gooo/ledger-append-transaction/v3" {
+		if strings.HasSuffix(declaredPath, "-v3.gooo") {
+			return declaredPath
+		}
+		return ".gooo/append-transaction-manifest-v3.gooo"
+	}
+	if strings.HasSuffix(declaredPath, "-v2.gooo") {
+		return declaredPath
+	}
+	return ".gooo/append-transaction-manifest-v2.gooo"
+}
+
 func parseAuthority(path string) (authority, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return authority{}, err
 	}
-	result := authority{paths: map[string]string{}, directives: map[string][]string{}}
+	result := authority{paths: map[string]string{}, pathKinds: map[string]string{}, directives: map[string][]string{}}
 	for lineNumber, line := range strings.Split(string(raw), "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -125,6 +147,12 @@ func parseAuthority(path string) (authority, error) {
 				return authority{}, fmt.Errorf("%s:%d: malformed path", path, lineNumber+1)
 			}
 			result.paths[key] = value
+		case strings.HasPrefix(line, "path-kind "):
+			fields := strings.Fields(strings.TrimSpace(strings.TrimPrefix(line, "path-kind ")))
+			if len(fields) != 2 {
+				return authority{}, fmt.Errorf("%s:%d: malformed path kind", path, lineNumber+1)
+			}
+			result.pathKinds[fields[1]] = fields[0]
 		case strings.HasPrefix(line, "transaction-manifest "):
 			value, err := strconv.Unquote(strings.TrimSpace(strings.TrimPrefix(line, "transaction-manifest ")))
 			if err != nil || value == "" {
@@ -178,7 +206,7 @@ func verifyAuthority(meta authority) error {
 			return fmt.Errorf(".gooo release-lock field %q is missing", field)
 		}
 	}
-	for _, invariant := range []string{"append-only", "ast-addressed-json", "preserve-existing-canonical-objects", "no-input-repository-writes", "no-overwrite"} {
+	for _, invariant := range []string{"append-only", "ast-addressed-json", "preserve-existing-canonical-objects", "no-input-repository-writes", "no-overwrite", "derived-projection-replace"} {
 		if !hasDirective(meta, "invariant", invariant) {
 			return fmt.Errorf(".gooo invariant %q is missing", invariant)
 		}
@@ -186,6 +214,16 @@ func verifyAuthority(meta authority) error {
 	for _, key := range []string{"activity_file", "profile", "release_locks", "assessment", "registry", "report", "history"} {
 		if meta.paths[key] == "" {
 			return fmt.Errorf(".gooo path %q is missing", key)
+		}
+	}
+	for _, role := range []string{"activity_file", "profile", "release_locks", "assessment", "registry"} {
+		if meta.pathKinds[role] != "SEMANTIC_APPEND_ONLY" {
+			return fmt.Errorf(".gooo semantic path kind %q is missing", role)
+		}
+	}
+	for _, role := range []string{"report", "history"} {
+		if meta.pathKinds[role] != "DERIVED_PROJECTION" {
+			return fmt.Errorf(".gooo projection path kind %q is missing", role)
 		}
 	}
 	if meta.transactionManifestPath == "" {
@@ -307,6 +345,100 @@ func verifyMaterialized(meta authority, tx map[string]any, input, output string,
 		return err
 	}
 	return verifyRegistry(meta, tx, inputFiles, outputFiles)
+}
+
+func verifyMaterializedV3(meta authority, tx map[string]any, input, output string, plan map[string]any, manifest verifierTransactionManifest) error {
+	inputFiles, err := snapshot(input)
+	if err != nil {
+		return fmt.Errorf("snapshot input: %w", err)
+	}
+	outputFiles, err := snapshot(output)
+	if err != nil {
+		return fmt.Errorf("snapshot output: %w", err)
+	}
+	expectedGenerated := map[string]bool{}
+	expectedModified := map[string]bool{}
+	for role, target := range manifest.fileTargets {
+		if target.path == "" || target.kind == "" || target.kind != meta.pathKinds[role] {
+			return fmt.Errorf("manifest target kind is not bound to .gooo authority: %s", role)
+		}
+		if target.kind == "DERIVED_PROJECTION" {
+			expectedGenerated[target.path] = true
+		} else {
+			expectedModified[target.path] = true
+		}
+	}
+	for path, data := range inputFiles {
+		if expectedGenerated[path] || expectedModified[path] {
+			continue
+		}
+		if !bytes.Equal(data, outputFiles[path]) {
+			return fmt.Errorf("existing file changed outside the v3 append contract: %s", path)
+		}
+	}
+	for path := range outputFiles {
+		if _, exists := inputFiles[path]; !exists && !expectedGenerated[path] && !expectedModified[path] {
+			return fmt.Errorf("unexpected output file: %s", path)
+		}
+	}
+	for path := range expectedGenerated {
+		if _, ok := outputFiles[path]; !ok {
+			return fmt.Errorf("declared projection was deleted or not regenerated: %s", path)
+		}
+		if !json.Valid(outputFiles[path]) {
+			return fmt.Errorf("declared projection is not valid JSON: %s", path)
+		}
+	}
+	for path := range expectedModified {
+		if _, ok := outputFiles[path]; !ok {
+			return fmt.Errorf("declared semantic source was deleted: %s", path)
+		}
+	}
+	if err := verifyPlanPathsV3(manifest, plan); err != nil {
+		return err
+	}
+	if err := verifyActivity(meta, tx, inputFiles, outputFiles); err != nil {
+		return err
+	}
+	if err := verifyProfile(meta, tx, inputFiles, outputFiles); err != nil {
+		return err
+	}
+	if err := verifyLocks(meta, tx, inputFiles, outputFiles); err != nil {
+		return err
+	}
+	if err := verifyAssessment(meta, tx, inputFiles, outputFiles); err != nil {
+		return err
+	}
+	return verifyRegistry(meta, tx, inputFiles, outputFiles)
+}
+
+func verifyPlanPathsV3(manifest verifierTransactionManifest, plan map[string]any) error {
+	files, ok := plan["files"].([]any)
+	if !ok {
+		return fmt.Errorf("plan files is not an array")
+	}
+	want := map[string]bool{}
+	for _, target := range manifest.fileTargets {
+		want[target.path] = true
+	}
+	got := map[string]bool{}
+	for _, raw := range files {
+		file, ok := raw.(map[string]any)
+		path := stringField(file, "path")
+		if !ok || path == "" || got[path] {
+			return fmt.Errorf("plan contains an invalid or duplicate v3 path")
+		}
+		got[path] = true
+	}
+	if len(got) != len(want) {
+		return fmt.Errorf("plan paths are not the declared v3 mutation paths")
+	}
+	for path := range want {
+		if !got[path] {
+			return fmt.Errorf("plan omitted declared v3 mutation path %s", path)
+		}
+	}
+	return nil
 }
 
 func verifyPlanPaths(meta authority, plan map[string]any) error {

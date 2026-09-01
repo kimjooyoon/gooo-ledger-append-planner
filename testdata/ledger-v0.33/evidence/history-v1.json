@@ -1,0 +1,6 @@
+{
+  "schema": "gooo/ledger-append-planner/history/v1",
+  "append_only": true,
+  "transaction_id": "structural-ledger-append-planner-durable-release-v0.33.0",
+  "events": [{"activity":"AdoptStructuralLedgerAppendPlannerDurableRelease","append_only":true,"canonical_after_digest":"sha256:0ef13e61dff1d9a45406226386cdb736b25532508cb45818cff0e3a67b91b657","canonical_before_digest":"sha256:2b64228e20714fd4e5c42e82bc2d141a763a6c67f4812a47c3719d89545ef611","cell_id":"STRUCTURAL_LEDGER_APPEND_PLANNER_DURABLE_RELEASE","event_id":"structural-ledger-append-planner-durable-release-v0.33.0","event_type":"ADOPTION_TRANSACTION","improvement":{"evidence":"UNKNOWN until matched manual/tool before-after under the same digest","state":"UNKNOWN"},"migration":{"operation":"ADD1","from":38,"to":39,"add":1,"retire":0,"split":0},"motivation":{"prior_local_validation_executions":1,"prior_process_state":"REFUTED","wrong_insertion_point_attempts":"preserved as historical motivation"},"portfolio_decision":"REFUTED","release_key":"structural_ledger_append_planner_durable_release","state":"CLOSED"}]
+}

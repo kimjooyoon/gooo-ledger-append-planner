@@ -35,7 +35,14 @@ path assessment "evidence/assessment-v1.json"
 path registry "evidence/non-completeness-capability-evidence-registry-v1.json"
 path report "evidence/report-v1.json"
 path history "evidence/history-v1.json"
-transaction-manifest ".gooo/append-transaction-manifest-v2.gooo"
+path-kind SEMANTIC_APPEND_ONLY activity_file
+path-kind SEMANTIC_APPEND_ONLY profile
+path-kind SEMANTIC_APPEND_ONLY release_locks
+path-kind SEMANTIC_APPEND_ONLY assessment
+path-kind SEMANTIC_APPEND_ONLY registry
+path-kind DERIVED_PROJECTION report
+path-kind DERIVED_PROJECTION history
+transaction-manifest ".gooo/append-transaction-manifest-v3.gooo"
 template report "templates/report-v1.json.tmpl"
 template history "templates/history-v1.json.tmpl"
 
@@ -101,12 +108,15 @@ invariant no-input-repository-writes
 invariant no-commit-push-merge
 invariant one-cell-one-activity-one-lock
 invariant no-overwrite
+invariant derived-projection-replace
 authority repository_writes=0 upstream_writes=0 local_test_executions=0 commit=0 push=0 merge=0
 process bootstrap_commit=1 bootstrap_scope_violation=BOOTSTRAP_SCOPE_VIOLATION post_bootstrap_direct_main=0 implementation=one-open-pr-at-a-time verification=github-actions-only development_process=REFUTED product_conformance_authority=GITHUB_ACTIONS local_validation_executions=3 local_go_test_executions=9 local_go_build_executions=0 local_go_run_compile_executions=3 local_go_vet_executions=1 local_conformance_executions=2
 claim whole_language_improvement=UNKNOWN
 claim external_utility=UNKNOWN/NOT_MADE
 claim supported_immutable_target_bindings=1->2 only_when=matched_v0.1_v0.2_exact
 claim matched_v0.1_v0.2_pair=SUPPORTED
+claim supported_projection_transition_cardinality=0->1 only_when=matched_v0.2_v0.3_exact
+claim matched_v0.2_v0.3_pair=SUPPORTED
 metric exact_files_changed
 metric exact_files_planned
 metric ast_nodes_added
