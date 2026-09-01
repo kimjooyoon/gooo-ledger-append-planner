@@ -28,7 +28,7 @@ jobs:
           go-version: '1.27.x'
       - name: Refuse a non-annotated or mutable tag target
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
         run: |
           tag_ref=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}")
           test "$(jq -r '.object.type' <<<"$tag_ref")" = tag
@@ -48,7 +48,7 @@ jobs:
       - run: ./scripts/conformance.sh
       - name: Require immutable releases
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
         run: |
           immutable=$(gh api "repos/${GITHUB_REPOSITORY}/immutable-releases")
           test "$(jq -r '.enabled' <<<"$immutable")" = true
@@ -69,11 +69,11 @@ jobs:
           if-no-files-found: error
       - name: Publish once
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
         run: gh release create "$RELEASE_TAG" release/* --title "$RELEASE_TAG" --notes "Immutable release for the structural append transaction planner."
       - name: Generate release audit
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
         run: ./scripts/release-audit.sh > release/release-audit.json
       - name: Upload release audit evidence
         uses: actions/upload-artifact@v4

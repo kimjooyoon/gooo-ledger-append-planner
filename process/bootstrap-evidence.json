@@ -76,6 +76,19 @@
       "failed_step": "Refuse a non-annotated or mutable tag target",
       "preserved": true,
       "release_created": false
+    },
+    {
+      "tag": "v0.1.0",
+      "run_id": 33454585892,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33454585892",
+      "job_id": 99691724871,
+      "job_name": "release",
+      "head_sha": "6535222c16b4a45159d2fbb5d0a371a194bcac58",
+      "conclusion": "failure",
+      "failed_step": "Require immutable releases",
+      "failure_response": "HTTP_403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION",
+      "preserved": true,
+      "release_created": false
     }
   ],
   "control_plane_attempts": [
