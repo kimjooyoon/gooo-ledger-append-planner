@@ -40,8 +40,7 @@ jobs:
             test "$target" = "$GITHUB_SHA"
           fi
           echo "RELEASE_TARGET_SHA=$target" >> "$GITHUB_ENV"
-          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}") || true
-          if test -n "$release"; then
+          if gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
             echo "release already exists; refusing to rewrite it"
             exit 1
           fi

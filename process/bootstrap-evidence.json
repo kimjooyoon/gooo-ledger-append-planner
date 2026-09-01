@@ -64,6 +64,18 @@
       "failed_step": "Refuse a non-annotated or mutable tag target",
       "preserved": true,
       "release_created": false
+    },
+    {
+      "tag": "v0.1.0",
+      "run_id": 33454428325,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33454428325",
+      "job_id": 99691233544,
+      "job_name": "release",
+      "head_sha": "6535222c16b4a45159d2fbb5d0a371a194bcac58",
+      "conclusion": "failure",
+      "failed_step": "Refuse a non-annotated or mutable tag target",
+      "preserved": true,
+      "release_created": false
     }
   ],
   "control_plane_attempts": [
