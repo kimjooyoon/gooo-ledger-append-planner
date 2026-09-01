@@ -11,6 +11,7 @@ audit_run_id=$run_id
 if test -n "${RELEASE_AUDIT_RUN_ID:-}"; then
   run_id=$RELEASE_AUDIT_RUN_ID
 fi
+observer_run_id=${RELEASE_AUDIT_OBSERVER_RUN_ID:-$audit_run_id}
 sha=${RELEASE_TARGET_SHA:-}
 if test -z "$sha"; then
   sha=${GITHUB_SHA:?GITHUB_SHA is required}
@@ -56,7 +57,7 @@ run=$(gh api \
 audit_run=$(gh api \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: $api_version" \
-  "repos/$repository/actions/runs/$audit_run_id")
+  "repos/$repository/actions/runs/$observer_run_id")
 jobs=$(gh api --paginate \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: $api_version" \

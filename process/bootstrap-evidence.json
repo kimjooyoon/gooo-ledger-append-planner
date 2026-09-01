@@ -116,6 +116,20 @@
       "preserved": true,
       "release_created": true,
       "release_id": 380137521
+    },
+    {
+      "tag": "v0.1.0",
+      "run_id": 33455262085,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33455262085",
+      "job_id": 99693782958,
+      "job_name": "release",
+      "head_sha": "00abb39ab53aeb1c827b9f035abe76736118b485",
+      "conclusion": "success",
+      "completed": true,
+      "release_created": false,
+      "audit_artifact_id": 9781204266,
+      "audit_observer_status_at_generation": "in_progress",
+      "preserved": true
     }
   ],
   "control_plane_attempts": [
