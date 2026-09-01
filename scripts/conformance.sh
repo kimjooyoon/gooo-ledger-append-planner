@@ -31,4 +31,11 @@ jq -e '.state == "CLOSED" and .mismatches == []' "$output/replay-receipt.json" >
 test ! -e "$fixture/evidence/report-v1.json"
 test ! -e "$fixture/evidence/history-v1.json"
 
+if test -n "${CONFORMANCE_EVIDENCE_DIR:-}"; then
+  mkdir -p "$CONFORMANCE_EVIDENCE_DIR"
+  cp "$output-summary.json" "$CONFORMANCE_EVIDENCE_DIR/summary.json"
+  cp "$output/patch-plan.json" "$CONFORMANCE_EVIDENCE_DIR/patch-plan.json"
+  cp "$output/replay-receipt.json" "$CONFORMANCE_EVIDENCE_DIR/replay-receipt.json"
+fi
+
 echo "conformance: CLOSED structural append in caller-owned temporary copy"

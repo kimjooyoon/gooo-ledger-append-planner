@@ -22,7 +22,16 @@ jobs:
       - run: go test ./...
       - run: go build ./cmd/gooo-ledger-append-planner
       - run: go build ./cmd/gooo-ledger-append-verifier
-      - run: ./scripts/conformance.sh
+      - name: Run conformance
+        env:
+          CONFORMANCE_EVIDENCE_DIR: process/conformance
+        run: ./scripts/conformance.sh
+      - name: Upload conformance metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-metrics-${{ github.run_id }}
+          path: process/conformance
+          if-no-files-found: error
       - name: Record GitHub Actions evidence
         run: ./scripts/ci-evidence.sh > process/github-actions-evidence-${GITHUB_RUN_ID}.json
       - name: Upload GitHub Actions evidence
