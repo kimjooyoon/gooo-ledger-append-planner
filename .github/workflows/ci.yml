@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 jobs:
   verify:
@@ -20,4 +21,13 @@ jobs:
       - run: go vet ./...
       - run: go test ./...
       - run: go build ./cmd/gooo-ledger-append-planner
+      - run: go build ./cmd/gooo-ledger-append-verifier
       - run: ./scripts/conformance.sh
+      - name: Record GitHub Actions evidence
+        run: ./scripts/ci-evidence.sh > process/github-actions-evidence-${GITHUB_RUN_ID}.json
+      - name: Upload GitHub Actions evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-actions-evidence-${{ github.run_id }}
+          path: process/github-actions-evidence-${{ github.run_id }}.json
+          if-no-files-found: error

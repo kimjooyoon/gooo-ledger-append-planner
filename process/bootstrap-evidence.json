@@ -6,9 +6,21 @@
     "commit_count": 1,
     "contains_ci": true,
     "contains_gooo_authority": true,
+    "scope_state": "BOOTSTRAP_SCOPE_VIOLATION",
+    "scope_reason": "feature implementation was included in the bootstrap commit; this fact is preserved and is not rewritten as CLOSED",
     "post_bootstrap_direct_main": 0,
     "implementation_transition": "ONE_OPEN_PR_AT_A_TIME",
-    "verification_authority": "GITHUB_ACTIONS"
+    "verification_authority": "GITHUB_ACTIONS",
+    "github_actions": {
+      "workflow": "CI",
+      "run_id": 33453310225,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33453310225",
+      "job_id": 99687812628,
+      "job_name": "verify",
+      "head_sha": "36c2d448d23621cd96320f032a79909564dec249",
+      "conclusion": "success",
+      "local_results_not_authoritative": true
+    }
   },
   "development_observations": [
     {

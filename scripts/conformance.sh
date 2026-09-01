@@ -18,6 +18,13 @@ go run ./cmd/gooo-ledger-append-planner \
   -baseline-lock "$root/contracts/upstream-lock-v0.31.0.json" \
   -output-dir "$output" >"$output-summary.json"
 
+go run ./cmd/gooo-ledger-append-verifier \
+  -repository "$fixture" \
+  -transaction "$transaction" \
+  -metacode "$root/.gooo/append-planner.gooo" \
+  -baseline-lock "$root/contracts/upstream-lock-v0.31.0.json" \
+  -output "$output"
+
 jq -e '.decision == "CLOSED" and .portfolio_decision == "REFUTED"' "$output-summary.json" >/dev/null
 jq -e '.metrics.exact_files_changed == 7 and .metrics.repository_writes == 0 and .input_repository_mutated == false' "$output/patch-plan.json" >/dev/null
 jq -e '.state == "CLOSED" and .mismatches == []' "$output/replay-receipt.json" >/dev/null
