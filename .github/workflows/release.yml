@@ -3,6 +3,7 @@ name: Immutable release
 on:
   push:
     tags: ['v*.*.*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,8 +23,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
-          target=$(git rev-parse "$GITHUB_REF_NAME^{commit}")
+          tag_ref=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${GITHUB_REF_NAME}")
+          test "$(jq -r '.object.type' <<<"$tag_ref")" = tag
+          tag_object_sha=$(jq -r '.object.sha' <<<"$tag_ref")
+          tag_object=$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/$tag_object_sha")
+          test "$(jq -r '.object.type' <<<"$tag_object")" = commit
+          target=$(jq -r '.object.sha' <<<"$tag_object")
           test "$target" = "$GITHUB_SHA"
           release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}") || true
           if test -n "$release"; then
