@@ -2,9 +2,15 @@
 set -euo pipefail
 
 repository=${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}
-tag=${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}
+tag=${RELEASE_TAG:-}
+if test -z "$tag"; then
+  tag=${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}
+fi
 run_id=${GITHUB_RUN_ID:?GITHUB_RUN_ID is required}
-sha=${GITHUB_SHA:?GITHUB_SHA is required}
+sha=${RELEASE_TARGET_SHA:-}
+if test -z "$sha"; then
+  sha=${GITHUB_SHA:?GITHUB_SHA is required}
+fi
 server_url=${GITHUB_SERVER_URL:-https://github.com}
 api_version=2022-11-28
 
@@ -55,6 +61,9 @@ artifacts=$(gh api --paginate \
 
 local_files=$(for file in release/*; do
   test -f "$file"
+  if test "$(basename "$file")" = "release-audit.json"; then
+    continue
+  fi
   digest=$(sha256sum "$file" | awk '{print $1}')
   jq -n --arg name "$(basename "$file")" --arg digest "sha256:$digest" '{name: $name, sha256: $digest}'
 done | jq -s .)
