@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   release:
@@ -25,26 +26,43 @@ jobs:
           target=$(git rev-parse "$GITHUB_REF_NAME^{commit}")
           test "$target" = "$GITHUB_SHA"
           release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}") || true
-          if test -n "$release" && test "$(jq -r '.immutable // false' <<<"$release")" = "true"; then
-            echo "release already immutable; refusing to rewrite it"
+          if test -n "$release"; then
+            echo "release already exists; refusing to rewrite it"
             exit 1
           fi
       - run: go test ./...
+      - run: ./scripts/conformance.sh
       - run: go build -o gooo-ledger-append-planner ./cmd/gooo-ledger-append-planner
+      - run: go build -o gooo-ledger-append-verifier ./cmd/gooo-ledger-append-verifier
+      - name: Require immutable releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          immutable=$(gh api "repos/${GITHUB_REPOSITORY}/immutable-releases")
+          test "$(jq -r '.enabled' <<<"$immutable")" = true
       - name: Package exact source and checksums
         run: |
           mkdir -p release
           git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${GITHUB_REF_NAME}/ -o "release/gooo-ledger-append-planner-source-${GITHUB_REF_NAME}.tar.gz" "$GITHUB_SHA"
           cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${GITHUB_REF_NAME}
           sha256sum release/* > release/SHA256SUMS
+      - name: Upload package evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-package-${{ github.ref_name }}
+          path: release/*
+          if-no-files-found: error
       - name: Publish once
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" release/* --title "$GITHUB_REF_NAME" --notes "Immutable release for the structural append transaction planner."
-      - name: Verify immutable release identity
+      - name: Generate release audit
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" > release/release-api.json
-          test "$(jq -r '.immutable' release/release-api.json)" = true
-          test "$(jq -r '.target_commitish' release/release-api.json)" = "$GITHUB_SHA" || true
+        run: ./scripts/release-audit.sh > release/release-audit.json
+      - name: Upload release audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-audit-${{ github.ref_name }}
+          path: release/release-audit.json
+          if-no-files-found: error

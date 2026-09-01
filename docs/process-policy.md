@@ -1,7 +1,9 @@
 # Process policy
 
-The bootstrap commit contains CI and `.gooo` authority exactly once. Post-bootstrap direct-to-main count is zero; implementation changes move through one open pull request at a time. The initial development session observed local validation attempts `3`, Go tests `9`, Go builds `0`, `go run` compilations `3`, Go vet `1`, and conformance `2`. This makes the development process `REFUTED`; those results are not product conformance evidence. GitHub Actions is the only verification authority for release evidence.
+The bootstrap commit contains CI and `.gooo` authority exactly once. Its scope is preserved as `BOOTSTRAP_SCOPE_VIOLATION` because the feature implementation was included in that commit; this fact is never rewritten as `CLOSED`. Post-bootstrap direct-to-main count is zero; implementation changes move through one open pull request at a time. The initial development session observed local validation attempts `3`, Go tests `9`, Go builds `0`, `go run` compilations `3`, Go vet `1`, and conformance `2`. This makes the development process `REFUTED`; those results are not product conformance evidence. GitHub Actions is the only verification authority for release evidence.
 
 The release workflow creates a release once for an annotated tag and immediately reads back immutable REST metadata. It must never rewrite an existing tag/release. The release dossier must preserve the exact tag object, target commit, release, asset, workflow run, job, artifact, size, and SHA-256 identities.
 
 The v0.31.0 ledger fixture is read-only evidence. Historical `local_validation_executions=1/process=REFUTED` and wrong insertion-point attempts remain motivation and counterexample context, not a performance claim.
+
+The bootstrap CI observation is preserved in `process/bootstrap-evidence.json` with run `33453310225` and job `99687812628`. Corrective PR CI emits a separate GitHub Actions evidence artifact. The independent verifier is a separate consumer that does not import the planner executor; it re-reads `.gooo`, the immutable lock, transaction, output plan, receipt, and materialized copy.
