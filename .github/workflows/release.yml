@@ -9,6 +9,16 @@ on:
         description: "Existing annotated tag to audit and release"
         required: true
         type: string
+      audit_only:
+        description: "Audit an existing immutable release without publishing"
+        required: false
+        default: false
+        type: boolean
+      source_run_id:
+        description: "Workflow run that created the release package"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -19,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      RELEASE_AUDIT_ONLY: ${{ inputs.audit_only }}
+      RELEASE_AUDIT_RUN_ID: ${{ inputs.source_run_id || github.run_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,18 +53,28 @@ jobs:
           fi
           echo "RELEASE_TARGET_SHA=$target" >> "$GITHUB_ENV"
           if gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
-            echo "release already exists; refusing to rewrite it"
+            if test "$RELEASE_AUDIT_ONLY" = true; then
+              echo "RELEASE_EXISTS=true" >> "$GITHUB_ENV"
+            else
+              echo "release already exists; refusing to rewrite it"
+              exit 1
+            fi
+          elif test "$RELEASE_AUDIT_ONLY" = true; then
+            echo "audit-only mode requires an existing release"
             exit 1
           fi
-      - run: go test ./...
-      - run: ./scripts/conformance.sh
+      - if: ${{ !inputs.audit_only }}
+        run: go test ./...
+      - if: ${{ !inputs.audit_only }}
+        run: ./scripts/conformance.sh
       - name: Require immutable releases
         env:
           GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
         run: |
           immutable=$(gh api "repos/${GITHUB_REPOSITORY}/immutable-releases")
           test "$(jq -r '.enabled' <<<"$immutable")" = true
-      - name: Package exact source and checksums
+      - if: ${{ !inputs.audit_only }}
+        name: Package exact source and checksums
         run: |
           mkdir -p release
           git worktree add --detach release-build "$RELEASE_TARGET_SHA"
@@ -61,20 +83,24 @@ jobs:
           git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${RELEASE_TAG}/ -o "release/gooo-ledger-append-planner-source-${RELEASE_TAG}.tar.gz" "$RELEASE_TARGET_SHA"
           cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${RELEASE_TAG}
           sha256sum release/* > release/SHA256SUMS
-      - name: Upload package evidence
+      - if: ${{ !inputs.audit_only }}
+        name: Upload package evidence
         uses: actions/upload-artifact@v4
         with:
           name: release-package-${{ inputs.tag || github.ref_name }}
           path: release/*
           if-no-files-found: error
-      - name: Publish once
+      - if: ${{ !inputs.audit_only }}
+        name: Publish once
         env:
           GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
-        run: gh release create "$RELEASE_TAG" release/* --title "$RELEASE_TAG" --notes "Immutable release for the structural append transaction planner."
+        run: gh release create "$RELEASE_TAG" --target "$RELEASE_TARGET_SHA" release/* --title "$RELEASE_TAG" --notes "Immutable release for the structural append transaction planner."
       - name: Generate release audit
         env:
           GH_TOKEN: ${{ secrets.IMMUTABLE_RELEASES_TOKEN }}
-        run: ./scripts/release-audit.sh > release/release-audit.json
+        run: |
+          mkdir -p release
+          ./scripts/release-audit.sh > release/release-audit.json
       - name: Upload release audit evidence
         uses: actions/upload-artifact@v4
         with:

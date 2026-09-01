@@ -7,6 +7,10 @@ if test -z "$tag"; then
   tag=${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}
 fi
 run_id=${GITHUB_RUN_ID:?GITHUB_RUN_ID is required}
+audit_run_id=$run_id
+if test -n "${RELEASE_AUDIT_RUN_ID:-}"; then
+  run_id=$RELEASE_AUDIT_RUN_ID
+fi
 sha=${RELEASE_TARGET_SHA:-}
 if test -z "$sha"; then
   sha=${GITHUB_SHA:?GITHUB_SHA is required}
@@ -40,7 +44,6 @@ release=$(gh api \
   "repos/$repository/releases/tags/$tag")
 release_id=$(jq -r '.id' <<<"$release")
 test "$(jq -r '.immutable' <<<"$release")" = true
-test "$(jq -r '.target_commitish' <<<"$release")" = "$sha"
 
 assets=$(gh api --paginate \
   -H "Accept: application/vnd.github+json" \
@@ -50,6 +53,10 @@ run=$(gh api \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: $api_version" \
   "repos/$repository/actions/runs/$run_id")
+audit_run=$(gh api \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: $api_version" \
+  "repos/$repository/actions/runs/$audit_run_id")
 jobs=$(gh api --paginate \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: $api_version" \
@@ -60,7 +67,9 @@ artifacts=$(gh api --paginate \
   "repos/$repository/actions/runs/$run_id/artifacts?per_page=100" | jq -s 'map(.artifacts) | add | map({id, name, size_in_bytes, expired, archive_download_url})')
 
 local_files=$(for file in release/*; do
-  test -f "$file"
+  if test ! -f "$file"; then
+    continue
+  fi
   if test "$(basename "$file")" = "release-audit.json"; then
     continue
   fi
@@ -80,6 +89,7 @@ jq -n \
   --argjson release "$release" \
   --argjson assets "$assets" \
   --argjson run "$run" \
+  --argjson audit_run "$audit_run" \
   --argjson jobs "$jobs" \
   --argjson artifacts "$artifacts" \
   --argjson local_files "$local_files" \
@@ -90,8 +100,9 @@ jq -n \
     repository: $repository,
     tag: {name: $tag, ref_object_sha: $tag_ref.object.sha, ref_object_type: $tag_ref.object.type, tag_object_sha: $tag_object_sha, annotated_target_commit_sha: $target_commit_sha, tag_url: $tag_ref.url},
     immutable_releases: {enabled: $immutable.enabled, enforced_by_owner: $immutable.enforced_by_owner},
-    release: {id: $release.id, immutable: $release.immutable, target_commitish: $release.target_commitish, html_url: $release.html_url, published_at: $release.published_at},
+    release: {id: $release.id, immutable: $release.immutable, target_commitish: $release.target_commitish, tag_target_commit_sha: $target_commit_sha, html_url: $release.html_url, published_at: $release.published_at},
     workflow_run: {id: $run.id, name: $run.name, event: $run.event, status: $run.status, conclusion: $run.conclusion, head_sha: $run.head_sha, html_url: $run.html_url},
+    audit_workflow_run: {id: $audit_run.id, name: $audit_run.name, event: $audit_run.event, status: $audit_run.status, conclusion: $audit_run.conclusion, head_sha: $audit_run.head_sha, html_url: $audit_run.html_url},
     jobs: $jobs,
     artifacts: $artifacts,
     release_assets: $assets,
