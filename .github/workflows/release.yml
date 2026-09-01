@@ -56,8 +56,8 @@ jobs:
         run: |
           mkdir -p release
           git worktree add --detach release-build "$RELEASE_TARGET_SHA"
-          go build -o gooo-ledger-append-planner release-build/cmd/gooo-ledger-append-planner
-          go build -o gooo-ledger-append-verifier release-build/cmd/gooo-ledger-append-verifier
+          (cd release-build && go build -o "$GITHUB_WORKSPACE/gooo-ledger-append-planner" ./cmd/gooo-ledger-append-planner)
+          (cd release-build && go build -o "$GITHUB_WORKSPACE/gooo-ledger-append-verifier" ./cmd/gooo-ledger-append-verifier)
           git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${RELEASE_TAG}/ -o "release/gooo-ledger-append-planner-source-${RELEASE_TAG}.tar.gz" "$RELEASE_TARGET_SHA"
           cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${RELEASE_TAG}
           sha256sum release/* > release/SHA256SUMS
