@@ -1,0 +1,107 @@
+{
+  "schema": "gooo/ledger-append-transaction/v2",
+  "transaction_id": "append-planner-fixture-v0.2.0-missing-binding",
+  "manifest_key": "missing-v0.32.0",
+  "insertion_strategy": "ast",
+  "baseline": {
+    "repository": "kimjooyoon/gooo-self-improvement-ledger",
+    "tag": "v0.32.0",
+    "release_id": 380137101,
+    "tag_object_sha": "607cf838605a6f91d881559fedaf848385d0d10c",
+    "target_commit_sha": "5486b346aa193875383cdafa0763f3bd371c2fc1",
+    "immutable": true,
+    "source_archive_sha256": "sha256:3bfc8585963c88858a22308b48a78d8a212d63677b68ca11946df62b23d2b611",
+    "source_tree_sha256": "sha256:1697f6cab268c7ba63fddc503c3d22aa63e7f29c92fe4f4071bf0cef915a0040",
+    "release_asset_id": 538702344,
+    "release_asset_sha256": "sha256:79a291b446510cccf5ea32686b13e1dcad926e3b6166867f1e761a36f2df36b1"
+  },
+  "cell": {
+    "ordinal": 39,
+    "id": "APPEND_TRANSACTION_MANIFEST",
+    "axis": "APPEND_TRANSACTION_MANIFEST",
+    "proof": "COHERENCE",
+    "indicator": "OUTCOME",
+    "activity": "AdoptAppendTransactionManifest",
+    "source": "examples/self-improvement-portfolio/main.gooo#AdoptAppendTransactionManifest",
+    "ir": "semantic-ir/activity/AdoptAppendTransactionManifest",
+    "generated_artifact": "evidence/cells/APPEND_TRANSACTION_MANIFEST.json",
+    "evaluator": "ledger/append-transaction-manifest",
+    "metric_id": "gooo.metric.self-improvement.append-transaction-manifest.v1",
+    "metric_denominator": 1,
+    "release_key": "append_transaction_manifest",
+    "depends_on": []
+  },
+  "activity": {
+    "name": "AdoptAppendTransactionManifest",
+    "input_type": "PortfolioInput",
+    "output_type": "PortfolioEvidence",
+    "computes": "self-improvement-portfolio:v1;axis=APPEND_TRANSACTION_MANIFEST;proof=COHERENCE;indicator=OUTCOME"
+  },
+  "release_key": "append_transaction_manifest",
+  "release_lock": {
+    "repository": "kimjooyoon/gooo-self-improvement-ledger",
+    "tag": "v0.32.0",
+    "release_id": 380137101,
+    "release_url": "https://github.com/kimjooyoon/gooo-self-improvement-ledger/releases/tag/v0.32.0",
+    "target_commit_sha": "5486b346aa193875383cdafa0763f3bd371c2fc1",
+    "tag_object_sha": "607cf838605a6f91d881559fedaf848385d0d10c",
+    "immutable": true,
+    "assets": [
+      {
+        "id": 538702344,
+        "name": "gooo-self-improvement-ledger-5486b346aa193875383cdafa0763f3bd371c2fc1.zip",
+        "size_bytes": 17830930,
+        "sha256": "sha256:79a291b446510cccf5ea32686b13e1dcad926e3b6166867f1e761a36f2df36b1"
+      }
+    ]
+  },
+  "outcome": {
+    "state": "CLOSED",
+    "evidence": [
+      "structural-append:cell=APPEND_TRANSACTION_MANIFEST:activity=AdoptAppendTransactionManifest:lock=append_transaction_manifest",
+      "canonical-preservation:verified",
+      "input-repository-writes:0",
+      "matched-improvement-evidence:pending"
+    ]
+  },
+  "registry_entry": {
+    "entry_id": "append-transaction-manifest-v0.2.0",
+    "state": "CLOSED",
+    "evidence": [
+      "AST append transaction",
+      "immutable v0.32.0 baseline",
+      "canonical replay receipt"
+    ],
+    "observed": {
+      "target_commit_sha": "5486b346aa193875383cdafa0763f3bd371c2fc1",
+      "release_immutable": true,
+      "repository_writes": 0
+    }
+  },
+  "migration": {
+    "operation": "ADD1",
+    "from": 38,
+    "to": 39,
+    "add": 1,
+    "retire": 0,
+    "split": 0
+  },
+  "expected": {
+    "proof_totals": {
+      "FOUNDATION": 4,
+      "COHERENCE": 30,
+      "REGRESSION": 5
+    },
+    "indicator_totals": {
+      "DRIVER": 4,
+      "OUTCOME": 30,
+      "GUARDRAIL": 5
+    },
+    "status_counts": {
+      "CLOSED": 36,
+      "UNKNOWN": 1,
+      "REFUTED": 2
+    },
+    "portfolio_decision": "REFUTED"
+  }
+}

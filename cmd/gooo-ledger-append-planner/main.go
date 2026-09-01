@@ -14,6 +14,7 @@ func main() {
 	transaction := flag.String("transaction", "", "transaction JSON")
 	repository := flag.String("repository", "", "read-only input ledger repository")
 	meta := flag.String("metacode", ".gooo/append-planner.gooo", "Gooo authority file")
+	transactionManifest := flag.String("transaction-manifest", "", "Gooo transaction manifest; defaults to the metacode declaration")
 	baselineLock := flag.String("baseline-lock", "contracts/upstream-lock-v0.31.0.json", "immutable upstream lock")
 	output := flag.String("output-dir", "", "empty caller-owned output directory")
 	sourceArchive := flag.String("source-archive", "", "optional exact GitHub API source archive")
@@ -32,7 +33,8 @@ func main() {
 	}
 	result, err := planner.Execute(*transaction, planner.Options{
 		InputRepository: *repository, OutputDirectory: outputDir, MetaCodePath: *meta,
-		BaselineLockPath: *baselineLock, SourceArchivePath: *sourceArchive, ReleaseAssetPath: *releaseAsset,
+		TransactionManifestPath: *transactionManifest,
+		BaselineLockPath:        *baselineLock, SourceArchivePath: *sourceArchive, ReleaseAssetPath: *releaseAsset,
 	})
 	if err != nil {
 		fatal("append transaction: %v", err)

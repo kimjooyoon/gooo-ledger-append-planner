@@ -1,0 +1,21 @@
+{
+  "schema": "gooo/immutable-upstream-lock/v1",
+  "repository": "kimjooyoon/gooo-self-improvement-ledger",
+  "tag": "v0.32.0",
+  "release_id": 380137101,
+  "release_url": "https://github.com/kimjooyoon/gooo-self-improvement-ledger/releases/tag/v0.32.0",
+  "tag_object_sha": "607cf838605a6f91d881559fedaf848385d0d10c",
+  "target_commit_sha": "5486b346aa193875383cdafa0763f3bd371c2fc1",
+  "immutable": true,
+  "source_archive": {
+    "url": "https://api.github.com/repos/kimjooyoon/gooo-self-improvement-ledger/zipball/5486b346aa193875383cdafa0763f3bd371c2fc1",
+    "sha256": "sha256:3bfc8585963c88858a22308b48a78d8a212d63677b68ca11946df62b23d2b611"
+  },
+  "source_tree_sha256": "sha256:1697f6cab268c7ba63fddc503c3d22aa63e7f29c92fe4f4071bf0cef915a0040",
+  "release_asset": {
+    "id": 538702344,
+    "name": "gooo-self-improvement-ledger-5486b346aa193875383cdafa0763f3bd371c2fc1.zip",
+    "size_bytes": 17830930,
+    "sha256": "sha256:79a291b446510cccf5ea32686b13e1dcad926e3b6166867f1e761a36f2df36b1"
+  }
+}

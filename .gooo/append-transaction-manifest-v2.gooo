@@ -1,0 +1,53 @@
+gooo transaction_manifest v2
+operation append_exactly_one_adoption_transaction
+transaction-schema "gooo/ledger-append-transaction/v2"
+
+planned-file activity_file "examples/self-improvement-portfolio/main.gooo"
+planned-file profile "contracts/self-improvement-portfolio-v1.json"
+planned-file release_locks "contracts/release-locks-v1.json"
+planned-file assessment "evidence/assessment-v1.json"
+planned-file registry "evidence/non-completeness-capability-evidence-registry-v1.json"
+planned-file report "evidence/report-v1.json"
+planned-file history "evidence/history-v1.json"
+
+after-invariant append-one-cell
+after-invariant append-one-activity
+after-invariant append-one-release-lock
+after-invariant append-one-assessment
+after-invariant append-one-registry-entry
+after-invariant advance-denominator-by-one
+after-invariant increment-state-counts-by-outcome
+after-invariant preserve-existing-canonical-objects
+after-invariant planned-file-set-exact
+after-invariant replay-mismatches-zero
+after-invariant no-input-repository-writes
+
+target v0.31.0
+target-repository "kimjooyoon/gooo-self-improvement-ledger"
+target-tag "v0.31.0"
+target-commit-sha "c0d22d90718753f88552096ac437ea818fd11a25"
+target-before-digest "sha256:91af005372ea71ecceb5908135536c27603cad0ed9826815e24f8b65b840382c"
+expected-denominator 37
+expected-state-count CLOSED=34 UNKNOWN=1 REFUTED=2
+anchor profile.first_cell_id "CORE_SEMANTIC_AUTHORITY"
+anchor profile.last_cell_id "REFLEXIVE_COMPILER_GRAPH_TOPOLOGY_SELF_IMPROVEMENT_DURABLE_RELEASE"
+anchor assessment.last_cell_id "REFLEXIVE_COMPILER_GRAPH_TOPOLOGY_SELF_IMPROVEMENT_DURABLE_RELEASE"
+anchor registry.last_entry_id "adoption-regression-v0.1.1"
+anchor activity.last_activity "AdoptReflexiveCompilerGraphTopologySelfImprovement"
+anchor release_map.last_key "reflexive_compiler_graph_topology_self_improvement_durable_release"
+end-target
+
+target v0.32.0
+target-repository "kimjooyoon/gooo-self-improvement-ledger"
+target-tag "v0.32.0"
+target-commit-sha "5486b346aa193875383cdafa0763f3bd371c2fc1"
+target-before-digest "sha256:1697f6cab268c7ba63fddc503c3d22aa63e7f29c92fe4f4071bf0cef915a0040"
+expected-denominator 38
+expected-state-count CLOSED=35 UNKNOWN=1 REFUTED=2
+anchor profile.first_cell_id "CORE_SEMANTIC_AUTHORITY"
+anchor profile.last_cell_id "EXECUTABLE_EVOLUTION_TRIAL_CLOSED_LOOP_DURABLE_RELEASE"
+anchor assessment.last_cell_id "EXECUTABLE_EVOLUTION_TRIAL_CLOSED_LOOP_DURABLE_RELEASE"
+anchor registry.last_entry_id "adoption-regression-v0.1.1"
+anchor activity.last_activity "AdoptExecutableEvolutionTrialClosedLoop"
+anchor release_map.last_key "executable_evolution_trial_closed_loop_durable_release"
+end-target
