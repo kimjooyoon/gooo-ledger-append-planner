@@ -102,6 +102,20 @@
       "failure_response": "GO_BUILD_RELATIVE_PATH_MISSING_DOT_SLASH",
       "preserved": true,
       "release_created": false
+    },
+    {
+      "tag": "v0.1.0",
+      "run_id": 33454957451,
+      "run_url": "https://github.com/kimjooyoon/gooo-ledger-append-planner/actions/runs/33454957451",
+      "job_id": 99692863121,
+      "job_name": "release",
+      "head_sha": "d76901c94c0d673a39a29875785abfb8f1a651a4",
+      "conclusion": "failure_after_release_creation",
+      "failed_step": "Generate release audit",
+      "failure_response": "RELEASE_AUDIT_TARGET_COMMITISH_STRING_DID_NOT_EQUAL_TAG_TARGET_SHA",
+      "preserved": true,
+      "release_created": true,
+      "release_id": 380137521
     }
   ],
   "control_plane_attempts": [
