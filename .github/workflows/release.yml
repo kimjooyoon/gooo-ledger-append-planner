@@ -4,6 +4,11 @@ on:
   push:
     tags: ['v*.*.*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing annotated tag to audit and release"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -12,6 +17,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,22 +30,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag_ref=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${GITHUB_REF_NAME}")
+          tag_ref=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}")
           test "$(jq -r '.object.type' <<<"$tag_ref")" = tag
           tag_object_sha=$(jq -r '.object.sha' <<<"$tag_ref")
           tag_object=$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/$tag_object_sha")
           test "$(jq -r '.object.type' <<<"$tag_object")" = commit
           target=$(jq -r '.object.sha' <<<"$tag_object")
-          test "$target" = "$GITHUB_SHA"
-          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}") || true
+          if test "$GITHUB_EVENT_NAME" = push; then
+            test "$target" = "$GITHUB_SHA"
+          fi
+          echo "RELEASE_TARGET_SHA=$target" >> "$GITHUB_ENV"
+          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}") || true
           if test -n "$release"; then
             echo "release already exists; refusing to rewrite it"
             exit 1
           fi
       - run: go test ./...
       - run: ./scripts/conformance.sh
-      - run: go build -o gooo-ledger-append-planner ./cmd/gooo-ledger-append-planner
-      - run: go build -o gooo-ledger-append-verifier ./cmd/gooo-ledger-append-verifier
       - name: Require immutable releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -48,19 +56,22 @@ jobs:
       - name: Package exact source and checksums
         run: |
           mkdir -p release
-          git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${GITHUB_REF_NAME}/ -o "release/gooo-ledger-append-planner-source-${GITHUB_REF_NAME}.tar.gz" "$GITHUB_SHA"
-          cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${GITHUB_REF_NAME}
+          git worktree add --detach release-build "$RELEASE_TARGET_SHA"
+          go build -o gooo-ledger-append-planner release-build/cmd/gooo-ledger-append-planner
+          go build -o gooo-ledger-append-verifier release-build/cmd/gooo-ledger-append-verifier
+          git archive --format=tar.gz --prefix=gooo-ledger-append-planner-${RELEASE_TAG}/ -o "release/gooo-ledger-append-planner-source-${RELEASE_TAG}.tar.gz" "$RELEASE_TARGET_SHA"
+          cp gooo-ledger-append-planner release/gooo-ledger-append-planner-linux-amd64-${RELEASE_TAG}
           sha256sum release/* > release/SHA256SUMS
       - name: Upload package evidence
         uses: actions/upload-artifact@v4
         with:
-          name: release-package-${{ github.ref_name }}
+          name: release-package-${{ inputs.tag || github.ref_name }}
           path: release/*
           if-no-files-found: error
       - name: Publish once
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release/* --title "$GITHUB_REF_NAME" --notes "Immutable release for the structural append transaction planner."
+        run: gh release create "$RELEASE_TAG" release/* --title "$RELEASE_TAG" --notes "Immutable release for the structural append transaction planner."
       - name: Generate release audit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -68,6 +79,6 @@ jobs:
       - name: Upload release audit evidence
         uses: actions/upload-artifact@v4
         with:
-          name: release-audit-${{ github.ref_name }}
+          name: release-audit-${{ inputs.tag || github.ref_name }}
           path: release/release-audit.json
           if-no-files-found: error

@@ -65,5 +65,14 @@
       "preserved": true,
       "release_created": false
     }
-  }
+  ],
+  "control_plane_attempts": [
+    {
+      "action": "workflow_dispatch",
+      "tag": "v0.1.0",
+      "ref": "v0.1.0",
+      "response": "HTTP_422_WORKFLOW_DOES_NOT_HAVE_WORKFLOW_DISPATCH_TRIGGER",
+      "preserved": true
+    }
+  ]
 }
