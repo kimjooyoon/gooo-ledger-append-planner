@@ -10,12 +10,12 @@ target-file SEMANTIC_APPEND_ONLY registry "evidence/non-completeness-capability-
 target-file DERIVED_PROJECTION report "evidence/report-v1.json"
 projection-kind report "assessment-report"
 projection-before-digest report "sha256:94999f6037cfeb8875ed1bc4323a146e4a7b3bcac9208bfcd209020c1f5ee4df"
-projection-source-semantic-digest report "sha256:2f0e0227b5e2cf86d223e06415c92c20f23000068a026f2a4988f85039e2c203"
+projection-source-semantic-digest report "sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90"
 projection-after-invariant report "deterministic-regenerate-from-post-append-semantic-source"
 target-file DERIVED_PROJECTION history "evidence/history-v1.json"
 projection-kind history "append-history"
 projection-before-digest history "sha256:ea4a0e784a21ffd6aeede799918e8ee058e13117fcc91768627ce115ea18ef4a"
-projection-source-semantic-digest history "sha256:2f0e0227b5e2cf86d223e06415c92c20f23000068a026f2a4988f85039e2c203"
+projection-source-semantic-digest history "sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90"
 projection-after-invariant history "deterministic-regenerate-from-post-append-semantic-source"
 
 after-invariant append-one-cell

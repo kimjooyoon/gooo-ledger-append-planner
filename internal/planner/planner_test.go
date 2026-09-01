@@ -191,7 +191,7 @@ func TestProjectionManifestV3CorpusAndRollback(t *testing.T) {
 		InputRepository:         input,
 		OutputDirectory:         t.TempDir(),
 		MetaCodePath:            filepath.Join(testRoot, ".gooo/append-planner.gooo"),
-		TransactionManifestPath: filepath.Join(testRoot, ".gooo/append-transaction-manifest-v3.gooo"),
+		TransactionManifestPath: ".gooo/append-transaction-manifest-v3.gooo",
 		BaselineLockPath:        filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
 	}
 	result, err := Execute(filepath.Join(testRoot, "examples/transactions/valid-append-v3-v0.33.json"), options)
@@ -238,7 +238,7 @@ func TestProjectionManifestV3AuthorityFindings(t *testing.T) {
 		{
 			name: "source-semantic-mismatch",
 			mutate: func(value string) string {
-				return strings.Replace(value, "projection-source-semantic-digest report \"sha256:2f0e0227b5e2cf86d223e06415c92c20f23000068a026f2a4988f85039e2c203\"", "projection-source-semantic-digest report \"sha256:0000000000000000000000000000000000000000000000000000000000000000\"", 1)
+				return strings.Replace(value, "projection-source-semantic-digest report \"sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90\"", "projection-source-semantic-digest report \"sha256:0000000000000000000000000000000000000000000000000000000000000000\"", 1)
 			},
 			decision: DecisionRefuted, reason: "PROJECTION_SOURCE_SEMANTIC_DIGEST_MISMATCH",
 		},
@@ -249,7 +249,7 @@ func TestProjectionManifestV3AuthorityFindings(t *testing.T) {
 					"target-file DERIVED_PROJECTION report \"evidence/report-v1.json\"\n",
 					"projection-kind report \"assessment-report\"\n",
 					"projection-before-digest report \"sha256:94999f6037cfeb8875ed1bc4323a146e4a7b3bcac9208bfcd209020c1f5ee4df\"\n",
-					"projection-source-semantic-digest report \"sha256:2f0e0227b5e2cf86d223e06415c92c20f23000068a026f2a4988f85039e2c203\"\n",
+					"projection-source-semantic-digest report \"sha256:217d611a973b5edd64b571269e396cb82570a0e84203f7a48286c6ef9ec5ad90\"\n",
 					"projection-after-invariant report \"deterministic-regenerate-from-post-append-semantic-source\"\n",
 				} {
 					value = strings.Replace(value, line, "", 1)
@@ -298,7 +298,7 @@ func TestProjectionManifestV3AuthorityFindings(t *testing.T) {
 	}
 	deletedResult, err := Execute(filepath.Join(testRoot, "examples/transactions/valid-append-v3-v0.33.json"), Options{
 		InputRepository: deletedInput, OutputDirectory: t.TempDir(), MetaCodePath: filepath.Join(testRoot, ".gooo/append-planner.gooo"),
-		TransactionManifestPath: filepath.Join(testRoot, ".gooo/append-transaction-manifest-v3.gooo"), BaselineLockPath: filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
+		TransactionManifestPath: ".gooo/append-transaction-manifest-v3.gooo", BaselineLockPath: filepath.Join(testRoot, "contracts/upstream-lock-v0.33.0.json"),
 	})
 	if err != nil {
 		t.Fatal(err)
