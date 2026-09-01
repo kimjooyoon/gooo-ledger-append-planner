@@ -1531,7 +1531,11 @@ func subjectDigest(ledger LedgerAST, files map[string][]byte, meta MetaCode) (st
 			selected[path] = data
 		}
 	}
-	return ledgerDigest(ledger, selected)
+	digestLedger := ledger
+	if activity, ok := files[ledger.ActivityFile]; ok {
+		digestLedger.ActivityRaw = activity
+	}
+	return ledgerDigest(digestLedger, selected)
 }
 
 func semanticTargetRoles(meta MetaCode) []string {
