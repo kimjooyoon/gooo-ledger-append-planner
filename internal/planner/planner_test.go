@@ -168,7 +168,7 @@ func TestTransactionManifestCorpus(t *testing.T) {
 				t.Fatal(err)
 			}
 			if result.Plan.OperationDecision != testCase.decision {
-				t.Fatalf("decision = %s, want %s", result.Plan.OperationDecision, testCase.decision)
+				t.Fatalf("decision = %s, want %s; findings=%+v", result.Plan.OperationDecision, testCase.decision, result.Plan.Findings)
 			}
 			after, err := sourceTreeDigest(input)
 			if err != nil {
