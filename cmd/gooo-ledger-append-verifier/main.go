@@ -20,10 +20,11 @@ import (
 )
 
 type authority struct {
-	paths      map[string]string
-	directives map[string][]string
-	activities int
-	edges      int
+	paths                   map[string]string
+	directives              map[string][]string
+	transactionManifestPath string
+	activities              int
+	edges                   int
 }
 
 func main() {
@@ -31,18 +32,19 @@ func main() {
 	output := flag.String("output", "", "planner output directory")
 	transaction := flag.String("transaction", "", "transaction JSON")
 	metacode := flag.String("metacode", ".gooo/append-planner.gooo", "Gooo authority file")
+	transactionManifest := flag.String("transaction-manifest", ".gooo/append-transaction-manifest-v2.gooo", "Gooo transaction manifest")
 	baselineLock := flag.String("baseline-lock", "contracts/upstream-lock-v0.31.0.json", "immutable upstream lock")
 	flag.Parse()
 	if *repository == "" || *output == "" || *transaction == "" {
 		fatal("-repository, -output, and -transaction are required")
 	}
-	if err := verify(*repository, *output, *transaction, *metacode, *baselineLock); err != nil {
+	if err := verify(*repository, *output, *transaction, *metacode, *baselineLock, *transactionManifest); err != nil {
 		fatal("independent verification failed: %v", err)
 	}
 	fmt.Println("independent verification: structural append boundary accepted")
 }
 
-func verify(repository, output, transactionPath, metacodePath, baselineLockPath string) error {
+func verify(repository, output, transactionPath, metacodePath, baselineLockPath, transactionManifestPath string) error {
 	meta, err := parseAuthority(metacodePath)
 	if err != nil {
 		return err
@@ -72,7 +74,33 @@ func verify(repository, output, transactionPath, metacodePath, baselineLockPath 
 	if err := verifyBaseline(tx, lock, repository); err != nil {
 		return err
 	}
-	return verifyMaterialized(meta, tx, repository, filepath.Join(output, "repository"), plan)
+	inputFiles, err := snapshot(repository)
+	if err != nil {
+		return fmt.Errorf("snapshot input: %w", err)
+	}
+	var manifest verifierTransactionManifest
+	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" {
+		manifest, err = parseTransactionManifest(transactionManifestPath)
+		if err != nil {
+			return fmt.Errorf("transaction manifest: %w", err)
+		}
+		if err := verifyManifestBefore(manifest, tx, meta, repository, inputFiles); err != nil {
+			return err
+		}
+	}
+	if err := verifyMaterialized(meta, tx, repository, filepath.Join(output, "repository"), plan); err != nil {
+		return err
+	}
+	if stringField(tx, "schema") == "gooo/ledger-append-transaction/v2" {
+		outputFiles, err := snapshot(filepath.Join(output, "repository"))
+		if err != nil {
+			return fmt.Errorf("snapshot output: %w", err)
+		}
+		if err := verifyManifestAfter(manifest, tx, meta, inputFiles, outputFiles, plan); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func parseAuthority(path string) (authority, error) {
@@ -97,6 +125,12 @@ func parseAuthority(path string) (authority, error) {
 				return authority{}, fmt.Errorf("%s:%d: malformed path", path, lineNumber+1)
 			}
 			result.paths[key] = value
+		case strings.HasPrefix(line, "transaction-manifest "):
+			value, err := strconv.Unquote(strings.TrimSpace(strings.TrimPrefix(line, "transaction-manifest ")))
+			if err != nil || value == "" {
+				return authority{}, fmt.Errorf("%s:%d: malformed transaction manifest path", path, lineNumber+1)
+			}
+			result.transactionManifestPath = value
 		default:
 			fields := strings.Fields(line)
 			if len(fields) == 0 {
@@ -153,6 +187,9 @@ func verifyAuthority(meta authority) error {
 		if meta.paths[key] == "" {
 			return fmt.Errorf(".gooo path %q is missing", key)
 		}
+	}
+	if meta.transactionManifestPath == "" {
+		return fmt.Errorf(".gooo transaction manifest path is missing")
 	}
 	return nil
 }

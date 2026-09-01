@@ -59,6 +59,12 @@ func LoadMetaCode(path string) (MetaCode, error) {
 				return MetaCode{}, fmt.Errorf("%s:%d: malformed template", path, lineNumber)
 			}
 			meta.Templates[key] = value
+		case strings.HasPrefix(line, "transaction-manifest "):
+			value, ok := quotedValue(strings.TrimSpace(strings.TrimPrefix(line, "transaction-manifest ")))
+			if !ok {
+				return MetaCode{}, fmt.Errorf("%s:%d: malformed transaction manifest path", path, lineNumber)
+			}
+			meta.TransactionManifestPath = value
 		case strings.HasPrefix(line, "required "):
 			meta.Required = append(meta.Required, strings.TrimSpace(strings.TrimPrefix(line, "required ")))
 		case strings.HasPrefix(line, "unknown-field "):

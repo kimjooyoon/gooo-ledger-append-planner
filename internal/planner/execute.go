@@ -12,12 +12,13 @@ import (
 )
 
 type Options struct {
-	InputRepository   string
-	OutputDirectory   string
-	MetaCodePath      string
-	BaselineLockPath  string
-	SourceArchivePath string
-	ReleaseAssetPath  string
+	InputRepository         string
+	OutputDirectory         string
+	MetaCodePath            string
+	TransactionManifestPath string
+	BaselineLockPath        string
+	SourceArchivePath       string
+	ReleaseAssetPath        string
 }
 
 type Result struct {
@@ -30,6 +31,8 @@ type Result struct {
 
 type runState struct {
 	Meta           MetaCode
+	Manifest       TransactionManifest
+	TargetBinding  *TargetBinding
 	Transaction    Transaction
 	TransactionRaw map[string]any
 	BaselineLock   map[string]any
@@ -67,6 +70,17 @@ func Execute(transactionPath string, options Options) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	manifestPath := options.TransactionManifestPath
+	if manifestPath == "" {
+		manifestPath = meta.TransactionManifestPath
+	}
+	manifest := TransactionManifest{}
+	if manifestPath != "" {
+		manifest, err = LoadTransactionManifest(manifestPath)
+		if err != nil {
+			return Result{}, fmt.Errorf("load transaction manifest: %w", err)
+		}
+	}
 	lock, err := loadASTFile(options.BaselineLockPath)
 	if err != nil {
 		return Result{}, err
@@ -85,7 +99,7 @@ func Execute(transactionPath string, options Options) (Result, error) {
 		return Result{}, err
 	}
 	state := &runState{
-		Meta: meta, Transaction: transaction, BaselineLock: lockObject, Ledger: ledger,
+		Meta: meta, Manifest: manifest, Transaction: transaction, BaselineLock: lockObject, Ledger: ledger,
 		TransactionRaw: transactionRaw,
 		BeforeFiles:    beforeFiles, BeforeDigest: beforeDigest, Start: time.Now(),
 	}
@@ -111,6 +125,9 @@ func Execute(transactionPath string, options Options) (Result, error) {
 		state.Plan.Metrics.WallMS = time.Since(state.Start).Milliseconds()
 		state.Plan.Metrics.GeneratedBytes = projectionBytes(state.Plan.Files)
 		state.Receipt = makeReceipt(state, options.OutputDirectory)
+		if err := validateManifestReceipt(state); err != nil {
+			return Result{}, err
+		}
 		state.Rollback = makeRollback(state)
 		state.Dossier = makeDossier(state)
 	} else {
@@ -167,9 +184,12 @@ func validateExecution(state *runState, options Options) error {
 	if _, err := executionOrder(state.Meta); err != nil {
 		state.Findings = append(state.Findings, refutation("METACODE", "VALIDATE_OPERATION_GRAPH", "METACODE_GRAPH_INVALID", err.Error()))
 	}
+	validateManifestBinding(state)
 	validateBaseline(state, options)
 	validateTransaction(state)
 	validateLedgerShape(state)
+	validateManifestTarget(state)
+	validateManifestDeclaration(state)
 	if len(state.Findings) > 0 {
 		state.Plan = basePlan(state)
 		return nil
@@ -181,6 +201,134 @@ func validateExecution(state *runState, options Options) error {
 		state.Plan.PortfolioDecision = expectedPortfolioDecision(state)
 	}
 	return nil
+}
+
+func validateManifestBinding(state *runState) {
+	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" {
+		return
+	}
+	if state.Manifest.Schema == "" {
+		state.Findings = append(state.Findings, unknown("VERIFY", "LOAD_TRANSACTION_MANIFEST", "v2 transaction manifest is unavailable", "TRANSACTION_MANIFEST_UNOBSERVED", "supply the declared .gooo transaction manifest", []string{"transaction-manifest"}))
+		return
+	}
+	if state.Manifest.Operation != state.Meta.Operation || state.Manifest.TransactionSchema != state.Transaction.Schema {
+		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_TRANSACTION_MANIFEST_IDENTITY", "TRANSACTION_MANIFEST_IDENTITY_MISMATCH", "manifest operation or transaction schema differs from the executor contract"))
+	}
+	if state.Transaction.ManifestKey == "" {
+		state.Findings = append(state.Findings, unknown("VERIFY", "BIND_TRANSACTION_MANIFEST_TARGET", "transaction manifest key is absent", "TRANSACTION_MANIFEST_BINDING_UNOBSERVED", "supply an exact immutable target binding key", []string{"manifest_key"}))
+		return
+	}
+	binding, ok := state.Manifest.Targets[state.Transaction.ManifestKey]
+	if !ok {
+		state.Findings = append(state.Findings, unknown("VERIFY", "BIND_TRANSACTION_MANIFEST_TARGET", "transaction manifest target binding is absent", "TRANSACTION_MANIFEST_BINDING_UNKNOWN", "supply an exact immutable target binding for "+state.Transaction.ManifestKey, []string{"manifest_key", state.Transaction.ManifestKey}))
+		return
+	}
+	state.TargetBinding = &binding
+	tx := state.Transaction
+	checks := []struct{ name, got, want string }{
+		{"repository", tx.Baseline.Repository, binding.Repository},
+		{"tag", tx.Baseline.Tag, binding.Tag},
+		{"target_commit_sha", tx.Baseline.TargetCommitSHA, binding.TargetCommitSHA},
+		{"target_before_digest", tx.Baseline.SourceTreeSHA256, binding.BeforeDigest},
+	}
+	for _, check := range checks {
+		if check.got != check.want {
+			state.Findings = append(state.Findings, refutation("VERIFY", "COMPARE_TRANSACTION_MANIFEST_BINDING", "TRANSACTION_MANIFEST_TARGET_MISMATCH", check.name+" differs from manifest target "+binding.Key))
+		}
+	}
+}
+
+func validateManifestDeclaration(state *runState) {
+	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.Manifest.Schema == "" {
+		return
+	}
+	for role, path := range state.Meta.Paths {
+		if got, ok := state.Manifest.PlannedFiles[role]; !ok || got != path {
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_PLANNED_FILE_SET", "MANIFEST_PLANNED_FILE_SET_MISMATCH", role))
+		}
+	}
+	if len(state.Manifest.PlannedFiles) != len(state.Meta.Paths) {
+		state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_PLANNED_FILE_SET", "MANIFEST_PLANNED_FILE_SET_MISMATCH", fmt.Sprintf("manifest=%d declared=%d", len(state.Manifest.PlannedFiles), len(state.Meta.Paths))))
+	}
+	for _, invariant := range requiredManifestAfterInvariants {
+		if !contains(state.Manifest.AfterInvariants, invariant) {
+			state.Findings = append(state.Findings, refutation("VALIDATE", "CHECK_MANIFEST_AFTER_INVARIANTS", "MANIFEST_AFTER_INVARIANT_MISSING", invariant))
+		}
+	}
+}
+
+func validateManifestTarget(state *runState) {
+	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.TargetBinding == nil {
+		return
+	}
+	binding := state.TargetBinding
+	profile, err := object(state.Ledger.Profile.AST, "profile")
+	if err != nil {
+		return
+	}
+	profileCells, err := array(profile["cells"], "profile.cells")
+	if err != nil {
+		return
+	}
+	if len(profileCells) != binding.ExpectedDenominator || intValue(profile["total_cells"]) != int64(binding.ExpectedDenominator) {
+		state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_TARGET_BEFORE_DENOMINATOR", "TARGET_BEFORE_DENOMINATOR_MISMATCH", fmt.Sprintf("observed=%d expected=%d", len(profileCells), binding.ExpectedDenominator)))
+	}
+	assessment, err := object(state.Ledger.Assessment.AST, "assessment")
+	if err != nil {
+		return
+	}
+	assessmentCells, err := array(assessment["cells"], "assessment.cells")
+	if err != nil {
+		return
+	}
+	status := map[string]int{}
+	for _, stateName := range state.Meta.States {
+		status[stateName] = 0
+	}
+	for _, raw := range assessmentCells {
+		cell, ok := raw.(map[string]any)
+		if ok {
+			status[stringValue(cell["state"])]++
+		}
+	}
+	if !sameIntMap(status, binding.ExpectedStateCounts) {
+		state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_TARGET_BEFORE_STATE_COUNTS", "TARGET_BEFORE_STATE_COUNTS_MISMATCH", fmt.Sprintf("observed=%v expected=%v", status, binding.ExpectedStateCounts)))
+	}
+	anchors := binding.Anchors
+	if len(profileCells) > 0 {
+		first, _ := profileCells[0].(map[string]any)
+		last, _ := profileCells[len(profileCells)-1].(map[string]any)
+		checkManifestAnchor(state, anchors, "profile.first_cell_id", stringValue(first["id"]))
+		checkManifestAnchor(state, anchors, "profile.last_cell_id", stringValue(last["id"]))
+		checkManifestAnchor(state, anchors, "release_map.last_key", stringValue(last["release_key"]))
+	}
+	if len(assessmentCells) > 0 {
+		last, _ := assessmentCells[len(assessmentCells)-1].(map[string]any)
+		checkManifestAnchor(state, anchors, "assessment.last_cell_id", stringValue(last["cell_id"]))
+	}
+	registry, err := object(state.Ledger.Registry.AST, "registry")
+	if err == nil {
+		entries, entryErr := array(registry["entries"], "registry.entries")
+		if entryErr == nil && len(entries) > 0 {
+			last, _ := entries[len(entries)-1].(map[string]any)
+			checkManifestAnchor(state, anchors, "registry.last_entry_id", stringValue(last["entry_id"]))
+		}
+	}
+	activities := parseActivitySequence(state.Ledger.ActivityRaw)
+	if len(activities) > 0 {
+		checkManifestAnchor(state, anchors, "activity.last_activity", activities[len(activities)-1])
+	}
+}
+
+func checkManifestAnchor(state *runState, anchors map[string]string, key, observed string) {
+	want, ok := anchors[key]
+	if !ok || want == "" {
+		state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_TARGET_STRUCTURAL_ANCHORS", "MANIFEST_STRUCTURAL_ANCHOR_MISSING", key))
+		return
+	}
+	if observed != want {
+		state.Findings = append(state.Findings, refutation("VERIFY", "CHECK_TARGET_STRUCTURAL_ANCHORS", "TARGET_STRUCTURAL_ANCHOR_MISMATCH", key+" observed="+observed+" expected="+want))
+	}
 }
 
 func validateBaseline(state *runState, options Options) {
@@ -531,7 +679,7 @@ func expectedPortfolioDecision(state *runState) string {
 func basePlan(state *runState) PatchPlan {
 	tx := state.Transaction
 	decision := reduceFindings(state.Meta, state.Findings)
-	return PatchPlan{
+	plan := PatchPlan{
 		Schema: "gooo/ledger-append-planner/patch-plan/v1", TransactionID: tx.TransactionID,
 		Operation: state.Meta.Operation, OperationDecision: decision, PortfolioDecision: decision,
 		Findings: state.Findings, Baseline: tx.Baseline, Migration: tx.Migration,
@@ -541,6 +689,24 @@ func basePlan(state *runState) PatchPlan {
 		Process: state.Meta.Process, Claims: state.Meta.Claims, InputRepositoryMutated: false,
 		BeforeDigest: state.BeforeDigest,
 	}
+	if tx.Schema == "gooo/ledger-append-transaction/v2" {
+		plan.ManifestKey = tx.ManifestKey
+		plan.ManifestAfterInvariants = append([]string(nil), state.Manifest.AfterInvariants...)
+		plan.ManifestPlannedFiles = manifestPlannedPaths(state.Manifest.PlannedFiles)
+		if state.TargetBinding != nil {
+			plan.TargetBeforeDigest = state.TargetBinding.BeforeDigest
+		}
+	}
+	return plan
+}
+
+func manifestPlannedPaths(planned map[string]string) []string {
+	paths := make([]string, 0, len(planned))
+	for _, path := range planned {
+		paths = append(paths, path)
+	}
+	sort.Strings(paths)
+	return paths
 }
 
 func buildPatch(state *runState) error {
@@ -571,6 +737,9 @@ func buildPatch(state *runState) error {
 	profileCells = append(profileCells, cellValue)
 	profileMap["cells"] = profileCells
 	oldTotal := intValue(profile["total_cells"])
+	if state.TargetBinding != nil && oldTotal != int64(state.TargetBinding.ExpectedDenominator) {
+		return fmt.Errorf("manifest target denominator changed during planning: observed=%d expected=%d", oldTotal, state.TargetBinding.ExpectedDenominator)
+	}
 	if tx.Cell.Ordinal == 0 {
 		tx.Cell.Ordinal = int(oldTotal + 1)
 		state.Transaction.Cell.Ordinal = tx.Cell.Ordinal
@@ -684,7 +853,165 @@ func renderAndFinalize(state *runState, options Options) error {
 	state.Plan.Metrics.GeneratedBytes = int64(len(report) + len(history))
 	state.Plan.Metrics.ExactFilesChanged = int64(len(state.Plan.Files))
 	state.Plan.Metrics.ExactFilesPlanned = int64(len(state.Plan.Files))
+	if err := validateManifestAfter(state); err != nil {
+		return err
+	}
 	return nil
+}
+
+func validateManifestAfter(state *runState) error {
+	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" || state.TargetBinding == nil {
+		return nil
+	}
+	binding := state.TargetBinding
+	wantPaths := map[string]bool{}
+	for _, path := range state.Manifest.PlannedFiles {
+		wantPaths[path] = true
+	}
+	gotPaths := map[string]bool{}
+	for _, file := range state.Plan.Files {
+		gotPaths[file.Path] = true
+	}
+	if len(gotPaths) != len(wantPaths) {
+		return fmt.Errorf("manifest planned file set was not applied exactly")
+	}
+	for path := range wantPaths {
+		if !gotPaths[path] {
+			return fmt.Errorf("manifest planned file was not applied: %s", path)
+		}
+	}
+	profile, err := afterObject(state, state.Meta.Paths["profile"])
+	if err != nil {
+		return err
+	}
+	profileCells, err := array(profile["cells"], "after profile.cells")
+	if err != nil || len(profileCells) != binding.ExpectedDenominator+1 || intValue(profile["total_cells"]) != int64(binding.ExpectedDenominator+1) {
+		return fmt.Errorf("after profile does not advance the manifest denominator by one")
+	}
+	if !sameCanonical(profileCells[len(profileCells)-1], mustJSONValue(state.Transaction.Cell)) {
+		return fmt.Errorf("after profile does not append the manifest transaction cell")
+	}
+	assessment, err := afterObject(state, state.Meta.Paths["assessment"])
+	if err != nil {
+		return err
+	}
+	assessmentCells, err := array(assessment["cells"], "after assessment.cells")
+	if err != nil || len(assessmentCells) != binding.ExpectedDenominator+1 {
+		return fmt.Errorf("after assessment does not append exactly one cell")
+	}
+	expectedAssessment, err := assessmentJSONValue(state.Transaction)
+	if err != nil || !sameCanonical(assessmentCells[len(assessmentCells)-1], expectedAssessment) {
+		return fmt.Errorf("after assessment does not append the manifest transaction outcome")
+	}
+	statusAfter := cloneIntMap(binding.ExpectedStateCounts)
+	statusAfter[state.Transaction.Outcome.State]++
+	if !sameIntMap(statusAfter, state.Transaction.Expected.StatusCounts) {
+		return fmt.Errorf("transaction state counts do not equal manifest before counts plus outcome")
+	}
+	actualStatus, err := statusCounts(state.Meta, assessmentCells)
+	if err != nil || !sameIntMap(actualStatus, statusAfter) {
+		return fmt.Errorf("after assessment state counts do not equal the manifest binding")
+	}
+	activity := state.AfterFiles[state.Meta.Paths["activity_file"]]
+	activities := parseActivitySequence(activity)
+	if len(activities) != binding.ExpectedDenominator+1 || activities[len(activities)-1] != state.Transaction.Activity.Name || !bytes.HasPrefix(activity, state.Ledger.ActivityRaw) {
+		return fmt.Errorf("after activity is not an append-only manifest activity")
+	}
+	locks, err := afterObject(state, state.Meta.Paths["release_locks"])
+	if err != nil {
+		return err
+	}
+	beforeLocks, err := object(state.Ledger.Locks.AST, "before release locks")
+	if err != nil {
+		return err
+	}
+	beforeReleaseMap, err := object(beforeLocks["releases"], "before release locks.releases")
+	if err != nil {
+		return err
+	}
+	afterReleaseMap, err := object(locks["releases"], "after release locks.releases")
+	if err != nil || len(afterReleaseMap) != len(beforeReleaseMap)+1 || !sameCanonical(afterReleaseMap[state.Transaction.ReleaseKey], state.Transaction.ReleaseLock) {
+		return fmt.Errorf("after release locks do not append exactly one manifest lock")
+	}
+	registry, err := afterObject(state, state.Meta.Paths["registry"])
+	if err != nil {
+		return err
+	}
+	entries, err := array(registry["entries"], "after registry.entries")
+	if err != nil {
+		return err
+	}
+	beforeRegistry, err := object(state.Ledger.Registry.AST, "before registry")
+	if err != nil {
+		return err
+	}
+	beforeEntries, err := array(beforeRegistry["entries"], "before registry.entries")
+	if err != nil || len(entries) != len(beforeEntries)+1 || !sameCanonical(entries[len(entries)-1], state.Transaction.RegistryEntry) || intValue(registry["entry_count"]) != int64(len(entries)) {
+		return fmt.Errorf("after registry does not append exactly one manifest entry")
+	}
+	for _, role := range []string{"report", "history"} {
+		if _, ok := state.AfterFiles[state.Meta.Paths[role]]; !ok {
+			return fmt.Errorf("after invariant missing generated file: %s", state.Meta.Paths[role])
+		}
+	}
+	return nil
+}
+
+func validateManifestReceipt(state *runState) error {
+	if state.Transaction.Schema != "gooo/ledger-append-transaction/v2" {
+		return nil
+	}
+	if !contains(state.Manifest.AfterInvariants, "replay-mismatches-zero") || len(state.Receipt.Mismatches) != 0 || state.Receipt.RepositoryWrites != 0 || state.Plan.Metrics.RepositoryWrites != 0 || state.Plan.InputRepositoryMutated {
+		return fmt.Errorf("manifest replay or repository-write invariant failed")
+	}
+	return nil
+}
+
+func afterObject(state *runState, path string) (map[string]any, error) {
+	data, ok := state.AfterFiles[path]
+	if !ok {
+		return nil, fmt.Errorf("after file is missing: %s", path)
+	}
+	var value any
+	if err := decodeJSON(data, &value); err != nil {
+		return nil, fmt.Errorf("decode after %s: %w", path, err)
+	}
+	return object(value, path)
+}
+
+func mustJSONValue(value any) any {
+	converted, err := toJSONValue(value)
+	if err != nil {
+		return nil
+	}
+	return converted
+}
+
+func cloneIntMap(value map[string]int) map[string]int {
+	result := map[string]int{}
+	for key, count := range value {
+		result[key] = count
+	}
+	return result
+}
+
+func statusCounts(meta MetaCode, cells []any) (map[string]int, error) {
+	result := map[string]int{}
+	for _, stateName := range meta.States {
+		result[stateName] = 0
+	}
+	for _, raw := range cells {
+		cell, ok := raw.(map[string]any)
+		if !ok {
+			return nil, fmt.Errorf("assessment cell is not an object")
+		}
+		stateName := stringValue(cell["state"])
+		if !contains(meta.States, stateName) {
+			return nil, fmt.Errorf("assessment has unknown state %q", stateName)
+		}
+		result[stateName]++
+	}
+	return result, nil
 }
 
 func materialize(state *runState, inputRepository, outputDirectory string) error {
@@ -1088,6 +1415,14 @@ func appendActivity(before []byte, activity Activity) []byte {
 
 func parseActivityNames(data []byte) map[string]bool {
 	result := map[string]bool{}
+	for _, name := range parseActivitySequence(data) {
+		result[name] = true
+	}
+	return result
+}
+
+func parseActivitySequence(data []byte) []string {
+	result := []string{}
 	for _, line := range strings.Split(string(data), "\n") {
 		line = strings.TrimSpace(line)
 		if !strings.HasPrefix(line, "activity ") {
@@ -1096,7 +1431,7 @@ func parseActivityNames(data []byte) map[string]bool {
 		rest := strings.TrimPrefix(line, "activity ")
 		open := strings.IndexByte(rest, '(')
 		if open > 0 {
-			result[strings.TrimSpace(rest[:open])] = true
+			result = append(result, strings.TrimSpace(rest[:open]))
 		}
 	}
 	return result

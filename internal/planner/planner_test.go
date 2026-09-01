@@ -141,6 +141,49 @@ func TestCanonicalJSONIgnoresObjectKeyOrdering(t *testing.T) {
 	}
 }
 
+func TestTransactionManifestCorpus(t *testing.T) {
+	cases := []struct {
+		name        string
+		input       string
+		transaction string
+		lock        string
+		decision    string
+	}{
+		{"v0.31-closed", "testdata/ledger-v0.31", "examples/transactions/valid-append-v2-v0.31.json", "contracts/upstream-lock-v0.31.0.json", DecisionClosed},
+		{"v0.32-closed", "testdata/ledger-v0.32", "examples/transactions/valid-append-v2-v0.32.json", "contracts/upstream-lock-v0.32.0.json", DecisionClosed},
+		{"wrong-source-tree-refuted", "testdata/ledger-v0.31", "examples/transactions/wrong-source-tree-v0.32.json", "contracts/upstream-lock-v0.32.0.json", DecisionRefuted},
+		{"missing-binding-unknown", "testdata/ledger-v0.32", "examples/transactions/missing-binding-v0.32.json", "contracts/upstream-lock-v0.32.0.json", DecisionUnknown},
+	}
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			input := filepath.Join(testRoot, testCase.input)
+			before, err := sourceTreeDigest(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			options := testOptions(input, t.TempDir())
+			options.BaselineLockPath = filepath.Join(testRoot, testCase.lock)
+			result, err := Execute(filepath.Join(testRoot, testCase.transaction), options)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.Plan.OperationDecision != testCase.decision {
+				t.Fatalf("decision = %s, want %s", result.Plan.OperationDecision, testCase.decision)
+			}
+			after, err := sourceTreeDigest(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if before != after || result.Plan.InputRepositoryMutated || result.Plan.Metrics.RepositoryWrites != 0 {
+				t.Fatalf("input authority changed: before=%s after=%s mutated=%v writes=%d", before, after, result.Plan.InputRepositoryMutated, result.Plan.Metrics.RepositoryWrites)
+			}
+			if testCase.decision != DecisionClosed && result.Plan.RepositoryOutput != "" {
+				t.Fatalf("non-closed case materialized repository output: %s", result.Plan.RepositoryOutput)
+			}
+		})
+	}
+}
+
 func mustCanonical(t *testing.T, value any) []byte {
 	t.Helper()
 	data, err := canonicalJSON(value)
