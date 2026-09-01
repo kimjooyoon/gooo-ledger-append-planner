@@ -41,7 +41,7 @@ target v0.32.0
 target-repository "kimjooyoon/gooo-self-improvement-ledger"
 target-tag "v0.32.0"
 target-commit-sha "5486b346aa193875383cdafa0763f3bd371c2fc1"
-target-before-digest "sha256:3db0cc6bf08e6944fa8d2e3fe8e2e546a9de0a3a536f91e147d1e488d57079fe"
+target-before-digest "sha256:1697f6cab268c7ba63fddc503c3d22aa63e7f29c92fe4f4071bf0cef915a0040"
 expected-denominator 38
 expected-state-count CLOSED=35 UNKNOWN=1 REFUTED=2
 anchor profile.first_cell_id "CORE_SEMANTIC_AUTHORITY"
